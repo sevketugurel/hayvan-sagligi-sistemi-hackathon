@@ -1,0 +1,9 @@
+# GitHub'a yüklemek için aşağıdaki komutları çalıştırın
+# YOUR_USERNAME kısmını GitHub kullanıcı adınızla değiştirin
+
+git remote add origin https://github.com/YOUR_USERNAME/hayvan-saglik-sistemi.git
+git branch -M main
+git push -u origin main
+
+# Eğer kullanıcı adı ve şifre isterse, şifre yerine GitHub'da oluşturduğunuz kişisel erişim tokenını (Personal Access Token) girin.
+# Personal Access Token oluşturmak için: GitHub > Settings > Developer settings > Personal access tokens > Generate new token 
