@@ -33,12 +33,21 @@ const AnimalDetails = () => {
     prescribedBy: "",
     veterinaryClinic: "Hayat Veteriner Kliniği"
   });
+  const [expandedSections, setExpandedSections] = useState({});
 
   // Toggle test category expansion
   const toggleTestCategory = (category) => {
     setExpandedTests(prev => ({
       ...prev,
       [category]: !prev[category]
+    }));
+  };
+
+  // Toggle section expansion
+  const toggleSection = (section) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
     }));
   };
 
@@ -475,7 +484,7 @@ const AnimalDetails = () => {
             notes: 'Yaşa bağlı olarak özellikle arka bacak eklemlerinde gelişen osteoartrit. Aşırı aktiviteden kaçınılmalı, düzenli kısa yürüyüşler önerilir.'
           }
         ],
-        necropsy: [],
+        necropsy: [          {             id: 1,             date: '03.05.2035',             vet: 'Dr. Mert Özçelik',             findings: 'Otopsi incelemesinde, abdominal kavitede yaklaşık 500 ml sarı, berrak sıvı saptandı. Karaciğer büyümüş ve yüzeyi düzensiz görünümdeydi. Histopatolojik incelemede kronik hepatit bulguları tespit edildi. Akciğerlerde belirgin bir patoloji saptanmadı. Mide mukozası hiperemikti, ancak ülserasyon gözlenmedi. Böbrekler normal boyutta fakat soluk görünümdeydi. Mikroskobik inceleme böbrek tübüler nekrozu gösterdi. Kalp normal boyutta, herhangi bir anomali saptanmadı. Beyin ve omurilik incelemesinde ödem haricinde belirgin patoloji görülmedi. Ölüm sebebi karaciğer ve böbrek yetmezliği olarak değerlendirildi.',            report: {              reportNo: '2025-NEK-0040',              date: '03.05.2035',              performer: 'Dr. Mert Özçelik'            },            animal: {              species: 'Kedi',              breed: 'Akkaraman',              age: 8,              identification: 'Çip No: 987654321098765'            }          }        ],
         notes: [
           { id: 1, date: '15.08.2023', author: 'Dr. Ayşe Demir', content: 'Hasta sahibi düzenli ilaç kullanımı konusunda tekrar bilgilendirildi. Antibiyotik tedavisinin tamamlanmasının önemini vurguladık. Hasta sahibi anlayış gösterdi ve geri kalan tedaviyi tamamlayacağını belirtti.' },
           { id: 2, date: '25.09.2023', author: 'Dr. Mehmet Yılmaz', content: 'Yaşına göre iyi durumda. Kilo takibi önerildi. Mevcut diyetine devam etmesi gerektiği konusunda uyarıldı. Aylık tartım ve 3 ayda bir kontrol önerildi. Diyet programında herhangi bir değişiklik gerekmemektedir.' },
@@ -1616,6 +1625,117 @@ const AnimalDetails = () => {
                   <div className="lab-test-date">Test Tarihi: 01.09.2023</div>
                 </div>
               </div>
+              
+              <div className={`lab-test-category biopsy ${expandedTests.biopsy ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('biopsy')}>
+                  Biyopsi Sonuçları
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className="lab-test-grid">
+                    <div className="lab-test-param wide">
+                      <span className="param-name">İnsizyonel biyopsi:</span>
+                      <span className="param-value">Negatif - Normal doku örneği</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Ekzisyonel biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">İnce iğne aspirasyon biyopsisi (FNA):</span>
+                      <span className="param-value">Normal hücre örneği, malignite bulgusu yok</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Trukat (core) biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Punch biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Endoskopik biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Laparoskopik biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Kemik iliği biyopsisi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Sürüntü (brush) biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Trepan biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Küretaj biyopsisi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Sitobrush biyopsisi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Açık cerrahi biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Transrektal biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Transabdominal biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">İntraoperatif biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Bukkal biyopsi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Deri biyopsisi:</span>
+                      <span className="param-value">Normal deri dokusu, patolojik bulgu yok</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Kas biyopsisi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Lenf nodu biyopsisi:</span>
+                      <span className="param-value">Yapılmadı</span>
+                      <span className="param-range">-</span>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 05.09.2023</div>
+                </div>
+              </div>
             </div>
             
             <div className="test-actions">
@@ -1971,18 +2091,467 @@ const AnimalDetails = () => {
         return (
           <div className="section-content necropsy">
             <h3>Nekropsi Bulguları</h3>
-            {sectionData.length === 0 ? (
-              <p>Nekropsi bulgusu bulunamadı.</p>
-            ) : (
-              sectionData.map(necropsy => (
-                <div key={necropsy.id} className="necropsy-item">
-                  <div className="necropsy-header">
-                    <span className="necropsy-date">{necropsy.date}</span>
-                    <span className="necropsy-vet">{necropsy.vet}</span>
-                  </div>
-                  <div className="necropsy-findings">{necropsy.findings}</div>
+            <div className="necropsy-info-container">
+              <div className="necropsy-info-section">
+                <div className="necropsy-info-header">
+                  <h4>RAPOR BİLGİLERİ</h4>
                 </div>
-              ))
+                <div className="necropsy-info-content">
+                  <div className="necropsy-info-item">
+                    <span className="info-label">RAPOR NO:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].report ? 
+                        sectionData[0].report.reportNo : '2025-NEK-0040'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">TARİH:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].report ? 
+                        sectionData[0].report.date : '03.05.2035'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">NEKROPSİ YAPAN HEKİM:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].report ? 
+                        sectionData[0].report.performer : 'MERT ÖZÇELİK'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-info-section">
+                <div className="necropsy-info-header">
+                  <h4>HAYVANA AİT BİLGİLER</h4>
+                </div>
+                <div className="necropsy-info-content">
+                  <div className="necropsy-info-item">
+                    <span className="info-label">TÜR:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].animal ? 
+                        sectionData[0].animal.species : 'KEDİ'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">IRK:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].animal ? 
+                        sectionData[0].animal.breed : 'AKKARAMAN'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">YAŞ:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].animal ? 
+                        sectionData[0].animal.age : '8'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">TANIMLAMA:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].animal ? 
+                        sectionData[0].animal.identification : 'ÇİP NO: 987654321098765'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="necropsy-assessment-sections">
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header" 
+                  onClick={() => toggleSection('generalCondition')}
+                >
+                  <h4>1. GENEL DURUM KRİTERLERİ</h4>
+                  <span className="toggle-icon">{expandedSections.generalCondition ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.generalCondition ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">VÜCUT KONDİSYONU:</span>
+                    <span className="criteria-value">Normal</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">HİDRATASYON DURUMU:</span>
+                    <span className="criteria-value">Hafif dehidrasyon (cilt elastikiyeti azalmış, göz çöküklüğü yok)</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">ÖLÜM ŞEKLİ:</span>
+                    <span className="criteria-value">Doğal, kronik</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">KADAVRA DURUMU:</span>
+                    <span className="criteria-value">Rigor mortis şekillenmiş, minimal otoliz başlangıcı</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('externalExam')}
+                >
+                  <h4>2. DIŞ MUAYENE KRİTERLERİ</h4>
+                  <span className="toggle-icon">{expandedSections.externalExam ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.externalExam ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">CİLT VE TÜY DURUMU:</span>
+                    <span className="criteria-value">Tüylerde matlaşma ve dökülme, sırtta 3x4 cm çaplı ülseratif lezyon</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">DOĞAL DELİKLER:</span>
+                    <span className="criteria-value">Burun deliklerinde seröz akıntı, anüs çevresinde kuruma</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">ANORMAL YAPILAR:</span>
+                    <span className="criteria-value">Sol arka ekstremitede 2x3 cm çaplı sert kitle (muhtemel tümör)</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('internalExam')}
+                >
+                  <h4>3. İÇ ORGAN KRİTERLERİ (MAKROSKOPİK)</h4>
+                  <span className="toggle-icon">{expandedSections.internalExam ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.internalExam ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">Kardiyovasküler Sistem</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Kalp büyüklüğü:</span>
+                      <span className="criteria-value">Normal</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Kapak yapısı, pıhtı varlığı:</span>
+                      <span className="criteria-value">Mitral kapakta fibrotik kalınlaşma, sol ventrikülde post-mortem pıhtı</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Perikard sıvısı:</span>
+                      <span className="criteria-value">Hafif artmış (8 ml, berrak)</span>
+                    </div>
+                  </div>
+                  
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">Solunum Sistemi</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Akciğerlerin renk ve kıvamı:</span>
+                      <span className="criteria-value">Bazal bölgelerde koyu kırmızı, ödemli, kranial loblar amfizematöz</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Trakeal mukus varlığı:</span>
+                      <span className="criteria-value">Köpüklü eksüdat mevcut</span>
+                    </div>
+                  </div>
+                  
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">Sinir Sistemi</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Beyin ödemi, kanama:</span>
+                      <span className="criteria-value">Hafif ödem, kanama yok</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Meninkslerde kalınlaşma:</span>
+                      <span className="criteria-value">Yok</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Spinal kordda lezyon:</span>
+                      <span className="criteria-value">Saptanmadı</span>
+                    </div>
+                  </div>
+                  
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">Karaciğer, Dalak, Böbrek</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Karaciğer:</span>
+                      <span className="criteria-value">Büyümüş, düzensiz yüzey, kesit yüzünde sarımsı alanlar (nekroz), kıvam sertleşmiş</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Dalak:</span>
+                      <span className="criteria-value">Normal büyüklük, foliküller belirgin</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Böbrek:</span>
+                      <span className="criteria-value">Soluk, korteks-medulla sınırı belirsiz, kapsül yapışık</span>
+                    </div>
+                  </div>
+                  
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">Sindirim Sistemi</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Mide içeriği:</span>
+                      <span className="criteria-value">Az miktarda sıvı, koyu yeşil</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Barsak:</span>
+                      <span className="criteria-value">İnce barsaklarda mukozal hiperemi, ülserasyon yok</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Gaz birikimi:</span>
+                      <span className="criteria-value">Kolonda orta derecede gaz birikimi</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('microscopicFindings')}
+                >
+                  <h4>4. SİSTEM / ORGAN MİKROSKOBİK BULGULAR</h4>
+                  <span className="toggle-icon">{expandedSections.microscopicFindings ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.microscopicFindings ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Karaciğer:</span>
+                    <span className="criteria-value">Hücre içi yağlanma (steatoz), hepatosit nekrozu, portal inflamasyon</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Akciğer:</span>
+                    <span className="criteria-value">Alveollerde ödem, konjesyon, makrofaj birikimi, pnömonik alanlar</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Böbrek:</span>
+                    <span className="criteria-value">Glomerül dejenerasyonu, tübüler nekroz, interstisyel lenfosit infiltrasyonu</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Kalp:</span>
+                    <span className="criteria-value">Miyosit nekrozu, fibrozis, enfarkt alanı</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Barsak:</span>
+                    <span className="criteria-value">Villus atrofisi, kript hiperplazisi, epitel hücre nekrozu</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Dalak:</span>
+                    <span className="criteria-value">Lenfoid doku atrofisi, hiperplazi, hemosiderin birikimi</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Beyin:</span>
+                    <span className="criteria-value">Nöron nekrozu, mikrogliyozis, demiyelinizasyon, perivasküler ödem</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Lenf nodu:</span>
+                    <span className="criteria-value">Foliküler hiperplazi, nekrotik odaklar, granülomatöz inflamasyon</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">Tümör:</span>
+                    <span className="criteria-value">Hücre atipi, mitotik indeks, invazyon derinliği</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('labCriteria')}
+                >
+                  <h4>5. LABARATUVAR TABANLI KRİTERLER</h4>
+                  <span className="toggle-icon">{expandedSections.labCriteria ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.labCriteria ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">HİSTOPATOLOJİK İNCELEME SONUCU:</span>
+                    <span className="criteria-value">Hücre yapısı normal, nekroz alanları mevcut, orta şiddette inflamasyon</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">BAKTERİYOLOJİK KÜLTÜR SONUCU:</span>
+                    <span className="criteria-value">E. coli enfeksiyonu tespit edildi, antibiyogram sonucu beta-laktam direnci mevcut</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">TOKSİKOLOJİK ANALİZ SONUCU:</span>
+                    <span className="criteria-value">Organofosfatlı pestisit kalıntısı tespit edilmedi, ağır metal (kurşun, cıva) negatif</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">PARAZİTOLOJİK İNCELEME SONUCU:</span>
+                    <span className="criteria-value">İç parazit (Toxocara canis) pozitif, dış parazit negatif</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">İMMÜNOHİSTOKİMYA/PCR SONUCU:</span>
+                    <span className="criteria-value">Parvovirüs pozitif, kuduz negatif</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('clinicalEpidemiologicalCriteria')}
+                >
+                  <h4>6. KLİNİK VE EPİDEMİYOLOJİK KRİTERLER</h4>
+                  <span className="toggle-icon">{expandedSections.clinicalEpidemiologicalCriteria ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.clinicalEpidemiologicalCriteria ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">ÖNCEKİ TEDAVİLER VE KLİNİK BULGULAR:</span>
+                    <span className="criteria-value">Ölümden 3 gün önce dehidrasyon, ishal, kusma belirtileri gözlenmiş. Sıvı tedavisi ve antibiyotik (Amoksisilin) uygulanmış.</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">ÇEVRESEL KOŞULLAR:</span>
+                    <span className="criteria-value">Barınak koşulları yeterli, havalandırma iyi, aşırı sıcak hava dalgası etkisi mevcut (35°C üstü), yeterli beslenme koşulları</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">SÜRÜDE BAŞKA ÖLÜM VAR MI:</span>
+                    <span className="criteria-value">Son 1 hafta içinde aynı barınakta 2 ölüm vakası daha bildirilmiş, benzer klinik belirtilerle</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('additionalSystemFindings')}
+                >
+                  <h4>7. SİNDİRİM VE ÜREME SİSTEMİ EK BULGULAR</h4>
+                  <span className="toggle-icon">{expandedSections.additionalSystemFindings ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.additionalSystemFindings ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">MİDE İÇERİĞİ:</span>
+                    <span className="criteria-value">Az miktarda sıvı, kötü koku, yabancı cisim yok</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">BARSAKTA ÜLSER, PARAZİT:</span>
+                    <span className="criteria-value">İnce barsak mukozasında multifokal ülseratif alanlar, lümen içinde erişkin Toxocara (10-15 adet)</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">BÖBREKTE ÖDEM, NEKROZ:</span>
+                    <span className="criteria-value">Kortekste multifokal nekroz odakları, medullada ödem, hemorajik alanlar</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">ÜREME SİSTEMİ:</span>
+                    <span className="criteria-value">Nongebe, uterus normal boyut ve görünümde, ovaryumlar kistik değişiklik göstermiyor, tümör bulgusu yok</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('samplesTaken')}
+                >
+                  <h4>8. ALINAN NUMUNELER (VARSA)</h4>
+                  <span className="toggle-icon">{expandedSections.samplesTaken ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.samplesTaken ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">KARACİĞER:</span>
+                    <span className="criteria-value">HİSTOPATOLOJİ (SAKLAMA ŞEKLİ %10 FORMALİN)</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">MİDE İÇERİĞİ:</span>
+                    <span className="criteria-value">TOKSİKOLOJİK ANALİZ (SOĞUK ZİNCİR)</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">BARSAK İÇERİĞİ:</span>
+                    <span className="criteria-value">PARAZİT (DİREKT TAZE NUMUNE)</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('additionalInfo')}
+                >
+                  <h4>9. EK BİLGİLER</h4>
+                  <span className="toggle-icon">{expandedSections.additionalInfo ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.additionalInfo ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">ÖLÜM TARİHİ VE SAATİ (TAHMİNİ):</span>
+                    <span className="criteria-value">02.05.2035, 22:00-24:00 arası</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">SAHİPLİ-SAHİPSİZ:</span>
+                    <span className="criteria-value">SAHİPLİ</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">KLİNİK GEÇMİŞİ:</span>
+                    <span className="criteria-value">Son bir haftadır ishal ve iştahsızlık şikayeti mevcut. İki gün önce kliniğe getirilmiş, sıvı ve antibiyotik tedavisi uygulanmış, takipte iyileşme gözlenmediği bildirilmiş.</span>
+                  </div>
+                  <div className="necropsy-criteria-item">
+                    <span className="criteria-label">AŞI/PARAZİT BİLGİSİ:</span>
+                    <span className="criteria-value">Karma aşı üç ay önce yapılmış, kuduz aşısı güncel, düzenli parazit uygulaması var.</span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('conclusion')}
+                >
+                  <h4>10. SONUÇ: ÖLÜM NEDENİ DEĞERLENDİRME</h4>
+                  <span className="toggle-icon">{expandedSections.conclusion ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.conclusion ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item conclusion-text">
+                    <p>"Yapılan makroskopik ve mikroskobik inceleme sonucunda, hayvanın sindirim sisteminde yaygın parazit enfestasyonu ve parvovirüs enfeksiyonu bulgularına rastlanmıştır. Karaciğer ve böbrekte belirgin nekroz odakları tespit edilmiştir. Ayrıca, ince barsakta multifokal ülseratif lezyonlar gözlenmiştir.</p>
+                    <p>Hayvanın ölüm nedeni, parvovirüs enfeksiyonuna bağlı gelişen şiddetli dehidrasyon, elektrolit dengesizliği ve sekonder bakteriyel enfeksiyon (E. coli) olarak değerlendirilmiştir. İç parazit yükünün (Toxocara canis) hastalık tablosunu ağırlaştırdığı düşünülmektedir.</p>
+                    <p>Barınakta son hafta içinde benzer klinik belirtilerle kaydedilen diğer ölüm vakalarının da aynı enfeksiyöz etkene bağlı olabileceği düşünülmektedir. Bu nedenle, sürü sağlığı açısından barınaktaki diğer hayvanların aşılama ve parazit kontrolü önerilmektedir. Enfeksiyonun zoonotik potansiyeli düşüktür, ancak Toxocara enfestasyonu için insan teması açısından dikkatli olunmalıdır.</p>
+                    <p>Vakanın klinik ve epidemiyolojik özellikleri göz önüne alındığında, ihmal veya travma bulgusuna rastlanmamıştır. Barınak koşullarında gözlenen aşırı sıcak hava koşullarının (35°C üstü) hastalık tablosunun şiddetini artırabileceği değerlendirilmiştir."</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section vet-info-section">
+                <div 
+                  className="vet-info-header"
+                  onClick={() => toggleSection('vetInfo')}
+                >
+                  <h4>VETERİNER HEKİM BİLGİLERİ</h4>
+                  <span className="toggle-icon">{expandedSections.vetInfo ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.vetInfo ? 'expanded' : 'collapsed'}`}>
+                  <div className="vet-info-item">
+                    <span className="info-label">AD SOYAD:</span>
+                    <span className="info-value">Dr. Mert ÖZÇELİK</span>
+                  </div>
+                  <div className="vet-info-item">
+                    <span className="info-label">KLİNİK/FAKÜLTE/KURUM:</span>
+                    <span className="info-value">Hayvan Sağlığı Araştırma Merkezi</span>
+                  </div>
+                  <div className="vet-info-item signature-item">
+                    <span className="info-label">İMZA:</span>
+                    <span className="signature-placeholder">___________________</span>
+                  </div>
+                </div>
+              </div>
+              
+              {sectionData.length > 0 && (
+                <div className="necropsy-section">
+                  <div 
+                    className="necropsy-section-header"
+                    onClick={() => toggleSection('findings')}
+                  >
+                    <h4>BULGULAR</h4>
+                    <span className="toggle-icon">{expandedSections.findings ? '▼' : '►'}</span>
+                  </div>
+                  <div className={`necropsy-section-content ${expandedSections.findings ? 'expanded' : 'collapsed'}`}>
+                    {sectionData.map(necropsy => (
+                      <div key={necropsy.id} className="necropsy-item">
+                        <div className="necropsy-header">
+                          <span className="necropsy-date">{necropsy.date}</span>
+                          <span className="necropsy-vet">{necropsy.vet}</span>
+                        </div>
+                        <div className="necropsy-findings">{necropsy.findings}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            {sectionData.length === 0 && (
+              <div className="necropsy-findings-container">
+                <p>Nekropsi bulgusu bulunamadı.</p>
+              </div>
             )}
           </div>
         );

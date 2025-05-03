@@ -1769,4 +1769,321 @@
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
+}
+
+/* Necropsy section styling */
+.necropsy-info-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.necropsy-info-section {
+  flex: 1;
+  min-width: 300px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.necropsy-info-header {
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+}
+
+.necropsy-info-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.necropsy-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.necropsy-info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.necropsy-info-item:last-child {
+  border-bottom: none;
+}
+
+.necropsy-info-item .info-label {
+  font-weight: 600;
+  color: #34495e;
+  flex: 1;
+}
+
+.necropsy-info-item .info-value {
+  font-weight: 500;
+  color: #2c3e50;
+  flex: 1;
+  text-align: right;
+}
+
+/* Removed findings header styles */
+.necropsy-findings-header {
+  display: none; /* Hide this class */
+}
+
+.necropsy-findings-header h4 {
+  display: none; /* Hide this class */
+}
+
+.necropsy-findings-container {
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.necropsy-findings {
+  margin-top: 10px;
+  line-height: 1.6;
+  color: #2c3e50;
+  white-space: pre-line;
+  padding: 15px;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.05);
+}
+
+.necropsy-item {
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.necropsy-header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.necropsy-date {
+  font-weight: 600;
+  color: #3498db;
+}
+
+.necropsy-vet {
+  font-weight: 500;
+  color: #7f8c8d;
+}
+
+/* Mobile responsiveness for necropsy section */
+@media screen and (max-width: 768px) {
+  .necropsy-info-container {
+    flex-direction: column;
+  }
+  
+  .necropsy-info-section {
+    width: 100%;
+  }
+}
+
+/* Necropsy assessment sections styling */
+.necropsy-assessment-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.necropsy-section {
+  background-color: white;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.necropsy-section-header {
+  border-bottom: 2px solid #e74c3c;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s ease;
+}
+
+.necropsy-section-header:hover {
+  background-color: #f8f9fa;
+}
+
+.necropsy-section-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.toggle-icon {
+  font-size: 12px;
+  color: #7f8c8d;
+  transition: transform 0.3s ease;
+}
+
+.necropsy-section-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+  overflow: hidden;
+}
+
+.necropsy-section-content.expanded {
+  max-height: 2000px;
+  opacity: 1;
+  padding: 10px 0;
+}
+
+.necropsy-section-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.necropsy-criteria-item {
+  display: flex;
+  flex-direction: column;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.necropsy-criteria-item:last-child {
+  border-bottom: none;
+}
+
+.criteria-label {
+  font-weight: 600;
+  color: #34495e;
+  margin-bottom: 4px;
+}
+
+.criteria-value {
+  color: #2c3e50;
+  line-height: 1.4;
+}
+
+.necropsy-criteria-group {
+  margin-bottom: 15px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #3498db;
+}
+
+.criteria-group-header {
+  font-weight: 600;
+  color: #3498db;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed #e0e0e0;
+}
+
+/* Specific styling for conclusion text */
+.conclusion-text {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border-left: 3px solid #2ecc71;
+}
+
+.conclusion-text p {
+  margin-bottom: 12px;
+  line-height: 1.6;
+  text-align: justify;
+}
+
+.conclusion-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* Styling for veterinarian information section */
+.vet-info-section {
+  margin-top: 40px;
+  background-color: #f8f9fa;
+  border-top: 2px solid #3498db;
+  border-radius: 0 0 8px 8px;
+}
+
+.vet-info-header {
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.vet-info-header h4 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  text-align: center;
+}
+
+.vet-info-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vet-info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.vet-info-item:last-child {
+  border-bottom: none;
+}
+
+.signature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-top: 20px;
+}
+
+.signature-placeholder {
+  font-style: italic;
+  padding: 15px 60px;
+  border-bottom: 1px solid #7f8c8d;
+  margin-top: 5px;
+}
+
+/* Mobile responsiveness for necropsy assessment sections */
+@media screen and (max-width: 768px) {
+  .necropsy-criteria-item {
+    flex-direction: column;
+  }
+  
+  .criteria-label {
+    margin-bottom: 5px;
+  }
+  
+  .vet-info-item {
+    flex-direction: column;
+  }
+  
+  .signature-item {
+    align-items: flex-start;
+  }
 } 
