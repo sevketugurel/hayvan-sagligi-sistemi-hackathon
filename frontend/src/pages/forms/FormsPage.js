@@ -7,27 +7,32 @@ const formFiles = {
     anestezi: {
         title: 'Anestezi Formu',
         icon: 'fas fa-syringe',
-        description: 'Anestezi sürecinin takibi için gerekli form'
+        description: 'Anestezi sürecinin takibi için gerekli form',
+        fileName: 'veteriner_anestezi_kabul_formu.pdf'
     },
     operasyon: {
         title: 'Operasyon Formu',
         icon: 'fas fa-heartbeat',
-        description: 'Operasyon detaylarının kaydı için gerekli form'
+        description: 'Operasyon detaylarının kaydı için gerekli form',
+        fileName: 'veteriner_operasyon_kabul_formu.pdf'
     },
     tedavi: {
         title: 'Tedavi Formu',
         icon: 'fas fa-pills',
-        description: 'Tedavi planı ve ilaç takibi için gerekli form'
+        description: 'Tedavi planı ve ilaç takibi için gerekli form',
+        fileName: 'veteriner_hasta_tedavi_formu.pdf'
     },
     pansiyon: {
         title: 'Pansiyon Formu',
         icon: 'fas fa-home',
-        description: 'Pansiyon hizmeti için gerekli bilgilendirme formu'
+        description: 'Pansiyon hizmeti için gerekli bilgilendirme formu',
+        fileName: 'veteriner_hasta_pansiyon_formu.pdf'
     },
     hospitalizasyon: {
         title: 'Hospitalizasyon Formu',
         icon: 'fas fa-procedures',
-        description: 'Yatılı tedavi sürecinin yönetimi için form'
+        description: 'Yatılı tedavi sürecinin yönetimi için form',
+        fileName: 'veteriner_hospitasyon_formu.pdf'
     }
 };
 
@@ -51,21 +56,44 @@ const FormsPage = () => {
         setShowMessage(true);
 
         try {
-            // Base64 PDF'i indirme
-            const link = document.createElement('a');
-            link.href = emptyPdfBase64;
-            link.download = `${formFiles[formKey].title}.pdf`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            // PDF dosyasının yolunu oluştur
+            const pdfUrl = `/forms/${formFiles[formKey].fileName}`;
 
-            // Mesajı güncelle
-            setMessage(`${formFiles[formKey].title} başarıyla indirildi!`);
+            // PDF dosyasını indir
+            fetch(pdfUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('PDF dosyası bulunamadı');
+                    }
+                    return response.blob();
+                })
+                .then(blob => {
+                    // PDF'i indirme işlemi
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `${formFiles[formKey].title}.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
 
-            // Mesajı 3 saniye sonra gizle
-            setTimeout(() => {
-                setShowMessage(false);
-            }, 3000);
+                    // Mesajı güncelle
+                    setMessage(`${formFiles[formKey].title} başarıyla indirildi!`);
+
+                    // Mesajı 3 saniye sonra gizle
+                    setTimeout(() => {
+                        setShowMessage(false);
+                    }, 3000);
+                })
+                .catch(error => {
+                    console.error("İndirme hatası:", error);
+                    setMessage(`${formFiles[formKey].title} indirilirken bir hata oluştu. Lütfen tekrar deneyin.`);
+
+                    setTimeout(() => {
+                        setShowMessage(false);
+                    }, 3000);
+                });
         } catch (error) {
             console.error("İndirme hatası:", error);
             setMessage(`${formFiles[formKey].title} indirilirken bir hata oluştu. Lütfen tekrar deneyin.`);
