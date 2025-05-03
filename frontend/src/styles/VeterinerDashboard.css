@@ -387,20 +387,24 @@ html {
 /* Sohbet alanını maksimum yükseklikte göster */
 .scrollable-content.chat-messages {
     flex: 1;
-    height: calc(100vh - 280px);
+    height: calc(100vh - 240px);
+    max-height: 600px;
     overflow-y: auto;
     padding: 10px 15px;
     background-color: #f0f2f5;
     margin-bottom: 10px;
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Chat mesajları */
 .chat-message {
-    max-width: 80%;
-    margin-bottom: 10px;
+    max-width: 85%;
+    margin-bottom: 12px;
     position: relative;
     clear: both;
+    overflow: hidden;
 }
 
 .chat-message.current-user {
@@ -419,6 +423,14 @@ html {
     font-weight: 500;
     margin-bottom: 3px;
     color: #3b3b3b;
+    display: block;
+    clear: both;
+}
+
+/* Mesaj içerik container'ı */
+.message-container {
+    display: inline-block;
+    max-width: 100%;
 }
 
 /* Mesaj metni */
@@ -430,13 +442,16 @@ html {
     white-space: normal;
     word-wrap: break-word;
     word-break: break-word;
-    max-width: 100%;
     font-size: 14px;
     overflow: hidden;
-    display: inline-block;
+    display: block;
 }
 
 /* Kullanıcının kendi mesajı */
+.chat-message.current-user .message-container {
+    float: right;
+}
+
 .chat-message.current-user .message-text {
     background-color: #dcf8c6;
     color: #000;
@@ -445,6 +460,10 @@ html {
 }
 
 /* Diğer kullanıcının mesajı */
+.chat-message.other-user .message-container {
+    float: left;
+}
+
 .chat-message.other-user .message-text {
     background-color: white;
     color: #000;
@@ -457,14 +476,27 @@ html {
     font-size: 10px;
     color: #8d8d8d;
     margin-top: 2px;
-    display: inline-block;
+    display: block;
     text-align: right;
-    float: right;
+    clear: both;
     padding-right: 5px;
 }
 
 /* ChatMessages kısmında after ekleyin (float'ları düzgün göstermek için) */
 .chat-messages::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Her mesaj sonrası clearfix ekleme */
+.chat-message::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.message-container::after {
     content: "";
     display: table;
     clear: both;
@@ -781,20 +813,29 @@ html {
     padding: 15px;
     overflow-y: auto;
     background-color: #f0f2f5;
+    height: calc(100vh - 260px);
+    max-height: 600px;
+    display: flex;
+    flex-direction: column;
 }
 
+/* Özel mesajlar için */
 .private-message {
-    max-width: 70%;
-    margin-bottom: 10px;
+    max-width: 85%;
+    margin-bottom: 12px;
     clear: both;
+    overflow: hidden;
+    display: block;
 }
 
 .private-message.current-user {
     float: right;
+    align-self: flex-end;
 }
 
 .private-message.other-user {
     float: left;
+    align-self: flex-start;
 }
 
 .message-content {
@@ -802,6 +843,10 @@ html {
     border-radius: 10px;
     position: relative;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
+    word-break: break-word;
+    display: inline-block;
+    max-width: 100%;
 }
 
 .private-message.current-user .message-content {
@@ -812,6 +857,33 @@ html {
 .private-message.other-user .message-content {
     background-color: white;
     border-top-left-radius: 0;
+}
+
+.message-content .message-text {
+    margin: 0 0 5px 0;
+    font-size: 14px;
+}
+
+.message-content .message-time {
+    font-size: 10px;
+    color: #8d8d8d;
+    display: block;
+    text-align: right;
+    margin-top: 2px;
+}
+
+/* Her özel mesaj sonrası clearfix ekleme */
+.private-message::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Aktif sohbet mesajları için clearfix */
+.active-chat-messages::after {
+    content: "";
+    display: table;
+    clear: both;
 }
 
 .active-chat-input {
@@ -1474,5 +1546,266 @@ html {
         right: 20px;
         min-width: auto;
         max-width: none;
+    }
+}
+
+.add-patient-button {
+    margin-left: 5px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.add-patient-button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
+/* New Patient Popup */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.new-patient-popup {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.popup-header h2 {
+    margin: 0;
+    color: #2d5986;
+    font-size: 20px;
+}
+
+.close-popup-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.close-popup-button:hover {
+    color: #333;
+}
+
+.popup-content {
+    padding: 20px;
+}
+
+.popup-content form {
+    box-shadow: none;
+    padding: 0;
+}
+
+.form-sections-container {
+    display: flex;
+    gap: 30px;
+}
+
+.form-sections-container .form-section {
+    flex: 1;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 0;
+    border: 1px solid #eaeaea;
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+/* Add scrollbar styling for the form sections */
+.form-sections-container .form-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+.form-sections-container .form-section::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.form-sections-container .form-section::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.form-sections-container .form-section::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+.form-sections-container .form-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeaea;
+    color: #333;
+    font-size: 16px;
+}
+
+.form-sections-container .form-group {
+    margin-bottom: 12px;
+}
+
+.form-sections-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #555;
+    font-size: 14px;
+}
+
+.form-sections-container input,
+.form-sections-container select,
+.form-sections-container textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-sections-container textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* Style for hospitalization reason field */
+#hospitalizationReason {
+    min-height: 60px;
+    border-left: 3px solid #28a745;
+    transition: all 0.2s ease;
+}
+
+#hospitalizationReason:focus {
+    border-left: 3px solid #218838;
+}
+
+.form-sections-container input:focus,
+.form-sections-container select:focus,
+.form-sections-container textarea:focus {
+    outline: none;
+    border-color: #2d5986;
+    box-shadow: 0 0 0 2px rgba(45, 89, 134, 0.1);
+}
+
+.popup-content .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.popup-content .cancel-button,
+.popup-content .save-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.popup-content .cancel-button {
+    background-color: #f8f9fa;
+    color: #555;
+    border: 1px solid #ddd;
+}
+
+.popup-content .save-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.popup-content .cancel-button:hover {
+    background-color: #e9ecef;
+}
+
+.popup-content .save-button:hover {
+    background-color: #218838;
+}
+
+/* Responsive styles for the popup */
+@media (max-width: 768px) {
+    .form-sections-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .form-sections-container .form-section {
+        max-height: none;
+    }
+    
+    .new-patient-popup {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .form-sections-container .form-group {
+        margin-bottom: 10px;
+    }
+
+    .form-sections-container label {
+        font-size: 13px;
+    }
+
+    .form-sections-container input,
+    .form-sections-container select,
+    .form-sections-container textarea {
+        padding: 7px;
+        font-size: 13px;
+    }
+
+    .popup-content .form-actions {
+        flex-direction: row;
     }
 }
