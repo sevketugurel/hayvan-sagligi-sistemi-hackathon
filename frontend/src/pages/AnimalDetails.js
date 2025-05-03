@@ -5,6 +5,10 @@ import '../styles/AnimalDetails.css';
 import '../styles/LabTests.css';
 import '../styles/Prescriptions.css';
 import AddVaccineModal from '../components/AddVaccineModal';
+import AddConditionModal from '../components/AddConditionModal';
+import AddClinicalExamModal from '../components/AddClinicalExamModal';
+import AddDiseaseHistoryModal from '../components/AddDiseaseHistoryModal';
+import AddNoteModal from '../components/AddNoteModal';
 
 // Import a default profile image
 import defaultAnimalImage from '../assets/images/default-animal.png';
@@ -27,6 +31,10 @@ const AnimalDetails = () => {
   const [expandedTests, setExpandedTests] = useState({});
   const [showNewPrescriptionModal, setShowNewPrescriptionModal] = useState(false);
   const [showNewVaccineModal, setShowNewVaccineModal] = useState(false);
+  const [showNewConditionModal, setShowNewConditionModal] = useState(false);
+  const [showNewClinicalExamModal, setShowNewClinicalExamModal] = useState(false);
+  const [showNewDiseaseHistoryModal, setShowNewDiseaseHistoryModal] = useState(false);
+  const [showAddNoteModal, setShowAddNoteModal] = useState(false);
   const [newPrescription, setNewPrescription] = useState({
     medications: [""],
     duration: "",
@@ -689,7 +697,15 @@ const AnimalDetails = () => {
       case 'clinicalExam':
         return (
           <div className="section-content clinical-exam">
-            <h3>Klinik İncelemeler</h3>
+            <div className="section-header-with-button">
+              <h3>Klinik İncelemeler</h3>
+              <button 
+                className="add-new-button"
+                onClick={() => setShowNewClinicalExamModal(true)}
+              >
+                <span className="add-icon">+</span> Yeni İnceleme Ekle
+              </button>
+            </div>
             {sectionData.map(exam => (
               <div key={exam.id} className="clinical-exam-item">
                 <div className="exam-header">
@@ -749,7 +765,15 @@ const AnimalDetails = () => {
       case 'diseaseHistory':
         return (
           <div className="section-content disease-history">
-            <h3>Hastalık Geçmişi</h3>
+            <div className="section-header-with-button">
+              <h3>Hastalık Geçmişi</h3>
+              <button 
+                className="add-new-button"
+                onClick={() => setShowNewDiseaseHistoryModal(true)}
+              >
+                <i className="add-icon">+</i> Yeni Hastalık Geçmişi
+              </button>
+            </div>
             
             <div className="disease-content-wrapper">
               <div className="disease-list">
@@ -2018,7 +2042,15 @@ const AnimalDetails = () => {
       case 'allergies':
         return (
           <div className="section-content allergies">
-            <h3>Alerjiler / Kronik Rahatsızlıklar</h3>
+            <div className="section-header-with-button">
+              <h3>Alerjiler / Kronik Rahatsızlıklar</h3>
+              <button 
+                className="add-new-button"
+                onClick={() => setShowNewConditionModal(true)}
+              >
+                <i className="add-icon">+</i> Yeni Durum Ekle
+              </button>
+            </div>
             <div className="prescriptions-container">
               {sectionData.map(condition => (
                 <div key={condition.id} className={`prescription-card ${condition.type === 'chronic' ? 'chronic-card' : 'allergy-card'}`}>
@@ -2105,6 +2137,13 @@ const AnimalDetails = () => {
                 <i className="no-data-icon">⚠️</i>
                 <p>Kayıtlı alerji veya kronik rahatsızlık bulunmamaktadır.</p>
               </div>
+            )}
+            
+            {showNewConditionModal && (
+              <AddConditionModal 
+                onClose={() => setShowNewConditionModal(false)} 
+                onSave={handleAddCondition} 
+              />
             )}
           </div>
         );
@@ -2581,7 +2620,12 @@ const AnimalDetails = () => {
       case 'notes':
         return (
           <div className="section-content notes">
-            <h3>Notlar</h3>
+            <div className="section-header-with-button">
+              <h3>Notlar</h3>
+              <button className="add-button" onClick={() => setShowAddNoteModal(true)}>
+                <i className="add-icon">➕</i> Yeni Not Ekle
+              </button>
+            </div>
             <div className="prescriptions-container">
               {sectionData.map(note => (
                 <div key={note.id} className="prescription-card note-card">
@@ -2626,6 +2670,13 @@ const AnimalDetails = () => {
                 <i className="no-data-icon">📝</i>
                 <p>Kayıtlı not bulunmamaktadır.</p>
               </div>
+            )}
+            
+            {showAddNoteModal && (
+              <AddNoteModal
+                onClose={() => setShowAddNoteModal(false)}
+                onSave={handleAddNote}
+              />
             )}
           </div>
         );
@@ -2952,6 +3003,73 @@ const AnimalDetails = () => {
     setShowNewVaccineModal(false);
   };
 
+  const handleAddCondition = (newCondition) => {
+    // In a real app, you would send this data to your backend API
+    console.log('New condition added:', newCondition);
+    
+    // For demo purposes, we'll just add it to the local state
+    setSectionData([newCondition, ...sectionData]);
+    
+    // Close the modal
+    setShowNewConditionModal(false);
+  };
+  
+  const handleAddClinicalExam = (newExam) => {
+    // In a real app, you would send this data to your backend API
+    console.log('New clinical exam added:', newExam);
+    
+    // Map backend fields to frontend fields
+    const formattedExam = {
+      id: newExam.id,
+      date: new Date().toLocaleDateString('tr-TR', {day: '2-digit', month: '2-digit', year: 'numeric'}),
+      vet: newExam.veterinerAdSoyad || "Dr. Mehmet Yılmaz",
+      anamnesis: newExam.anamnez,
+      complaints: newExam.sikayetler,
+      findings: newExam.bulgular,
+      primaryDiagnosis: newExam.birincilTani,
+      secondaryDiagnosis: newExam.ikincilTani,
+      procedures: newExam.islemler
+    };
+    
+    // For demo purposes, we'll just add it to the local state
+    setSectionData([formattedExam, ...sectionData]);
+    
+    // Close the modal
+    setShowNewClinicalExamModal(false);
+  };
+
+  const handleAddDiseaseHistory = (newDiseaseHistory) => {
+    // In a real app, you would send this data to your backend API
+    console.log('New disease history added:', newDiseaseHistory);
+    
+    // Format the disease history data
+    const formattedDiseaseHistory = {
+      ...newDiseaseHistory,
+      diagnosisDate: new Date(newDiseaseHistory.diagnosisDate).toLocaleDateString('tr-TR', {day: '2-digit', month: '2-digit', year: 'numeric'}),
+      endDate: newDiseaseHistory.endDate ? new Date(newDiseaseHistory.endDate).toLocaleDateString('tr-TR', {day: '2-digit', month: '2-digit', year: 'numeric'}) : ''
+    };
+    
+    // For demo purposes, we'll just add it to the local state
+    setSectionData([formattedDiseaseHistory, ...sectionData]);
+    
+    // Close the modal
+    setShowNewDiseaseHistoryModal(false);
+  };
+
+  const handleAddNote = (newNote) => {
+    // Format the note date to display format
+    const formattedNote = {
+      ...newNote,
+      date: newNote.date.split('-').reverse().join('.')
+    };
+    
+    // Add the new note to the sectionData
+    setSectionData([formattedNote, ...sectionData]);
+    
+    // Close the modal
+    setShowAddNoteModal(false);
+  };
+
   if (isLoading && !animal) {
     return (
       <>
@@ -3127,6 +3245,24 @@ const AnimalDetails = () => {
           </button>
         </div>
       </div>
+
+      {/* Modals */}
+      {showNewClinicalExamModal && (
+        <AddClinicalExamModal
+          onClose={() => setShowNewClinicalExamModal(false)}
+          onSave={handleAddClinicalExam}
+          veterinerId={1} // Mock veteriner ID
+          veterinerName="Dr. Mehmet Yılmaz" // Mock veteriner name
+          randevuId={null} // This would be provided if adding from a randevu
+        />
+      )}
+
+      {showNewDiseaseHistoryModal && (
+        <AddDiseaseHistoryModal
+          onClose={() => setShowNewDiseaseHistoryModal(false)}
+          onSave={handleAddDiseaseHistory}
+        />
+      )}
     </>
   );
 };
