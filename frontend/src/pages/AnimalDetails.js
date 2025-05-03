@@ -1,0 +1,2284 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import NavBar from '../components/NavBar';
+import '../styles/AnimalDetails.css';
+import '../styles/LabTests.css';
+import '../styles/Prescriptions.css';
+import AddVaccineModal from '../components/AddVaccineModal';
+
+// Import a default profile image
+import defaultAnimalImage from '../assets/images/default-animal.png';
+
+const AnimalDetails = () => {
+  const { animalId } = useParams();
+  const navigate = useNavigate();
+  const [animal, setAnimal] = useState(null);
+  const [activeSection, setActiveSection] = useState(null);
+  const [sectionData, setSectionData] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [alerts, setAlerts] = useState([]);
+  const [tooltipData, setTooltipData] = useState(null);
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const tooltipRef = useRef(null);
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [showDayModal, setShowDayModal] = useState(false);
+  const [activeImagingType, setActiveImagingType] = useState('');
+  const [expandedTests, setExpandedTests] = useState({});
+  const [showNewPrescriptionModal, setShowNewPrescriptionModal] = useState(false);
+  const [showNewVaccineModal, setShowNewVaccineModal] = useState(false);
+  const [newPrescription, setNewPrescription] = useState({
+    medications: [""],
+    duration: "",
+    prescribedBy: "",
+    veterinaryClinic: "Hayat Veteriner Kliniği"
+  });
+
+  // Toggle test category expansion
+  const toggleTestCategory = (category) => {
+    setExpandedTests(prev => ({
+      ...prev,
+      [category]: !prev[category]
+    }));
+  };
+
+  // Fetch animal details on component mount
+  useEffect(() => {
+    const fetchAnimalDetails = () => {
+      setIsLoading(true);
+      setError('');
+
+      // Mock API call (replace with actual API in production)
+      setTimeout(() => {
+        // Mock data
+        const mockAnimal = {
+          id: parseInt(animalId),
+          name: 'Max',
+          age: 3,
+          breed: 'Golden Retriever',
+          chipNo: '123456789012345',
+          species: 'Köpek',
+          gender: 'Erkek',
+          neutered: true,
+          hospitalStatus: 'Taburcu', // or "Yatılı Tedavi"
+          birthDate: '10.05.2020',
+          color: 'Sarı',
+          weight: '32.5 kg',
+          height: '60 cm',
+          owner: {
+            id: 1,
+            name: 'Ahmet Yılmaz',
+            phone: '05551234567'
+          },
+          profileImage: null, // In real app, this would be a URL
+          alerts: [
+            { id: 1, type: 'allergy', severity: 'high', message: 'Tavuk proteinine karşı alerjisi bulunmaktadır!' },
+            { id: 2, type: 'vaccine', severity: 'medium', message: 'Kuduz aşısı 15 gün içinde yapılmalıdır.' },
+            { id: 3, type: 'chronic', severity: 'medium', message: 'Kronik böbrek yetmezliği - Düzenli kontrol gerekli' },
+            { id: 4, type: 'medication', severity: 'low', message: 'Antibiyotik tedavisi devam ediyor (5 gün kaldı).' }
+          ]
+        };
+
+        setAnimal(mockAnimal);
+        setAlerts(mockAnimal.alerts);
+        setIsLoading(false);
+      }, 1000);
+    };
+
+    fetchAnimalDetails();
+  }, [animalId]);
+
+  // Effect to set active imaging type when radiology section data changes
+  useEffect(() => {
+    if (activeSection === 'radiology' && sectionData && sectionData.length > 0) {
+      // Group imaging records by type
+      const groupedImaging = sectionData.reduce((groups, image) => {
+        const type = image.type;
+        if (!groups[type]) {
+          groups[type] = [];
+        }
+        groups[type].push(image);
+        return groups;
+      }, {});
+      
+      // Get unique imaging types
+      const imagingTypes = Object.keys(groupedImaging);
+      
+      // Set default active imaging type if needed
+      if (imagingTypes.length > 0 && (!activeImagingType || !imagingTypes.includes(activeImagingType))) {
+        setActiveImagingType(imagingTypes[0]);
+      }
+    }
+  }, [activeSection, sectionData, activeImagingType]);
+
+  // Function to handle button clicks for different sections
+  const handleSectionClick = (section) => {
+    setActiveSection(section);
+    fetchSectionData(section);
+  };
+
+  // Mock function to fetch data for different sections
+  const fetchSectionData = (section) => {
+    setIsLoading(true);
+
+    // Mock API call for section data
+    setTimeout(() => {
+      // Different mock data for each section
+      const mockData = {
+        clinicalExam: [
+          { 
+            id: 1, 
+            date: '10.07.2023', 
+            vet: 'Dr. Mehmet Yılmaz', 
+            anamnesis: 'Sahibi 3 gündür iştahsızlık ve enerji düşüklüğü olduğunu belirtti.',
+            complaints: 'İştahsızlık, halsizlik, aşırı su tüketimi',
+            findings: 'Hafif dehidrasyon belirtileri. Solunum ve nabız normal. Ateş yok. Oral mukozada hafif solukluk.',
+            primaryDiagnosis: 'Gastroenterit',
+            secondaryDiagnosis: 'Dehidrasyon',
+            procedures: 'Subkutan sıvı tedavisi, antiemetik enjeksiyon, probiotic verildi.'
+          },
+          { 
+            id: 2, 
+            date: '15.08.2023', 
+            vet: 'Dr. Ayşe Demir', 
+            anamnesis: 'Kontrol muayenesi. Sahibi dün akşamdan itibaren ishal şikayeti olduğunu belirtti.',
+            complaints: 'İshal, karın bölgesinde rahatsızlık',
+            findings: 'Hafif ishal şikayeti. Dehidrasyon yok. Abdominal bölgede hafif hassasiyet saptandı.',
+            primaryDiagnosis: 'Akut Gastrit',
+            secondaryDiagnosis: '',
+            procedures: 'Diyet önerildi, bağırsak florasını düzenleyici ilaçlar reçete edildi.'
+          },
+          { 
+            id: 3, 
+            date: '05.09.2023', 
+            vet: 'Dr. Mehmet Yılmaz', 
+            anamnesis: 'Yıllık sağlık kontrolü için geldi.',
+            complaints: 'Herhangi bir şikayet yok',
+            findings: 'Genel sağlık durumu iyi. Ağız içi kontrol yapıldı, diş taşları tespit edildi.',
+            primaryDiagnosis: 'Sağlıklı',
+            secondaryDiagnosis: 'Diş taşı birikimi',
+            procedures: 'Diş taşı temizliği önerildi, sonbahar aşıları yapıldı.'
+          }
+        ],
+        diseaseHistory: [
+          { 
+            id: 1, 
+            patientName: 'Max',
+            diseaseName: 'Akut Gastroenterit', 
+            diagnosisDate: '05.06.2022',
+            endDate: '15.06.2022', 
+            details: 'Şiddetli kusma ve ishal ile başvurdu. Kan testlerinde hafif elektrolitik dengesizlik tespit edildi.', 
+            treatment: 'Antibiyotik tedavisi (Amoksisilin), diyet düzenlemesi, IV sıvı tedavisi uygulandı.', 
+            hospitalized: true,
+            hospitalizationDays: 3,
+            status: 'İyileşti'
+          },
+          { 
+            id: 2, 
+            patientName: 'Max',
+            diseaseName: 'Otit', 
+            diagnosisDate: '20.03.2023',
+            endDate: '25.03.2023', 
+            details: 'Sol kulakta kaşıntı ve kızarıklık şikayeti. Kulak salgısı örneği alındı, malassezia tespit edildi.', 
+            treatment: 'Kulak damlaları (Gentamisin), oral antibiyotik', 
+            hospitalized: false,
+            hospitalizationDays: 0,
+            status: 'İyileşti'
+          },
+          { 
+            id: 3, 
+            patientName: 'Max',
+            diseaseName: 'Kronik Böbrek Yetmezliği', 
+            diagnosisDate: '10.05.2023',
+            endDate: '', 
+            details: 'Yaşa bağlı böbrek fonksiyon düşüklüğü. Kan üre ve kreatinin seviyelerinde artış gözlendi.', 
+            treatment: 'Özel diyet, periyodik subkutan sıvı tedavisi, fosfat bağlayıcılar', 
+            hospitalized: false,
+            hospitalizationDays: 0,
+            status: 'Devam Ediyor'
+          }
+        ],
+        appointments: [
+          { 
+            id: 1, 
+            date: '2023-10-15', 
+            time: '09:30', 
+            reason: 'Genel sağlık kontrolü', 
+            status: 'Tamamlandı',
+            type: 'examination',
+            notes: 'Rutin yıllık kontrol'
+          },
+          { 
+            id: 2, 
+            date: '2023-10-15', 
+            time: '14:15', 
+            reason: 'Kuduz Aşısı', 
+            status: 'Tamamlandı',
+            type: 'vaccine',
+            notes: 'Zorunlu aşı, sorunsuz uygulandı'
+          },
+          { 
+            id: 3, 
+            date: '2023-10-22', 
+            time: '11:00', 
+            reason: 'Deri problemleri', 
+            status: 'Tamamlandı',
+            type: 'examination',
+            notes: 'Sağ arka bacakta yoğun kaşıntı şikayeti'
+          },
+          { 
+            id: 4, 
+            date: '2023-10-29', 
+            time: '16:30', 
+            reason: 'Tedavi takibi', 
+            status: 'Tamamlandı',
+            type: 'treatment',
+            notes: 'Deri enfeksiyonu tedavisinin kontrolü'
+          },
+          { 
+            id: 5, 
+            date: '2023-11-05', 
+            time: '10:45', 
+            reason: 'Aşı - Köpek Gençlik Hastalığı', 
+            status: 'Tamamlandı',
+            type: 'vaccine',
+            notes: 'Yıllık aşı tekrarı'
+          },
+          { 
+            id: 6, 
+            date: '2023-11-10', 
+            time: '13:00', 
+            reason: 'Diş kontrolü', 
+            status: 'Tamamlandı',
+            type: 'examination',
+            notes: 'Diş taşı kontrolü ve temizliği'
+          },
+          { 
+            id: 7, 
+            date: '2023-11-17', 
+            time: '15:30', 
+            reason: 'İlaç tedavisi - Final', 
+            status: 'Tamamlandı',
+            type: 'treatment',
+            notes: 'Deri enfeksiyonu tedavisinin son aşaması'
+          },
+          { 
+            id: 8, 
+            date: '2023-11-20', 
+            time: '11:30', 
+            reason: 'Karma Aşı', 
+            status: 'Planlandı',
+            type: 'vaccine',
+            notes: 'Koruyucu karma aşı uygulaması'
+          },
+          { 
+            id: 9, 
+            date: '2023-11-25', 
+            time: '09:15', 
+            reason: 'Kan testi', 
+            status: 'Planlandı',
+            type: 'treatment',
+            notes: 'Rutin kan değerleri kontrolü'
+          },
+          { 
+            id: 10, 
+            date: '2023-12-05', 
+            time: '14:00', 
+            reason: 'Böbrek kontrol muayenesi', 
+            status: 'Planlandı',
+            type: 'examination',
+            notes: 'Kronik rahatsızlık takibi'
+          },
+          { 
+            id: 11, 
+            date: '2023-12-12', 
+            time: '16:45', 
+            reason: 'Ultrason', 
+            status: 'Planlandı',
+            type: 'treatment',
+            notes: 'Abdominal ultrason kontrolü'
+          },
+          { 
+            id: 12, 
+            date: '2023-12-15', 
+            time: '09:45', 
+            reason: '6 aylık kontrol', 
+            status: 'Planlandı',
+            type: 'examination',
+            notes: 'Genel durum değerlendirmesi'
+          },
+          { 
+            id: 13, 
+            date: '2023-12-23', 
+            time: '10:30', 
+            reason: 'Parazit ilacı', 
+            status: 'Planlandı',
+            type: 'treatment',
+            notes: 'Düzenli parazit koruma tedavisi'
+          }
+        ],
+        radiology: [
+          { 
+            id: 1, 
+            date: '15.08.2023', 
+            type: 'Röntgen', 
+            region: 'Toraks', 
+            findings: 'Akciğer ve kalp silueti normal. Patolojik bulgu saptanmadı.', 
+            image: 'xray-url.jpg',
+            notes: 'Rutin yıllık kontrol amaçlı çekildi.'
+          },
+          { 
+            id: 2, 
+            date: '16.08.2023', 
+            type: 'USG', 
+            region: 'Abdomen', 
+            findings: 'Hafif karaciğer büyümesi, diğer organlar normal görünümde.', 
+            image: 'ultrasound-url.jpg',
+            notes: 'Karaciğer enzim yüksekliği nedeniyle çekildi.'
+          },
+          { 
+            id: 3, 
+            date: '20.09.2023', 
+            type: 'EKG', 
+            region: 'Kardiyak', 
+            findings: 'Normal sinüs ritmi. Kalp hızı: 120 atım/dk. PR interval ve QRS kompleksi normal sınırlarda.', 
+            image: 'ekg-url.jpg',
+            notes: 'Pre-operatif değerlendirme için çekildi.'
+          },
+          { 
+            id: 4, 
+            date: '05.10.2023', 
+            type: 'BT', 
+            region: 'Baş', 
+            findings: 'Sağ kulak kanalında hafif inflamasyon. İç kulak yapıları normal.', 
+            image: 'ct-url.jpg',
+            notes: 'Tekrarlayan otit şikayeti nedeniyle yapıldı.'
+          },
+          { 
+            id: 5, 
+            date: '12.10.2023', 
+            type: 'EMR', 
+            region: 'Lumbosakral', 
+            findings: 'L4-L5 arasında hafif disk protrüzyonu. Spinal kord basısı yok.', 
+            image: 'mri-url.jpg',
+            notes: 'Arka ayak zayıflığı şikayeti için inceleme yapıldı.'
+          }
+        ],
+        labTests: [
+          { id: 1, date: '10.08.2023', test: 'Tam Kan Sayımı', results: 'Normal değerler', report: 'report-url.pdf' },
+          { id: 2, date: '10.08.2023', test: 'Karaciğer Fonksiyon Testleri', results: 'ALT hafif yüksek', report: 'report-url.pdf' }
+        ],
+        prescriptions: [
+          { 
+            id: 1, 
+            date: '15.08.2023', 
+            medications: [
+              'Amoksisilin 250mg Tablet (2x1)', 
+              'Probiyotik Süspansiyon (1x1)'
+            ], 
+            duration: '7 gün',
+            prescribedBy: 'Dr. Mehmet Yılmaz',
+            veterinaryClinic: 'Hayat Veteriner Kliniği'
+          },
+          { 
+            id: 2, 
+            date: '25.03.2023', 
+            medications: [
+              'Gentamisin Kulak Damlası (3x1)',
+              'Prednizolon 5mg Tablet (1x1, azalan dozda)'
+            ], 
+            duration: '5 gün',
+            prescribedBy: 'Dr. Ayşe Demir',
+            veterinaryClinic: 'Hayat Veteriner Kliniği'
+          },
+          { 
+            id: 3, 
+            date: '10.02.2023', 
+            medications: [
+              'Metronidazol 250mg Tablet (2x1)',
+              'Elektrolit Solüsyon (günde 2 kez, 10ml)',
+              'Karaciğer Desteği Şurup (1x1)'
+            ], 
+            duration: '10 gün',
+            prescribedBy: 'Dr. Mehmet Yılmaz',
+            veterinaryClinic: 'Hayat Veteriner Kliniği'
+          },
+          { 
+            id: 4, 
+            date: '05.01.2023', 
+            medications: [
+              'Meloksikam Enjeksiyon (tek doz)',
+              'Sefazolin 500mg Tablet (2x1)',
+              'Anti-enflamatuar Krem (2x1, lokal uygulama)'
+            ], 
+            duration: '7 gün',
+            prescribedBy: 'Dr. Ayşe Demir',
+            veterinaryClinic: 'Hayat Veteriner Kliniği'
+          }
+        ],
+        vaccinations: [
+          { id: 1, date: '10.05.2021', vaccine: 'Kuduz Aşısı', nextDue: '10.05.2022', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
+          { id: 2, date: '15.06.2022', vaccine: 'Kuduz Aşısı', nextDue: '15.06.2023', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
+          { id: 3, date: '20.07.2023', vaccine: 'Kuduz Aşısı', nextDue: '20.07.2024', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
+          { id: 4, date: '05.08.2022', vaccine: 'Köpek Gençlik Hastalığı Aşısı', nextDue: '05.08.2023', status: 'Tamamlandı', notes: 'Yıllık koruyucu aşı' },
+          { id: 5, date: '12.09.2023', vaccine: 'Karma Aşı (DHPP)', nextDue: '12.09.2024', status: 'Tamamlandı', notes: 'Distemper, Hepatit, Parvovirüs, Parainfluenza' },
+          { id: 6, date: '', vaccine: 'Lyme Hastalığı Aşısı', nextDue: '28.11.2023', status: 'Planlandı', notes: 'İlk kez uygulanacak' },
+          { id: 7, date: '', vaccine: 'Bordetella Aşısı', nextDue: '15.12.2023', status: 'Planlandı', notes: 'Kennel Cough (Köpek Öksürüğü) için' }
+        ],
+        allergies: [
+          { 
+            id: 1, 
+            type: 'allergy',
+            allergen: 'Tavuk proteini', 
+            severity: 'Orta', 
+            symptoms: 'Kaşıntı, kızarıklık, deri tahrişi, hafif şişlik', 
+            diagnosisDate: '15.06.2022',
+            diagnosedBy: 'Dr. Mehmet Yılmaz',
+            status: 'Aktif',
+            treatments: ['Hipoalerjenik diyet', 'Antihistamin (gerektiğinde)'],
+            notes: 'Gıda alerjisi, tavuk içeren mamalardan kaçınılmalı. Sığır ve kuzu proteini içeren diyetler tercih edilmeli.'
+          },
+          { 
+            id: 2, 
+            type: 'allergy',
+            allergen: 'Polen', 
+            severity: 'Hafif', 
+            symptoms: 'Hapşırma, gözlerde sulanma, burun akıntısı', 
+            diagnosisDate: '20.04.2023',
+            diagnosedBy: 'Dr. Ayşe Demir',
+            status: 'Mevsimsel',
+            treatments: ['Antihistamin (mevsimsel)', 'Göz damlaları'],
+            notes: 'Mevsimsel alerji, bahar aylarında belirgin. Semptomlar görüldüğünde ilaç tedavisi başlanmalı.'
+          },
+          {
+            id: 3,
+            type: 'chronic',
+            allergen: 'Kronik Böbrek Yetmezliği',
+            severity: 'Ciddi',
+            symptoms: 'Aşırı su tüketimi, sık idrara çıkma, iştah azalması, kilo kaybı',
+            diagnosisDate: '10.05.2023',
+            diagnosedBy: 'Dr. Mehmet Yılmaz',
+            status: 'Aktif - Takip Altında',
+            treatments: ['Özel renal diyet', 'Periyodik subkutan sıvı tedavisi', 'Fosfat bağlayıcılar'],
+            notes: 'Yaşa bağlı böbrek fonksiyon düşüklüğü. Kan üre ve kreatinin seviyelerinde artış gözlendi. 3 ayda bir kontrol önerilir.'
+          },
+          {
+            id: 4,
+            type: 'chronic',
+            allergen: 'Eklem Rahatsızlığı (Osteoartrit)',
+            severity: 'Orta',
+            symptoms: 'Hareketlerde kısıtlılık, eklem ağrısı, sabah tutukluğu',
+            diagnosisDate: '05.08.2023',
+            diagnosedBy: 'Dr. Ayşe Demir',
+            status: 'Aktif - Tedavi Altında',
+            treatments: ['Düşük doz NSAİD', 'Eklem desteği takviyesi', 'Kontrollü egzersiz'],
+            notes: 'Yaşa bağlı olarak özellikle arka bacak eklemlerinde gelişen osteoartrit. Aşırı aktiviteden kaçınılmalı, düzenli kısa yürüyüşler önerilir.'
+          }
+        ],
+        necropsy: [],
+        notes: [
+          { id: 1, date: '15.08.2023', author: 'Dr. Ayşe Demir', content: 'Hasta sahibi düzenli ilaç kullanımı konusunda tekrar bilgilendirildi. Antibiyotik tedavisinin tamamlanmasının önemini vurguladık. Hasta sahibi anlayış gösterdi ve geri kalan tedaviyi tamamlayacağını belirtti.' },
+          { id: 2, date: '25.09.2023', author: 'Dr. Mehmet Yılmaz', content: 'Yaşına göre iyi durumda. Kilo takibi önerildi. Mevcut diyetine devam etmesi gerektiği konusunda uyarıldı. Aylık tartım ve 3 ayda bir kontrol önerildi. Diyet programında herhangi bir değişiklik gerekmemektedir.' },
+          { id: 3, date: '10.10.2023', author: 'Dr. Ayşe Demir', content: 'Kronik böbrek rahatsızlığı için kontrol muayenesi yapıldı. Kan değerleri stabil seyrediyor. Mevcut tedaviye ve diyete devam edilmesi önerildi. Hasta sahibine sıvı tüketiminin önemi ve takibi hakkında bilgi verildi.' },
+          { id: 4, date: '05.11.2023', author: 'Dr. Mehmet Yılmaz', content: 'Yıllık aşı programı planlandı. Önceki aşı reaksiyonları olmadığı teyit edildi. Hasta sahibi, alerji durumunda görülebilecek semptomlar konusunda bilgilendirildi ve herhangi bir anormal durum gözlemlenmesi halinde hemen klinikle iletişime geçmesi önerildi.' }
+        ]
+      };
+
+      setSectionData(mockData[section] || []);
+      setIsLoading(false);
+    }, 500);
+  };
+
+  // Helper functions for calendar
+  const getMonthName = (month) => {
+    const months = [
+      'Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
+      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'
+    ];
+    return months[month];
+  };
+
+  const generateCalendarData = () => {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    
+    const calendarData = [];
+    
+    // Generate data for previous, current and next month
+    for (let monthOffset = 0; monthOffset < 3; monthOffset++) {
+      const month = (currentMonth + monthOffset) % 12;
+      const year = currentYear + Math.floor((currentMonth + monthOffset) / 12);
+      
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      
+      const daysInMonth = lastDay.getDate();
+      
+      // Adjust for Monday as first day of week (0 = Monday, 6 = Sunday)
+      let startingDayOfWeek = firstDay.getDay() - 1;
+      if (startingDayOfWeek === -1) startingDayOfWeek = 6; // Sunday becomes last day
+      
+      const monthData = {
+        month,
+        year,
+        name: getMonthName(month),
+        days: []
+      };
+      
+      // Add empty cells for days before the first day of the month
+      for (let i = 0; i < startingDayOfWeek; i++) {
+        monthData.days.push(null);
+      }
+      
+      // Add days of the month
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const dateString = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+        
+        // Find appointments for this date
+        const dayAppointments = sectionData.filter(app => app.date === dateString);
+        
+        // Count appointment types for this day
+        const examCount = dayAppointments.filter(app => app.type === 'examination').length;
+        const vaccineCount = dayAppointments.filter(app => app.type === 'vaccine').length;
+        const treatmentCount = dayAppointments.filter(app => app.type === 'treatment').length;
+        
+        monthData.days.push({
+          day,
+          date: dateString,
+          appointments: dayAppointments,
+          isToday: date.toDateString() === today.toDateString(),
+          counts: {
+            examination: examCount,
+            vaccine: vaccineCount,
+            treatment: treatmentCount,
+            total: dayAppointments.length
+          }
+        });
+      }
+      
+      calendarData.push(monthData);
+    }
+    
+    return calendarData;
+  };
+
+  const getAppointmentIcon = (type) => {
+    switch (type) {
+      case 'examination':
+        return '👨‍⚕️';
+      case 'vaccine':
+        return '💉';
+      case 'treatment':
+        return '💊';
+      default:
+        return '📅';
+    }
+  };
+
+  const getAppointmentColor = (type) => {
+    switch (type) {
+      case 'examination':
+        return 'examination-appointment';
+      case 'vaccine':
+        return 'vaccine-appointment';
+      case 'treatment':
+        return 'treatment-appointment';
+      default:
+        return '';
+    }
+  };
+
+  const handleAppointmentMouseEnter = (event, appointment) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setTooltipPosition({
+      x: rect.left + rect.width + 10,
+      y: rect.top
+    });
+    setTooltipData(appointment);
+  };
+
+  const handleAppointmentMouseLeave = () => {
+    setTooltipData(null);
+  };
+
+  const formatDateString = (dateStr) => {
+    const parts = dateStr.split('-');
+    return `${parts[2]}.${parts[1]}.${parts[0]}`;
+  };
+
+  const handleDayClick = (dayData) => {
+    if (dayData && dayData.appointments.length > 0) {
+      setSelectedDay(dayData);
+      setShowDayModal(true);
+    }
+  };
+
+  const closeDayModal = () => {
+    setShowDayModal(false);
+    setSelectedDay(null);
+  };
+
+  // Helper function to render section content based on active section
+  const renderSectionContent = () => {
+    if (!activeSection || !sectionData || sectionData.length === 0) {
+      return (
+        <div className="welcome-section">
+          <h3>Hasta Bilgileri</h3>
+          
+          {alerts && alerts.length > 0 ? (
+            <div className="alert-container">
+              <h4>Önemli Bilgiler ve Hatırlatmalar</h4>
+              {alerts.map(alert => (
+                <div key={alert.id} className={`alert-item alert-${alert.severity}`}>
+                  <div className="alert-icon">
+                    {alert.type === 'allergy' && '⚠️'}
+                    {alert.type === 'vaccine' && '💉'}
+                    {alert.type === 'chronic' && '🏥'}
+                    {alert.type === 'medication' && '💊'}
+                  </div>
+                  <div className="alert-message">{alert.message}</div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="no-data-message">Lütfen görüntülemek istediğiniz bölümü seçin.</p>
+          )}
+          
+          <div className="tip-container">
+            <p>Sol taraftaki menüden ilgili bölümü seçerek detaylı bilgileri görüntüleyebilirsiniz.</p>
+          </div>
+        </div>
+      );
+    }
+
+    // Render different content based on active section
+    switch (activeSection) {
+      case 'clinicalExam':
+        return (
+          <div className="section-content clinical-exam">
+            <h3>Klinik İncelemeler</h3>
+            {sectionData.map(exam => (
+              <div key={exam.id} className="clinical-exam-item">
+                <div className="exam-header">
+                  <span className="exam-date">{exam.date}</span>
+                  <span className="exam-vet">{exam.vet}</span>
+                </div>
+                
+                <div className="exam-details">
+                  <div className="exam-detail-row">
+                    <div className="detail-label">Anamnez:</div>
+                    <div className="detail-content">{exam.anamnesis}</div>
+                  </div>
+                  
+                  <div className="exam-detail-row">
+                    <div className="detail-label">Şikayetler:</div>
+                    <div className="detail-content">{exam.complaints}</div>
+                  </div>
+                  
+                  <div className="exam-detail-row">
+                    <div className="detail-label">Bulgular:</div>
+                    <div className="detail-content">{exam.findings}</div>
+                  </div>
+                  
+                  <div className="exam-diagnoses">
+                    <div className="exam-detail-row">
+                      <div className="detail-label">Birincil Tanı:</div>
+                      <div className="detail-content primary-diagnosis">{exam.primaryDiagnosis}</div>
+                    </div>
+                    
+                    {exam.secondaryDiagnosis && (
+                      <div className="exam-detail-row">
+                        <div className="detail-label">İkincil Tanı:</div>
+                        <div className="detail-content secondary-diagnosis">{exam.secondaryDiagnosis}</div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="exam-detail-row">
+                    <div className="detail-label">Yapılan İşlemler:</div>
+                    <div className="detail-content procedures">{exam.procedures}</div>
+                  </div>
+                </div>
+                
+                <div className="exam-actions">
+                  <button className="action-btn print-btn">
+                    <i className="print-icon">🖨️</i> Yazdır
+                  </button>
+                  <button className="action-btn detail-btn">
+                    <i className="detail-icon">🔍</i> Detaylar
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        );
+      
+      case 'diseaseHistory':
+        return (
+          <div className="section-content disease-history">
+            <h3>Hastalık Geçmişi</h3>
+            
+            <div className="disease-content-wrapper">
+              <div className="disease-list">
+                {sectionData.map(disease => (
+                  <div 
+                    id={`disease-${disease.id}`}
+                    key={disease.id} 
+                    className={`disease-item ${disease.status === 'Devam Ediyor' ? 'ongoing-disease' : ''}`}
+                  >
+                    <div className="disease-header">
+                      <div className="disease-title">
+                        <h4>{disease.diseaseName}</h4>
+                        <span className={`disease-status ${disease.status === 'İyileşti' ? 'recovered' : 'ongoing'}`}>
+                          {disease.status}
+                        </span>
+                      </div>
+                      <div className="disease-dates">
+                        <span className="diagnosis-date">
+                          <i className="date-icon">📅</i> Tanı: {disease.diagnosisDate}
+                        </span>
+                        {disease.endDate && (
+                          <span className="end-date">
+                            <i className="date-icon">✓</i> İyileşme: {disease.endDate}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="disease-content">
+                      <div className="disease-detail-row">
+                        <div className="detail-label">Detaylar:</div>
+                        <div className="detail-content">{disease.details}</div>
+                      </div>
+                      
+                      <div className="disease-detail-row">
+                        <div className="detail-label">Tedavi:</div>
+                        <div className="detail-content">{disease.treatment}</div>
+                      </div>
+                      
+                      <div className="disease-hospitalization">
+                        {disease.hospitalized ? (
+                          <div className="hospitalization-info">
+                            <i className="hospital-icon">🏥</i>
+                            <span>Hastanede yatış: <strong>{disease.hospitalizationDays} gün</strong></span>
+                          </div>
+                        ) : (
+                          <div className="hospitalization-info outpatient">
+                            <i className="outpatient-icon">🏠</i>
+                            <span>Ayakta tedavi edildi</span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="disease-actions">
+                      <button className="action-btn history-btn">
+                        <i className="history-icon">📋</i> Tedavi Geçmişi
+                      </button>
+                      <button className="action-btn lab-btn">
+                        <i className="lab-icon">🔬</i> Lab Sonuçları
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="timeline-wrapper">
+                <div className="timeline-line"></div>
+                
+                {sectionData
+                  .sort((a, b) => new Date(a.diagnosisDate.split('.').reverse().join('-')) - new Date(b.diagnosisDate.split('.').reverse().join('-')))
+                  .map((disease, index) => (
+                    <div 
+                      key={disease.id}
+                      className="timeline-node"
+                      style={{ 
+                        top: `${10 + (index * 120)}px`,
+                        '--node-index': index 
+                      }}
+                      onClick={() => document.getElementById(`disease-${disease.id}`).scrollIntoView({ behavior: 'smooth' })}
+                    >
+                      <div className={`timeline-marker ${disease.status === 'Devam Ediyor' ? 'marker-ongoing' : 'marker-complete'}`}></div>
+                      <div className="timeline-node-label">{disease.diseaseName}</div>
+                      <div className="timeline-node-date">{disease.diagnosisDate}</div>
+                    </div>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        );
+      
+      case 'appointments':
+        return (
+          <div className="section-content appointments">
+            <h3>Randevu Takip Sistemi</h3>
+            
+            <div className="appointments-legend">
+              <div className="legend-item">
+                <span className="legend-icon examination-icon">👨‍⚕️</span>
+                <span className="legend-text">Muayene</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-icon vaccine-icon">💉</span>
+                <span className="legend-text">Aşı</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-icon treatment-icon">💊</span>
+                <span className="legend-text">Tedavi</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-status completed">Tamamlandı</span>
+              </div>
+              <div className="legend-item">
+                <span className="legend-status planned">Planlandı</span>
+              </div>
+            </div>
+            
+            <div className="appointments-container">
+              <div className="upcoming-appointments">
+                <h4>Yaklaşan Randevular</h4>
+                {sectionData.filter(app => app.status === 'Planlandı').length > 0 ? (
+                  <div className="appointment-list">
+                    {sectionData
+                      .filter(app => app.status === 'Planlandı')
+                      .sort((a, b) => new Date(a.date) - new Date(b.date))
+                      .map(appointment => (
+                        <div key={appointment.id} className="appointment-item upcoming">
+                          <div className="appointment-date">
+                            <div className="appointment-day">
+                              {new Date(appointment.date).getDate()}
+                            </div>
+                            <div className="appointment-month">
+                              {getMonthName(new Date(appointment.date).getMonth()).substring(0, 3)}
+                            </div>
+                          </div>
+                          <div className="appointment-details">
+                            <div className="appointment-title">
+                              <span className={`appointment-type-icon ${getAppointmentColor(appointment.type)}`}>
+                                {getAppointmentIcon(appointment.type)}
+                              </span>
+                              <span className="appointment-reason">{appointment.reason}</span>
+                            </div>
+                            <div className="appointment-time-status">
+                              <span className="appointment-time-display">{appointment.time}</span>
+                              <span className={`appointment-status ${appointment.status.toLowerCase()}`}>
+                                {appointment.status}
+                              </span>
+                            </div>
+                            {appointment.notes && (
+                              <div className="appointment-notes">
+                                <span className="appointment-notes-text">{appointment.notes}</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="appointment-actions">
+                            <button className="small-action-btn edit-btn" title="Düzenle">
+                              <i className="edit-icon">✏️</i>
+                            </button>
+                            <button className="small-action-btn cancel-btn" title="İptal Et">
+                              <i className="cancel-icon">❌</i>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <p className="no-data-message">Yaklaşan randevu bulunmamaktadır.</p>
+                )}
+              </div>
+              
+              <div className="past-appointments">
+                <h4>Geçmiş Randevular</h4>
+                {sectionData.filter(app => app.status === 'Tamamlandı').length > 0 ? (
+                  <div className="appointment-list">
+                    {sectionData
+                      .filter(app => app.status === 'Tamamlandı')
+                      .sort((a, b) => new Date(b.date) - new Date(a.date)) // Sort descending for past appointments
+                      .map(appointment => (
+                        <div key={appointment.id} className="appointment-item past">
+                          <div className="appointment-date past-date">
+                            <div className="appointment-day">
+                              {new Date(appointment.date).getDate()}
+                            </div>
+                            <div className="appointment-month">
+                              {getMonthName(new Date(appointment.date).getMonth()).substring(0, 3)}
+                            </div>
+                          </div>
+                          <div className="appointment-details">
+                            <div className="appointment-title">
+                              <span className={`appointment-type-icon ${getAppointmentColor(appointment.type)}`}>
+                                {getAppointmentIcon(appointment.type)}
+                              </span>
+                              <span className="appointment-reason">{appointment.reason}</span>
+                            </div>
+                            <div className="appointment-time-status">
+                              <span className="appointment-time-display">{appointment.time}</span>
+                              <span className={`appointment-status ${appointment.status.toLowerCase()}`}>
+                                {appointment.status}
+                              </span>
+                            </div>
+                            {appointment.notes && (
+                              <div className="appointment-notes">
+                                <span className="appointment-notes-text">{appointment.notes}</span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="appointment-actions">
+                            <button className="small-action-btn detail-btn" title="Detaylar">
+                              <i className="detail-icon">🔍</i>
+                            </button>
+                            <button className="small-action-btn report-btn" title="Rapor">
+                              <i className="report-icon">📋</i>
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                ) : (
+                  <p className="no-data-message">Geçmiş randevu bulunmamaktadır.</p>
+                )}
+              </div>
+            </div>
+            
+            {showDayModal && selectedDay && (
+              <div className="day-modal-overlay" onClick={closeDayModal}>
+                <div className="day-modal-content" onClick={e => e.stopPropagation()}>
+                  <div className="day-modal-header">
+                    <h3>{formatDateString(selectedDay.date)} Tarihli Randevular</h3>
+                    <button className="day-modal-close" onClick={closeDayModal}>×</button>
+                  </div>
+                  <div className="day-modal-body">
+                    {selectedDay.appointments.length > 0 ? (
+                      selectedDay.appointments
+                        .sort((a, b) => a.time.localeCompare(b.time))
+                        .map(app => (
+                          <div 
+                            key={app.id} 
+                            className={`day-modal-appointment ${app.status === 'Tamamlandı' ? 'completed' : 'planned'}`}
+                          >
+                            <div className={`appointment-type-indicator ${getAppointmentColor(app.type)}`}>
+                              <span className="appointment-time">{app.time}</span>
+                            </div>
+                            <div className="modal-appointment-details">
+                              <div className="modal-appointment-title">
+                                <span className="appointment-icon">{getAppointmentIcon(app.type)}</span>
+                                <h4>{app.reason}</h4>
+                              </div>
+                              <div className="modal-appointment-info">
+                                <span className={`appointment-status ${app.status.toLowerCase()}`}>
+                                  {app.status}
+                                </span>
+                                <span className="appointment-type">
+                                  {app.type === 'examination' && 'Muayene'}
+                                  {app.type === 'vaccine' && 'Aşı'}
+                                  {app.type === 'treatment' && 'Tedavi'}
+                                </span>
+                              </div>
+                              {app.notes && (
+                                <div className="modal-appointment-notes">
+                                  {app.notes}
+                                </div>
+                              )}
+                            </div>
+                            <div className="modal-appointment-actions">
+                              <button className="modal-action-btn" title="Düzenle">
+                                <i className="edit-icon">✏️</i>
+                              </button>
+                              <button className="modal-action-btn" title="Detaylar">
+                                <i className="details-icon">🔍</i>
+                              </button>
+                            </div>
+                          </div>
+                        ))
+                    ) : (
+                      <p className="no-appointments">Bu tarihte randevu bulunmamaktadır.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      
+      case 'radiology':
+        // Group imaging records by type
+        const groupedImaging = sectionData.reduce((groups, image) => {
+          const type = image.type;
+          if (!groups[type]) {
+            groups[type] = [];
+          }
+          groups[type].push(image);
+          return groups;
+        }, {});
+        
+        // Get unique imaging types
+        const imagingTypes = Object.keys(groupedImaging);
+        
+        // Set active imaging type if needed (moved useEffect logic to direct conditional)
+        if (imagingTypes.length > 0 && (!activeImagingType || !imagingTypes.includes(activeImagingType))) {
+          // Using setTimeout to avoid state updates during render
+          setTimeout(() => {
+            setActiveImagingType(imagingTypes[0]);
+          }, 0);
+        }
+        
+        return (
+          <div className="section-content radiology">
+            <h3>Radyolojik Görüntüleme</h3>
+            
+            <div className="imaging-tabs">
+              {imagingTypes.map(type => (
+                <button 
+                  key={type}
+                  className={`imaging-tab-btn ${type === activeImagingType ? 'active' : ''}`}
+                  onClick={() => setActiveImagingType(type)}
+                >
+                  {type}
+                </button>
+              ))}
+            </div>
+            
+            <div className="imaging-content">
+              {activeImagingType && groupedImaging[activeImagingType]?.map(imaging => (
+                <div key={imaging.id} className="imaging-item">
+                  <div className="imaging-header">
+                    <span className="imaging-date">{imaging.date}</span>
+                    <span className="imaging-region">{imaging.region}</span>
+                  </div>
+                  
+                  <div className="imaging-container">
+                    <div className="imaging-details">
+                      <div className="imaging-findings">
+                        <h4>Bulgular</h4>
+                        <p>{imaging.findings}</p>
+                      </div>
+                      
+                      {imaging.notes && (
+                        <div className="imaging-notes">
+                          <h4>Notlar</h4>
+                          <p>{imaging.notes}</p>
+                        </div>
+                      )}
+                      
+                      <div className="imaging-actions">
+                        <button className="action-btn download-btn">
+                          <i className="download-icon">⬇️</i> İndir
+                        </button>
+                        <button className="action-btn print-btn">
+                          <i className="print-icon">🖨️</i> Yazdır
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div className="imaging-thumbnail">
+                      <img src={imaging.image || defaultAnimalImage} alt={`${imaging.type} görüntüsü`} />
+                      <button className="view-full-btn">Tam Boyut Görüntüle</button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      
+      case 'labTests':
+        return (
+          <div className="section-content lab-tests">
+            <h3>Laboratuvar Testleri</h3>
+            
+            <div className="lab-test-categories">
+              <div className={`lab-test-category hemogram ${expandedTests.hemogram ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('hemogram')}>
+                  Hemogram Sonuçları
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className="lab-test-grid">
+                    <div className="lab-test-param">
+                      <span className="param-name">RBC:</span>
+                      <span className="param-value">5.5 x10^6/μL</span>
+                      <span className="param-range">4.8-6.5 x10^6/μL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">HGB:</span>
+                      <span className="param-value">15.2 g/dL</span>
+                      <span className="param-range">13.5-17.5 g/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">WBC:</span>
+                      <span className="param-value">8.4 x10^3/μL</span>
+                      <span className="param-range">5.5-12.5 x10^3/μL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">HCT:</span>
+                      <span className="param-value">42%</span>
+                      <span className="param-range">37-52%</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">PCV:</span>
+                      <span className="param-value">42%</span>
+                      <span className="param-range">37-52%</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">MCH:</span>
+                      <span className="param-value">27.5 pg</span>
+                      <span className="param-range">26-34 pg</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">MCHC:</span>
+                      <span className="param-value">34.2 g/dL</span>
+                      <span className="param-range">32-36 g/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">PLT:</span>
+                      <span className="param-value">250 x10^3/μL</span>
+                      <span className="param-range">150-400 x10^3/μL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">MPV:</span>
+                      <span className="param-value">10.2 fL</span>
+                      <span className="param-range">8.0-12.0 fL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">PCT:</span>
+                      <span className="param-value">0.27%</span>
+                      <span className="param-range">0.15-0.40%</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">EO:</span>
+                      <span className="param-value">3%</span>
+                      <span className="param-range">1-5%</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">MONO:</span>
+                      <span className="param-value">4%</span>
+                      <span className="param-range">2-8%</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">NEU:</span>
+                      <span className="param-value">62%</span>
+                      <span className="param-range">50-70%</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">LYM:</span>
+                      <span className="param-value">31%</span>
+                      <span className="param-range">25-35%</span>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 10.08.2023</div>
+                </div>
+              </div>
+              
+              <div className={`lab-test-category biochemistry ${expandedTests.biochemistry ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('biochemistry')}>
+                  Biyokimya Sonuçları
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className="lab-test-grid">
+                    <div className="lab-test-param">
+                      <span className="param-name">ALT:</span>
+                      <span className="param-value"><span className="abnormal-high">75 U/L</span></span>
+                      <span className="param-range">10-55 U/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">AST:</span>
+                      <span className="param-value">42 U/L</span>
+                      <span className="param-range">10-50 U/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">ALP:</span>
+                      <span className="param-value">90 U/L</span>
+                      <span className="param-range">20-150 U/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">GGT:</span>
+                      <span className="param-value">8 U/L</span>
+                      <span className="param-range">0-10 U/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">TBIL:</span>
+                      <span className="param-value">0.5 mg/dL</span>
+                      <span className="param-range">0.1-0.6 mg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">DBIL:</span>
+                      <span className="param-value">0.2 mg/dL</span>
+                      <span className="param-range">0.0-0.3 mg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">ÜRE:</span>
+                      <span className="param-value">32 mg/dL</span>
+                      <span className="param-range">15-40 mg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">KREATİNİN:</span>
+                      <span className="param-value">1.1 mg/dL</span>
+                      <span className="param-range">0.5-1.5 mg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">SDMA:</span>
+                      <span className="param-value">12 μg/dL</span>
+                      <span className="param-range">0-14 μg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Glukoz:</span>
+                      <span className="param-value">95 mg/dL</span>
+                      <span className="param-range">70-110 mg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Laktat:</span>
+                      <span className="param-value">1.8 mmol/L</span>
+                      <span className="param-range">0.5-2.0 mmol/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Trigliserid:</span>
+                      <span className="param-value">80 mg/dL</span>
+                      <span className="param-range">20-150 mg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Total Protein:</span>
+                      <span className="param-value">6.5 g/dL</span>
+                      <span className="param-range">5.5-7.5 g/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Albümin:</span>
+                      <span className="param-value">3.2 g/dL</span>
+                      <span className="param-range">2.7-3.8 g/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Globülin:</span>
+                      <span className="param-value">3.3 g/dL</span>
+                      <span className="param-range">2.8-3.8 g/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Na:</span>
+                      <span className="param-value">145 mmol/L</span>
+                      <span className="param-range">138-150 mmol/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">K:</span>
+                      <span className="param-value">4.2 mmol/L</span>
+                      <span className="param-range">3.5-5.0 mmol/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Cl:</span>
+                      <span className="param-value">105 mmol/L</span>
+                      <span className="param-range">98-110 mmol/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">P:</span>
+                      <span className="param-value">3.8 mg/dL</span>
+                      <span className="param-range">2.5-5.0 mg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Mg:</span>
+                      <span className="param-value">2.1 mg/dL</span>
+                      <span className="param-range">1.7-2.5 mg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Amilaz:</span>
+                      <span className="param-value">450 U/L</span>
+                      <span className="param-range">200-800 U/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Lipaz:</span>
+                      <span className="param-value">120 U/L</span>
+                      <span className="param-range">50-250 U/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">TLI:</span>
+                      <span className="param-value">28 μg/L</span>
+                      <span className="param-range">8.5-35 μg/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">PLI:</span>
+                      <span className="param-value">195 μg/L</span>
+                      <span className="param-range">0-200 μg/L</span>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 10.08.2023</div>
+                </div>
+              </div>
+
+              <div className={`lab-test-category urine ${expandedTests.urine ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('urine')}>
+                  İdrar Analizi
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className={`lab-test-subcategory ${expandedTests.urinePhysical ? '' : 'collapsed'}`}>
+                    <h5 onClick={() => toggleTestCategory('urinePhysical')}>Fiziksel Analiz</h5>
+                    <div className="lab-test-subcategory-content">
+                      <div className="lab-test-grid">
+                        <div className="lab-test-param">
+                          <span className="param-name">Renk:</span>
+                          <span className="param-value">Sarı</span>
+                          <span className="param-range">Sarı-Amber</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Koku:</span>
+                          <span className="param-value">Normal</span>
+                          <span className="param-range">-</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Yoğunluk:</span>
+                          <span className="param-value">1.020</span>
+                          <span className="param-range">1.015-1.045</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className={`lab-test-subcategory ${expandedTests.urineChemical ? '' : 'collapsed'}`}>
+                    <h5 onClick={() => toggleTestCategory('urineChemical')}>Kimyasal Analiz</h5>
+                    <div className="lab-test-subcategory-content">
+                      <div className="lab-test-grid">
+                        <div className="lab-test-param">
+                          <span className="param-name">pH:</span>
+                          <span className="param-value">6.5</span>
+                          <span className="param-range">5.5-7.0</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Protein:</span>
+                          <span className="param-value">Negatif</span>
+                          <span className="param-range">Negatif</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Glukoz:</span>
+                          <span className="param-value">Negatif</span>
+                          <span className="param-range">Negatif</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Keton:</span>
+                          <span className="param-value">Negatif</span>
+                          <span className="param-range">Negatif</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Bilirubin:</span>
+                          <span className="param-value">Negatif</span>
+                          <span className="param-range">Negatif</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className={`lab-test-subcategory ${expandedTests.urineMicroscopic ? '' : 'collapsed'}`}>
+                    <h5 onClick={() => toggleTestCategory('urineMicroscopic')}>Mikroskobik Analiz</h5>
+                    <div className="lab-test-subcategory-content">
+                      <div className="lab-test-grid">
+                        <div className="lab-test-param">
+                          <span className="param-name">Eritrosit:</span>
+                          <span className="param-value">0-2 /HPF</span>
+                          <span className="param-range">0-5 /HPF</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Lökosit:</span>
+                          <span className="param-value">0-3 /HPF</span>
+                          <span className="param-range">0-5 /HPF</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Kristal:</span>
+                          <span className="param-value">Yok</span>
+                          <span className="param-range">-</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Epitel Hücresi:</span>
+                          <span className="param-value">Nadir</span>
+                          <span className="param-range">-</span>
+                        </div>
+                        <div className="lab-test-param">
+                          <span className="param-name">Bakteriyel Varlık:</span>
+                          <span className="param-value">Yok</span>
+                          <span className="param-range">-</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 15.08.2023</div>
+                </div>
+              </div>
+
+              <div className={`lab-test-category feces ${expandedTests.feces ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('feces')}>
+                  Dışkı Analizleri
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className="lab-test-grid">
+                    <div className="lab-test-param">
+                      <span className="param-name">Parazit Yumurtası:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Parazit Larvası:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Protozoon Varlığı:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Flotasyon Sonucu:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Sedimentasyon Sonucu:</span>
+                      <span className="param-value">Normal</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Giardia:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Rotavirüs:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Coronavirüs:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">E. Coli Test Kiti:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Direkt Smear Sonucu:</span>
+                      <span className="param-value">Normal mikrofloraya ait mikroorganizmalar gözlendi.</span>
+                      <span className="param-range">-</span>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 16.08.2023</div>
+                </div>
+              </div>
+              
+              <div className={`lab-test-category serology ${expandedTests.serology ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('serology')}>
+                  Serolojik Testler
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className="lab-test-grid">
+                    <div className="lab-test-param wide">
+                      <span className="param-name">ELISA:</span>
+                      <span className="param-value">Negatif (Leishmania)</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">IFAT:</span>
+                      <span className="param-value">Negatif (Ehrlichia)</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Aglütinasyon:</span>
+                      <span className="param-value">Negatif (Brucella)</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Presipitasyon:</span>
+                      <span className="param-value">Negatif</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 20.08.2023</div>
+                </div>
+              </div>
+              
+              <div className={`lab-test-category microbiology ${expandedTests.microbiology ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('microbiology')}>
+                  Mikrobiyolojik Kültür
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className="lab-test-grid">
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Mac Conkey:</span>
+                      <span className="param-value">Üreme yok</span>
+                      <span className="param-range">-</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">Blood Agar:</span>
+                      <span className="param-value">Normal deri flora bakterileri izole edildi</span>
+                      <span className="param-range">-</span>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 25.08.2023</div>
+                </div>
+              </div>
+              
+              <div className={`lab-test-category molecular ${expandedTests.molecular ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('molecular')}>
+                  Moleküler Tanı
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className="lab-test-grid">
+                    <div className="lab-test-param wide">
+                      <span className="param-name">PCR:</span>
+                      <span className="param-value">Negatif (Parvovirüs)</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                    <div className="lab-test-param wide">
+                      <span className="param-name">RT-PCR:</span>
+                      <span className="param-value">Negatif (Distemper)</span>
+                      <span className="param-range">Negatif</span>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 25.08.2023</div>
+                </div>
+              </div>
+              
+              <div className={`lab-test-category cytology ${expandedTests.cytology ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('cytology')}>
+                  Sitoloji ve Histopatoloji
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className={`lab-test-subcategory ${expandedTests.cytologyResults ? '' : 'collapsed'}`}>
+                    <h5 onClick={() => toggleTestCategory('cytologyResults')}>Sitoloji</h5>
+                    <div className="lab-test-subcategory-content">
+                      <div className="lab-test-grid">
+                        <div className="lab-test-param wide">
+                          <span className="param-name">Aspirat (Kutanöz):</span>
+                          <span className="param-value">Herhangi bir malignite/enfeksiyon bulgusuna rastlanmadı. Normal deri hücreleri gözlendi.</span>
+                          <span className="param-range">-</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className={`lab-test-subcategory ${expandedTests.histologyResults ? '' : 'collapsed'}`}>
+                    <h5 onClick={() => toggleTestCategory('histologyResults')}>Histopatoloji</h5>
+                    <div className="lab-test-subcategory-content">
+                      <div className="lab-test-param wide">
+                        <span className="param-name">Biyopsi (Deri):</span>
+                        <span className="param-value">İnceleme sonucu herhangi bir patolojik bulguya rastlanmadı.</span>
+                        <span className="param-range">-</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="cytology-images">
+                    <div className="cytology-image">
+                      <img src={defaultAnimalImage} alt="Sitoloji görüntüsü" />
+                      <div className="image-caption">Aspirat sitolojisi - 25.08.2023</div>
+                    </div>
+                    <div className="cytology-image">
+                      <img src={defaultAnimalImage} alt="Histopatoloji görüntüsü" />
+                      <div className="image-caption">Histopatoloji - 25.08.2023</div>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 25.08.2023</div>
+                </div>
+              </div>
+              
+              <div className={`lab-test-category hormone ${expandedTests.hormone ? '' : 'collapsed'}`}>
+                <h4 onClick={() => toggleTestCategory('hormone')}>
+                  Hormon Testleri
+                </h4>
+                <div className="lab-test-category-content">
+                  <div className="lab-test-grid">
+                    <div className="lab-test-param">
+                      <span className="param-name">T3:</span>
+                      <span className="param-value">1.2 nmol/L</span>
+                      <span className="param-range">0.8-2.1 nmol/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">T4:</span>
+                      <span className="param-value">32 nmol/L</span>
+                      <span className="param-range">15-45 nmol/L</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">TSH:</span>
+                      <span className="param-value">0.3 ng/mL</span>
+                      <span className="param-range">0.1-0.5 ng/mL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Kortizol:</span>
+                      <span className="param-value">4.2 μg/dL</span>
+                      <span className="param-range">1.0-6.0 μg/dL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Östradiol:</span>
+                      <span className="param-value">25 pg/mL</span>
+                      <span className="param-range">Erkek: &lt;30 pg/mL</span>
+                    </div>
+                    <div className="lab-test-param">
+                      <span className="param-name">Progesteron:</span>
+                      <span className="param-value">0.5 ng/mL</span>
+                      <span className="param-range">Erkek: &lt;1.0 ng/mL</span>
+                    </div>
+                  </div>
+                  <div className="lab-test-date">Test Tarihi: 01.09.2023</div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="test-actions">
+              <button className="action-btn print-report">
+                <i className="print-icon">🖨️</i> Tüm Raporu Yazdır
+              </button>
+              <button className="action-btn export-report">
+                <i className="export-icon">⬇️</i> PDF Olarak İndir
+              </button>
+              <button className="action-btn add-new-test">
+                <i className="add-icon">➕</i> Yeni Test Ekle
+              </button>
+            </div>
+          </div>
+        );
+      
+      case 'prescriptions':
+        return (
+          <div className="section-content prescriptions">
+            <div className="section-header-with-button">
+              <h3>Geçmiş Reçeteler</h3>
+              <button className="add-new-button" onClick={() => setShowNewPrescriptionModal(true)}>
+                <i className="add-icon">➕</i> Yeni Reçete Ekle
+              </button>
+            </div>
+            <div className="prescriptions-container">
+              {sectionData.map(prescription => (
+                <div key={prescription.id} className="prescription-card">
+                  <div className="prescription-header">
+                    <div className="prescription-date-container">
+                      <i className="prescription-icon">📋</i>
+                      <span className="prescription-date">{prescription.date}</span>
+                    </div>
+                    <span className="prescription-duration">
+                      <i className="duration-icon">⏱️</i> {prescription.duration}
+                    </span>
+                  </div>
+                  
+                  <div className="prescription-content">
+                    <h4>İlaçlar</h4>
+                    <div className="medications-list">
+                      {prescription.medications.map((med, index) => (
+                        <div key={index} className="medication-item">
+                          <i className="medication-icon">{
+                            med.toLowerCase().includes('tablet') ? '💊' : 
+                            med.toLowerCase().includes('şurup') ? '🧪' :
+                            med.toLowerCase().includes('damla') ? '💧' : 
+                            med.toLowerCase().includes('enjeksiyon') ? '💉' : 
+                            med.toLowerCase().includes('krem') ? '🧴' : '💊'
+                          }</i>
+                          <span className="medication-name">{med}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="prescription-actions">
+                    <button className="prescription-btn print-btn">
+                      <i className="print-icon">🖨️</i> Yazdır
+                    </button>
+                    <button className="prescription-btn details-btn">
+                      <i className="details-icon">🔍</i> Detaylar
+                    </button>
+                    <button className="prescription-btn copy-btn">
+                      <i className="copy-icon">📋</i> Kopyala
+                    </button>
+                    <button className="prescription-btn renew-btn">
+                      <i className="renew-icon">🔄</i> Yenile
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {sectionData.length === 0 && (
+              <div className="no-prescriptions">
+                <i className="no-data-icon">📋</i>
+                <p>Kayıtlı reçete bulunmamaktadır.</p>
+              </div>
+            )}
+
+            {/* Yeni Reçete Ekleme Modal */}
+            {showNewPrescriptionModal && (
+              <div className="modal-overlay">
+                <div className="modal-content prescription-modal">
+                  <div className="modal-header">
+                    <h3>Yeni Reçete Ekle</h3>
+                    <button className="close-modal-btn" onClick={() => setShowNewPrescriptionModal(false)}>✖</button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="form-group">
+                      <label>Tedavi Süresi:</label>
+                      <input 
+                        type="text" 
+                        placeholder="Örn: 7 gün" 
+                        value={newPrescription.duration}
+                        onChange={(e) => setNewPrescription({...newPrescription, duration: e.target.value})}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>Hekim:</label>
+                      <input 
+                        type="text" 
+                        placeholder="Reçeteyi yazan hekim" 
+                        value={newPrescription.prescribedBy}
+                        onChange={(e) => setNewPrescription({...newPrescription, prescribedBy: e.target.value})}
+                      />
+                    </div>
+                    
+                    <div className="form-group">
+                      <label>İlaçlar:</label>
+                      {newPrescription.medications.map((med, index) => (
+                        <div key={index} className="medication-input-group">
+                          <input
+                            type="text"
+                            placeholder="Örn: Amoksisilin 250mg Tablet (2x1)"
+                            value={med}
+                            onChange={(e) => {
+                              const updatedMeds = [...newPrescription.medications];
+                              updatedMeds[index] = e.target.value;
+                              setNewPrescription({...newPrescription, medications: updatedMeds});
+                            }}
+                          />
+                          {index === newPrescription.medications.length - 1 ? (
+                            <button 
+                              className="add-item-btn" 
+                              onClick={() => setNewPrescription({
+                                ...newPrescription, 
+                                medications: [...newPrescription.medications, ""]
+                              })}
+                            >
+                              <i>➕</i>
+                            </button>
+                          ) : (
+                            <button 
+                              className="remove-item-btn" 
+                              onClick={() => {
+                                const updatedMeds = [...newPrescription.medications];
+                                updatedMeds.splice(index, 1);
+                                setNewPrescription({...newPrescription, medications: updatedMeds});
+                              }}
+                            >
+                              <i>✖</i>
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button className="cancel-btn" onClick={() => setShowNewPrescriptionModal(false)}>İptal</button>
+                    <button className="save-btn" onClick={handleAddPrescription}>Kaydet</button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      
+      case 'vaccinations':
+        // Planlanmış ve tamamlanmış aşıları ayır
+        const plannedVaccinations = sectionData.filter(vacc => vacc.status !== 'Tamamlandı');
+        const completedVaccinations = sectionData.filter(vacc => vacc.status === 'Tamamlandı');
+        
+        // Sıralamayı tarih bazında yap
+        completedVaccinations.sort((a, b) => new Date(b.date.split('.').reverse().join('-')) - new Date(a.date.split('.').reverse().join('-')));
+        plannedVaccinations.sort((a, b) => new Date(a.nextDue.split('.').reverse().join('-')) - new Date(b.nextDue.split('.').reverse().join('-')));
+        
+        // Tüm aşıları birleştir, planlanmışlar önce gelsin
+        const orderedVaccinations = [...plannedVaccinations, ...completedVaccinations];
+        
+        return (
+          <div className="section-content vaccinations">
+            <div className="vaccinations-header">
+              <h3>Aşı Takip Sistemi</h3>
+              <button 
+                className="add-vaccine-button" 
+                onClick={() => setShowNewVaccineModal(true)}
+              >
+                <i className="add-icon">➕</i> Yeni Aşı Ekle
+              </button>
+            </div>
+            
+            <div className="vaccinations-container">
+              {orderedVaccinations.map(vaccination => (
+                <div key={vaccination.id} className={`vaccination-card ${vaccination.status === 'Tamamlandı' ? 'completed' : 'planned'}`}>
+                  <div className="vaccination-header">
+                    <div className="vaccination-date-container">
+                      <div className="date-icon">📋</div>
+                      <div className="vaccination-date">
+                        {vaccination.status === 'Tamamlandı' 
+                          ? vaccination.date 
+                          : vaccination.nextDue}
+                      </div>
+                    </div>
+                    <div className="vaccination-duration">
+                      <div className="duration-icon">⏱️</div>
+                      <div className="duration-text">
+                        {vaccination.status === 'Tamamlandı' 
+                          ? 'Geçerlilik: 1 yıl'
+                          : 'Planlanmış'}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="vaccination-content">
+                    <h4>Aşılar</h4>
+                    <div className="vaccination-items">
+                      <div className="vaccination-item">
+                        <div className="item-icon">💉</div>
+                        <div className="item-name">{vaccination.vaccine}</div>
+                      </div>
+                      {vaccination.notes && (
+                        <div className="vaccination-item">
+                          <div className="item-icon">📝</div>
+                          <div className="item-name">{vaccination.notes}</div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="vaccination-actions">
+                    <button className="action-btn yazdır-btn">
+                      <div className="action-icon">🖨️</div>
+                      <div className="action-text">Yazdır</div>
+                    </button>
+                    <button className="action-btn detaylar-btn">
+                      <div className="action-icon">🔍</div>
+                      <div className="action-text">Detaylar</div>
+                    </button>
+                    {vaccination.status !== 'Tamamlandı' && (
+                      <button className="action-btn yenile-btn">
+                        <div className="action-icon">🔄</div>
+                        <div className="action-text">Randevu Al</div>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {sectionData.length === 0 && (
+              <div className="no-vaccinations">
+                <i className="no-data-icon">💉</i>
+                <p>Kayıtlı aşı bulunmamaktadır.</p>
+              </div>
+            )}
+
+            {showNewVaccineModal && (
+              <AddVaccineModal 
+                onClose={() => setShowNewVaccineModal(false)} 
+                onSave={handleAddVaccine} 
+              />
+            )}
+          </div>
+        );
+      
+      case 'allergies':
+        return (
+          <div className="section-content allergies">
+            <h3>Alerjiler / Kronik Rahatsızlıklar</h3>
+            <div className="prescriptions-container">
+              {sectionData.map(condition => (
+                <div key={condition.id} className={`prescription-card ${condition.type === 'chronic' ? 'chronic-card' : 'allergy-card'}`}>
+                  <div className="prescription-header">
+                    <div className="prescription-date-container">
+                      <i className="prescription-icon">
+                        {condition.type === 'allergy' ? '⚠️' : '🏥'}
+                      </i>
+                      <span className="prescription-date">{condition.allergen}</span>
+                    </div>
+                    <span className={`prescription-duration severity-${condition.severity.toLowerCase()}`}>
+                      <i className="duration-icon">🔍</i> {condition.severity}
+                    </span>
+                  </div>
+                  
+                  <div className="prescription-content">
+                    <h4>Bilgiler</h4>
+                    <div className="medications-list">
+                      <div className="medication-item">
+                        <i className="medication-icon">📅</i>
+                        <span className="medication-name">Tanı Tarihi: {condition.diagnosisDate}</span>
+                      </div>
+                      <div className="medication-item">
+                        <i className="medication-icon">👨‍⚕️</i>
+                        <span className="medication-name">Tanı Koyan: {condition.diagnosedBy}</span>
+                      </div>
+                      <div className="medication-item">
+                        <i className="medication-icon">🔄</i>
+                        <span className="medication-name">Durum: {condition.status}</span>
+                      </div>
+                      <div className="medication-item symptoms-item">
+                        <i className="medication-icon">🤒</i>
+                        <span className="medication-name">Belirtiler: {condition.symptoms}</span>
+                      </div>
+                    </div>
+
+                    <h4>Tedavi</h4>
+                    <div className="medications-list">
+                      {condition.treatments.map((treatment, index) => (
+                        <div key={index} className="medication-item">
+                          <i className="medication-icon">{
+                            treatment.toLowerCase().includes('diyet') ? '🍽️' : 
+                            treatment.toLowerCase().includes('ilaç') || treatment.toLowerCase().includes('antihistamin') ? '💊' :
+                            treatment.toLowerCase().includes('damla') ? '💧' : 
+                            treatment.toLowerCase().includes('sıvı') ? '💉' : 
+                            treatment.toLowerCase().includes('egzersiz') ? '🏃' : '💊'
+                          }</i>
+                          <span className="medication-name">{treatment}</span>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    {condition.notes && (
+                      <>
+                        <h4>Notlar</h4>
+                        <div className="medication-item notes-item">
+                          <i className="medication-icon">📝</i>
+                          <span className="medication-name">{condition.notes}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                  
+                  <div className="prescription-actions">
+                    <button className="prescription-btn print-btn">
+                      <i className="print-icon">🖨️</i> Yazdır
+                    </button>
+                    <button className="prescription-btn details-btn">
+                      <i className="details-icon">🔍</i> Detaylar
+                    </button>
+                    <button className="prescription-btn copy-btn">
+                      <i className="copy-icon">📋</i> Kopyala
+                    </button>
+                    <button className="prescription-btn renew-btn">
+                      <i className="renew-icon">🔄</i> Güncelle
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {sectionData.length === 0 && (
+              <div className="no-prescriptions">
+                <i className="no-data-icon">⚠️</i>
+                <p>Kayıtlı alerji veya kronik rahatsızlık bulunmamaktadır.</p>
+              </div>
+            )}
+          </div>
+        );
+      
+      case 'necropsy':
+        return (
+          <div className="section-content necropsy">
+            <h3>Nekropsi Bulguları</h3>
+            {sectionData.length === 0 ? (
+              <p>Nekropsi bulgusu bulunamadı.</p>
+            ) : (
+              sectionData.map(necropsy => (
+                <div key={necropsy.id} className="necropsy-item">
+                  <div className="necropsy-header">
+                    <span className="necropsy-date">{necropsy.date}</span>
+                    <span className="necropsy-vet">{necropsy.vet}</span>
+                  </div>
+                  <div className="necropsy-findings">{necropsy.findings}</div>
+                </div>
+              ))
+            )}
+          </div>
+        );
+      
+      case 'notes':
+        return (
+          <div className="section-content notes">
+            <h3>Notlar</h3>
+            <div className="prescriptions-container">
+              {sectionData.map(note => (
+                <div key={note.id} className="prescription-card note-card">
+                  <div className="prescription-header">
+                    <div className="prescription-date-container">
+                      <i className="prescription-icon">📝</i>
+                      <span className="prescription-date">{note.date}</span>
+                    </div>
+                    <span className="prescription-duration">
+                      <i className="duration-icon">👨‍⚕️</i> {note.author}
+                    </span>
+                  </div>
+                  
+                  <div className="prescription-content">
+                    <h4>Not İçeriği</h4>
+                    <div className="medication-item notes-item">
+                      <i className="medication-icon">📋</i>
+                      <span className="medication-name">{note.content}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="prescription-actions">
+                    <button className="prescription-btn print-btn">
+                      <i className="print-icon">🖨️</i> Yazdır
+                    </button>
+                    <button className="prescription-btn details-btn">
+                      <i className="details-icon">🔍</i> Detaylar
+                    </button>
+                    <button className="prescription-btn copy-btn">
+                      <i className="copy-icon">📋</i> Kopyala
+                    </button>
+                    <button className="prescription-btn renew-btn">
+                      <i className="renew-icon">✏️</i> Düzenle
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            {sectionData.length === 0 && (
+              <div className="no-prescriptions">
+                <i className="no-data-icon">📝</i>
+                <p>Kayıtlı not bulunmamaktadır.</p>
+              </div>
+            )}
+          </div>
+        );
+      
+      default:
+        return (
+          <div className="no-data-message">
+            <p>Seçilen bölüm için veri bulunamadı.</p>
+          </div>
+        );
+    }
+  };
+
+  // Handle adding a new prescription
+  const handleAddPrescription = () => {
+    // Validate form inputs
+    if (newPrescription.medications.some(med => !med) || !newPrescription.duration || !newPrescription.prescribedBy) {
+      alert("Lütfen tüm alanları doldurun.");
+      return;
+    }
+
+    // Filter out any empty medication entries (shouldn't happen due to validation but just in case)
+    const filteredMedications = newPrescription.medications.filter(med => med.trim() !== "");
+    
+    // Get current date in DD.MM.YYYY format
+    const today = new Date();
+    const formattedDate = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth() + 1).toString().padStart(2, '0')}.${today.getFullYear()}`;
+    
+    // Create new prescription object
+    const newPrescriptionObj = {
+      id: Date.now(), // Generate a unique ID using timestamp
+      date: formattedDate,
+      medications: filteredMedications,
+      duration: newPrescription.duration,
+      prescribedBy: newPrescription.prescribedBy,
+      veterinaryClinic: newPrescription.veterinaryClinic
+    };
+    
+    // Add the new prescription to sectionData
+    setSectionData([newPrescriptionObj, ...sectionData]);
+    
+    // Reset form and close modal
+    setNewPrescription({
+      medications: [""],
+      duration: "",
+      prescribedBy: "",
+      veterinaryClinic: "Hayat Veteriner Kliniği"
+    });
+    setShowNewPrescriptionModal(false);
+  };
+
+  // Handle adding a new vaccine
+  const handleAddVaccine = (newVaccine) => {
+    // Format date to DD.MM.YYYY
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}.${date.getFullYear()}`;
+    };
+
+    const formattedVaccine = {
+      ...newVaccine,
+      id: Date.now(), // Generate a temporary ID
+      date: formatDate(newVaccine.date),
+      nextDue: newVaccine.nextDueDate ? formatDate(newVaccine.nextDueDate) : '',
+      status: newVaccine.status
+    };
+
+    // Update the section data with the new vaccination
+    const updatedVaccinations = [formattedVaccine, ...sectionData];
+    setSectionData(updatedVaccinations);
+    setShowNewVaccineModal(false);
+  };
+
+  if (isLoading && !animal) {
+    return (
+      <>
+        <NavBar />
+        <div className="loading-container">
+          <div className="loading-spinner"></div>
+          <p>Hayvan bilgileri yükleniyor...</p>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <NavBar />
+        <div className="error-container">
+          <h2>Hata</h2>
+          <p>{error}</p>
+          <button onClick={() => navigate('/vet-dashboard')}>Dashboard'a Dön</button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <>
+      <NavBar />
+      <div className="animal-details-container">
+        <div className="animal-profile-section">
+          <div className="profile-left">
+            <div className="profile-image-container">
+              <img 
+                src={animal?.profileImage || defaultAnimalImage} 
+                alt={`${animal?.name || 'Hayvan'} profil fotoğrafı`} 
+                className="profile-image"
+              />
+            </div>
+          </div>
+          
+          <div className="profile-right">
+            <div className="animal-info">
+              <h2 className="animal-name">{animal?.name}</h2>
+              <div className="info-grid">
+                <div className="info-item">
+                  <span className="info-label">Yaş:</span>
+                  <span className="info-value">{animal?.age} yaş</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Irk:</span>
+                  <span className="info-value">{animal?.breed}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Cinsiyet:</span>
+                  <span className="info-value">{animal?.gender}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Kısırlık Durumu:</span>
+                  <span className="info-value">{animal?.neutered ? 'Kısırlaştırılmış' : 'Kısırlaştırılmamış'}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Boy:</span>
+                  <span className="info-value">{animal?.height}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Kilo:</span>
+                  <span className="info-value">{animal?.weight}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Çip No:</span>
+                  <span className="info-value">{animal?.chipNo}</span>
+                </div>
+                <div className="info-item">
+                  <span className="info-label">Hospit Durumu:</span>
+                  <span className={`info-value ${animal?.hospitalStatus === 'Yatılı Tedavi' ? 'hospitalized' : ''}`}>
+                    {animal?.hospitalStatus}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="animal-details-content">
+          <div className="details-sidebar">
+            <div className="sidebar-buttons">
+              <button 
+                className={`sidebar-btn ${activeSection === 'clinicalExam' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('clinicalExam')}
+              >
+                Klinik İnceleme
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'diseaseHistory' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('diseaseHistory')}
+              >
+                Hastalık Geçmişi
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'appointments' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('appointments')}
+              >
+                Randevu Takip Sistemi
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'radiology' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('radiology')}
+              >
+                Radyolojik Görüntüleme
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'labTests' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('labTests')}
+              >
+                Lab Testleri/Sonuçları
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'prescriptions' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('prescriptions')}
+              >
+                Reçete
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'vaccinations' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('vaccinations')}
+              >
+                Aşılar
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'allergies' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('allergies')}
+              >
+                Alerji/Kronik Rahatsızlık
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'necropsy' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('necropsy')}
+              >
+                Nekropsi Bulguları
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'notes' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('notes')}
+              >
+                Not
+              </button>
+            </div>
+          </div>
+          <div className="details-content">
+            {isLoading && activeSection ? (
+              <div className="loading-section">
+                <div className="loading-spinner"></div>
+                <p>Bilgiler yükleniyor...</p>
+              </div>
+            ) : (
+              renderSectionContent()
+            )}
+          </div>
+        </div>
+
+        <div className="back-button-container">
+          <button 
+            className="back-button" 
+            onClick={() => navigate(-1)}
+          >
+            Geri Dön
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default AnimalDetails; 

@@ -9,12 +9,24 @@ body {
   font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f6f8fa;
 }
 
 .App {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Standard page container to ensure consistent dimensions across all pages */
+.page-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px 60px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  min-height: 600px;
 }
 
 /* Import Bootstrap if needed */
@@ -52,5 +64,20 @@ body {
   }
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Responsive design for page container */
+@media screen and (max-width: 1240px) {
+  .page-container {
+    max-width: 95%;
+    padding: 20px 50px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .page-container {
+    margin: 20px auto;
+    padding: 15px 30px;
   }
 }

@@ -1,0 +1,504 @@
+/* Prescriptions Styles */
+.prescription-page {
+  composes: page-container from '../App.css';
+}
+
+.prescriptions-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 0 15px;
+}
+
+.prescription-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: calc(50% - 10px);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-top: 5px solid #4a90e2;
+}
+
+.prescription-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.prescription-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background-color: #f7f9fc;
+  border-bottom: 1px solid #eaecef;
+}
+
+.prescription-date-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prescription-icon, .duration-icon {
+  font-size: 1.2rem;
+}
+
+.prescription-date {
+  font-weight: bold;
+  color: #3a5a78;
+  font-size: 1.1rem;
+}
+
+.prescription-duration {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.prescription-content {
+  padding: 15px;
+}
+
+.prescription-content h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #3a5a78;
+  border-bottom: 2px solid #eaecef;
+  padding-bottom: 8px;
+}
+
+.medications-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.medication-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+.medication-item:hover {
+  background-color: #e9ecef;
+}
+
+.medication-icon {
+  font-size: 1.3rem;
+}
+
+.medication-name {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  flex: 1;
+  color: #343a40;
+}
+
+.prescription-actions {
+  display: flex;
+  padding: 15px;
+  gap: 10px;
+  border-top: 1px solid #eaecef;
+  background-color: #f7f9fc;
+}
+
+.prescription-btn {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.print-btn {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.print-btn:hover {
+  background-color: #bae7ff;
+}
+
+.details-btn {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.details-btn:hover {
+  background-color: #d9f7be;
+}
+
+.copy-btn {
+  background-color: #f0f7ff;
+  color: #2f54eb;
+}
+
+.copy-btn:hover {
+  background-color: #d6e4ff;
+}
+
+.renew-btn {
+  background-color: #fff7e6;
+  color: #fa8c16;
+  margin-left: auto;
+}
+
+/* Ensure proper spacing in the prescription actions */
+.prescription-actions .copy-btn {
+  margin-right: auto;
+}
+
+.renew-btn:hover {
+  background-color: #ffe7ba;
+}
+
+.no-prescriptions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  margin-top: 20px;
+  border: 2px dashed #dee2e6;
+}
+
+.no-data-icon {
+  font-size: 3rem;
+  color: #adb5bd;
+  margin-bottom: 15px;
+}
+
+.no-prescriptions p {
+  font-size: 1.1rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+/* Additional styles for Allergies/Chronic Conditions */
+.allergy-card {
+  border-top: 5px solid #f5222d; /* Red color for allergies */
+}
+
+.chronic-card {
+  border-top: 5px solid #722ed1; /* Purple color for chronic conditions */
+}
+
+.symptoms-item {
+  background-color: #fff7e6;
+  border-left: 3px solid #fa8c16;
+}
+
+.notes-item {
+  background-color: #f9f0ff;
+  border-left: 3px solid #722ed1;
+}
+
+.severity-hafif {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.severity-orta {
+  background-color: #fff7e6;
+  color: #fa8c16;
+}
+
+.severity-ciddi {
+  background-color: #fff1f0;
+  color: #f5222d;
+}
+
+/* Notes card styles */
+.note-card {
+  border-top: 5px solid #1890ff; /* Blue color for notes */
+}
+
+.note-card .notes-item {
+  background-color: #f0f5ff;
+  border-left: 3px solid #1890ff;
+}
+
+.note-card .prescription-duration {
+  background-color: #f0f5ff;
+  color: #1890ff;
+}
+
+.note-card .renew-btn {
+  background-color: #f0f5ff;
+  color: #1890ff;
+}
+
+.note-card .renew-btn:hover {
+  background-color: #d6e4ff;
+}
+
+/* Section header with add button */
+.section-header-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header-with-button h3 {
+  margin: 0;
+}
+
+.add-new-button {
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.add-new-button:hover {
+  background-color: #096dd9;
+}
+
+.add-icon {
+  font-size: 1rem;
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.prescription-modal {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eaecef;
+  background-color: #f7f9fc;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #3a5a78;
+}
+
+.close-modal-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: #6c757d;
+}
+
+.close-modal-btn:hover {
+  color: #343a40;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 15px 20px;
+  gap: 10px;
+  border-top: 1px solid #eaecef;
+  background-color: #f7f9fc;
+}
+
+/* Form styles */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #3a5a78;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.form-group input:focus {
+  border-color: #1890ff;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.medication-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.add-item-btn, .remove-item-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1rem;
+}
+
+.add-item-btn {
+  background-color: #f6ffed;
+  color: #52c41a;
+}
+
+.add-item-btn:hover {
+  background-color: #d9f7be;
+}
+
+.remove-item-btn {
+  background-color: #fff1f0;
+  color: #f5222d;
+}
+
+.remove-item-btn:hover {
+  background-color: #ffccc7;
+}
+
+.cancel-btn, .save-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  border: none;
+}
+
+.cancel-btn {
+  background-color: #f0f0f0;
+  color: #595959;
+}
+
+.cancel-btn:hover {
+  background-color: #d9d9d9;
+}
+
+.save-btn {
+  background-color: #1890ff;
+  color: white;
+}
+
+.save-btn:hover {
+  background-color: #096dd9;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .prescription-card {
+    width: 100%;
+  }
+  
+  .prescription-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .prescription-duration {
+    align-self: flex-start;
+  }
+  
+  .prescription-actions {
+    flex-wrap: wrap;
+  }
+  
+  .prescription-btn {
+    flex: 1;
+    justify-content: center;
+  }
+  
+  .renew-btn {
+    margin-left: 0;
+  }
+  
+  .section-header-with-button {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .add-new-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .modal-content {
+    width: 95%;
+  }
+  
+  .modal-body {
+    padding: 15px;
+  }
+  
+  .medication-input-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .add-item-btn, .remove-item-btn {
+    align-self: flex-end;
+    margin-top: -40px;
+    margin-right: 5px;
+  }
+} 
