@@ -9,15 +9,11 @@ com/hayvansaglik/yonetim/payload/request/SignupRequest.class
 com/hayvansaglik/yonetim/repository/RoleRepository.class
 com/hayvansaglik/yonetim/HayvanSaglikApplication.class
 com/hayvansaglik/yonetim/repository/UserRepository.class
-com/hayvansaglik/yonetim/payload/response/JwtAuthResponse.class
 com/hayvansaglik/yonetim/security/JwtAuthenticationEntryPoint.class
 com/hayvansaglik/yonetim/model/Role$ERole.class
-com/hayvansaglik/yonetim/controller/DbTestController.class
-com/hayvansaglik/yonetim/security/CustomUserDetailsService.class
 com/hayvansaglik/yonetim/controller/TestController.class
 com/hayvansaglik/yonetim/security/JwtTokenProvider.class
 com/hayvansaglik/yonetim/payload/request/LoginRequest.class
-com/hayvansaglik/yonetim/controller/BasicDbTestController.class
 com/hayvansaglik/yonetim/security/UserPrincipal.class
 com/hayvansaglik/yonetim/security/JwtAuthenticationFilter.class
 com/hayvansaglik/yonetim/controller/AuthController.class

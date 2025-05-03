@@ -35,9 +35,8 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/noauth/**").permitAll()
-                .requestMatchers("/public-db-test").permitAll()
-                .requestMatchers("/basic-db-test").permitAll()
+                .requestMatchers("/api/test/all").permitAll()
+                .requestMatchers("/api/test/public-db-test").permitAll()
                 .anyRequest().authenticated()
             );
         
