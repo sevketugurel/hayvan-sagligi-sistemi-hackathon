@@ -1,0 +1,103 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    width: 100%;
+    background-color: #ffffff;
+}
+
+.header-box {
+    border: 1px solid #000;
+    padding: 10px 15px;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.vet-info-box {
+    width: 25%;
+    font-size: 12px;
+}
+
+.clinic-title-box {
+    width: 45%;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.location-weather-box {
+    width: 25%;
+    text-align: center;
+    font-size: 12px;
+}
+
+.header-box p {
+    margin: 0;
+    padding: 2px 0;
+}
+
+.vet-info {
+    width: 25%;
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.vet-info h3 {
+    margin-top: 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #eee;
+    color: #2c3e50;
+}
+
+.vet-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.clinic-title {
+    text-align: center;
+    flex: 1;
+}
+
+.clinic-title h1 {
+    margin: 0;
+    color: #3498db;
+    font-size: 24px;
+}
+
+.clinic-title p {
+    margin: 5px 0 0;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+.location-weather {
+    width: 25%;
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    text-align: right;
+}
+
+.location-weather h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #2c3e50;
+    font-size: 16px;
+}
+
+.location-weather p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.location,
+.weather {
+    margin-bottom: 10px;
+}

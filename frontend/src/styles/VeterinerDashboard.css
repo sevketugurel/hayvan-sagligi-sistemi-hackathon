@@ -1,0 +1,1117 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    height: 100%;
+}
+
+.veteriner-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Header Stili - daha kompakt hale getirme */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 15px;
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+    border-bottom: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Kutuları kaldırıp daha modern bir tasarım kullanıyorum */
+.header-box {
+    border: none;
+    padding: 10px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: transparent;
+}
+
+/* Veteriner bilgileri kısmı */
+.vet-info-box {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 15px;
+}
+
+.vet-info-content {
+    margin-bottom: 5px;
+}
+
+.vet-info-content p {
+    margin: 2px 0;
+}
+
+/* Header içindeki metin boyutlarını küçültme */
+.vet-name {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2px !important;
+}
+
+.vet-title {
+    font-size: 12px;
+    color: #555;
+}
+
+.vet-id {
+    font-size: 11px;
+    color: #777;
+}
+
+/* Klinik adı kısmı */
+.clinic-title-box {
+    width: 40%;
+    text-align: center;
+    padding: 0 10px;
+}
+
+/* Klinik adını büyültüyorum */
+.clinic-title {
+    font-size: 22px;
+    font-weight: bold;
+    color: #2d5986;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin: 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Lokasyon/Hava durumu kısmı */
+.location-weather-box {
+    width: 30%;
+    text-align: right;
+    padding-right: 15px;
+}
+
+/* Lokasyon/Hava durumu boyutunu küçültme */
+.location {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 2px !important;
+}
+
+.weather {
+    font-size: 12px;
+    color: #555;
+}
+
+/* Çıkış yapma butonu için yeni stiller */
+.logout-button {
+    margin-top: 5px;
+    padding: 6px 12px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+}
+
+.logout-button:hover {
+    background-color: #c82333;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Paneller Konteyneri */
+.panels-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    padding: 15px;
+    gap: 15px;
+    background-color: #f8f9fa;
+    height: calc(100vh - 90px);
+    /* Header yüksekliğini çıkar */
+}
+
+/* Panel Ortak Stili */
+.panel {
+    background-color: #fff;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.left-panel {
+    width: 25%;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    height: 100%;
+}
+
+.center-panel {
+    width: 50%;
+    overflow: hidden;
+    /* Ortadaki panelin genel scrollbar'ını kaldır */
+}
+
+.right-panel {
+    width: 25%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.panel h2 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    padding-bottom: 5px;
+    font-size: 16px;
+}
+
+/* Panel İçeriği */
+.panel-section {
+    width: 100%;
+    margin-bottom: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.panel-section:first-child {
+    flex: 0 0 auto;
+    max-height: 45%;
+    overflow: hidden;
+}
+
+.panel-section:last-child {
+    flex: 1 1 auto;
+    min-height: 45%;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-section h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-size: 16px;
+    color: #333;
+}
+
+.scrollable-content {
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.panel-section:first-child .scrollable-content {
+    max-height: calc(100% - 30px);
+}
+
+.panel-section:last-child .scrollable-content {
+    flex: 1;
+    height: 100%;
+}
+
+/* Scrollbar stilleri */
+.scrollable-content::-webkit-scrollbar {
+    width: 4px;
+}
+
+.scrollable-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+.scrollable-content::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* Hayvan öğeleri */
+.animal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 5px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.animal-item:last-child {
+    border-bottom: none;
+}
+
+/* Hasta geçmişi öğeleri */
+.item {
+    padding: 8px 0;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.item:last-child {
+    border-bottom: none;
+}
+
+.item p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.view-all-button {
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    width: 100%;
+    cursor: pointer;
+    color: #007bff;
+}
+
+.view-all-button:hover {
+    background-color: #e9ecef;
+}
+
+/* Arama Bölümü */
+.search-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.search-option {
+    padding: 8px 15px;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-option.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.search-bar {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px 0 0 4px;
+    font-size: 14px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    cursor: pointer;
+}
+
+.status-indicators {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.status-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+.status-color.yellow {
+    background-color: #ffc107;
+}
+
+.status-color.green {
+    background-color: #28a745;
+}
+
+.status-color.red {
+    background-color: #dc3545;
+}
+
+.search-results h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #343a40;
+}
+
+.results-container {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 4px;
+    min-height: 200px;
+}
+
+/* Sohbet Bölümü */
+/* Sohbet başlığı */
+.right-panel h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding: 10px 0;
+}
+
+/* Sohbet alanını maksimum yükseklikte göster */
+.scrollable-content.chat-messages {
+    flex: 1;
+    height: calc(100vh - 280px);
+    overflow-y: auto;
+    padding: 10px 15px;
+    background-color: #f0f2f5;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+/* Chat mesajları */
+.chat-message {
+    max-width: 80%;
+    margin-bottom: 10px;
+    position: relative;
+    clear: both;
+}
+
+.chat-message.current-user {
+    float: right;
+    margin-left: 20%;
+}
+
+.chat-message.other-user {
+    float: left;
+    margin-right: 20%;
+}
+
+/* Gönderen ismi */
+.chat-message .sender {
+    font-size: 12px;
+    font-weight: 500;
+    margin-bottom: 3px;
+    color: #3b3b3b;
+}
+
+/* Mesaj metni */
+.chat-message .message-text {
+    padding: 8px 12px;
+    border-radius: 15px;
+    position: relative;
+    margin: 0;
+    white-space: normal;
+    word-wrap: break-word;
+    word-break: break-word;
+    max-width: 100%;
+    font-size: 14px;
+    overflow: hidden;
+    display: inline-block;
+}
+
+/* Kullanıcının kendi mesajı */
+.chat-message.current-user .message-text {
+    background-color: #dcf8c6;
+    color: #000;
+    border-top-right-radius: 5px;
+    text-align: right;
+}
+
+/* Diğer kullanıcının mesajı */
+.chat-message.other-user .message-text {
+    background-color: white;
+    color: #000;
+    border-top-left-radius: 5px;
+    text-align: left;
+}
+
+/* Zaman damgası */
+.message-time {
+    font-size: 10px;
+    color: #8d8d8d;
+    margin-top: 2px;
+    display: inline-block;
+    text-align: right;
+    float: right;
+    padding-right: 5px;
+}
+
+/* ChatMessages kısmında after ekleyin (float'ları düzgün göstermek için) */
+.chat-messages::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+/* Mesaj yazma alanı */
+.chat-input-container {
+    display: flex;
+    padding: 8px;
+    margin-bottom: 8px;
+    background-color: #f8f9fa;
+    border-radius: 20px;
+    border: 1px solid #e0e0e0;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: white;
+    margin-right: 8px;
+    font-size: 14px;
+}
+
+.send-button {
+    min-width: 80px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+
+/* Özel sohbet butonu pozisyonu */
+.private-chat-button {
+    padding: 10px;
+    margin-top: 0;
+    height: 40px;
+}
+
+/* Özel Sohbet Paneli */
+.private-chat-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.private-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+}
+
+.private-chat-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.close-private-chat {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    line-height: 1;
+}
+
+.private-chat-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Bölünmüş Görünüm */
+.split-view {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.split-left,
+.split-right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-right: 1px solid #e0e0e0;
+}
+
+.split-right {
+    border-right: none;
+    border-left: 1px solid #e0e0e0;
+}
+
+.split-header {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+}
+
+.split-header h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+}
+
+.split-header.with-select {
+    justify-content: space-between;
+}
+
+.region-selector {
+    padding: 4px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 13px;
+    background-color: white;
+}
+
+.split-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+}
+
+/* Son Sohbetler Stili */
+.chat-item {
+    display: flex;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.chat-item:hover {
+    background-color: #f8f9fa;
+}
+
+.chat-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: #17a2b8;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 20px;
+    position: relative;
+}
+
+.chat-info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.chat-name {
+    font-weight: bold;
+    margin-bottom: 3px;
+    font-size: 14px;
+}
+
+.chat-message {
+    color: #666;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+}
+
+.chat-details {
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+    color: #888;
+}
+
+/* Bölgesel Veterinerler Stili */
+.vet-item {
+    display: flex;
+    padding: 12px 15px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.vet-item:hover {
+    background-color: #f8f9fa;
+}
+
+.vet-avatar {
+    width: 50px;
+    height: 50px;
+    background-color: #17a2b8;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    font-size: 20px;
+    position: relative;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border: 2px solid white;
+}
+
+.status-indicator.online {
+    background-color: #28a745;
+}
+
+.status-indicator.offline {
+    background-color: #dc3545;
+}
+
+.vet-info {
+    flex: 1;
+}
+
+.vet-name {
+    font-weight: bold;
+    margin-bottom: 3px;
+    font-size: 14px;
+}
+
+.vet-specialty,
+.vet-clinic,
+.vet-location {
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 2px;
+}
+
+.empty-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 20px;
+    color: #888;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Aktif Sohbet Görünümü */
+.active-chat-view {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.active-chat-header {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+}
+
+.back-button {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+    padding: 0 15px 0 0;
+    margin-right: 10px;
+}
+
+.chat-partner-info {
+    flex: 1;
+}
+
+.chat-partner-info h4 {
+    margin: 0 0 3px 0;
+    font-size: 15px;
+}
+
+.chat-partner-info p {
+    margin: 0;
+    font-size: 12px;
+    color: #888;
+}
+
+.active-chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #f0f2f5;
+}
+
+.private-message {
+    max-width: 70%;
+    margin-bottom: 10px;
+    clear: both;
+}
+
+.private-message.current-user {
+    float: right;
+}
+
+.private-message.other-user {
+    float: left;
+}
+
+.message-content {
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.private-message.current-user .message-content {
+    background-color: #dcf8c6;
+    border-top-right-radius: 0;
+}
+
+.private-message.other-user .message-content {
+    background-color: white;
+    border-top-left-radius: 0;
+}
+
+.active-chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.active-chat-input input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 20px 0 0 20px;
+    font-size: 14px;
+}
+
+.active-chat-input button {
+    padding: 0 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0 20px 20px 0;
+    cursor: pointer;
+}
+
+.no-messages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: #888;
+    font-style: italic;
+    text-align: center;
+    padding: 0 20px;
+}
+
+/* Responsive düzenlemeler */
+@media (max-width: 992px) {
+    .chat-message {
+        max-width: 85%;
+    }
+
+    .chat-message .message-text {
+        font-size: 13px;
+        padding: 7px 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .panels-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .panel {
+        width: 100% !important;
+    }
+
+    .right-panel {
+        height: 70vh;
+    }
+
+    .scrollable-content.chat-messages {
+        height: calc(70vh - 180px);
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-message {
+        max-width: 90%;
+    }
+
+    .right-panel {
+        padding: 5px;
+    }
+
+    .chat-input-container {
+        padding: 5px;
+    }
+
+    .scrollable-content.chat-messages {
+        padding: 5px 10px;
+    }
+}
+
+/* VeterinerDashboard.css - Resimle eşleşen durum göstergeleri için */
+
+/* Durum göstergeleri footer */
+.status-footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 5px 0;
+    margin-top: 5px;
+    border-top: 1px solid #eee;
+    font-size: 10px;
+}
+
+/* Küçük durum göstergeleri */
+.status-indicator-small {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 3px;
+}
+
+/* Durum metni */
+.status-text {
+    margin-right: 8px;
+    font-size: 10px;
+    color: #555;
+    white-space: nowrap;
+}
+
+/* Renk kodları */
+.status-indicator-small.yellow {
+    background-color: #ffc107;
+}
+
+.status-indicator-small.green {
+    background-color: #28a745;
+}
+
+.status-indicator-small.red {
+    background-color: #dc3545;
+}
+
+/* Hayvan öğeleri */
+.animal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.animal-info {
+    flex: 1;
+}
+
+.animal-info p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.animal-detail {
+    font-size: 12px !important;
+    color: #6c757d;
+    margin-top: 2px !important;
+}
+
+/* Durum gösterge noktaları */
+.status-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+/* Tümünü Gör butonu */
+.view-all-button {
+    margin-top: 8px;
+    width: 100%;
+}
+
+/* VeterinerDashboard.css - Gelecek Randevular için stiller */
+
+/* Randevu öğesi */
+.appointment-item {
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    margin-bottom: 8px;
+}
+
+/* Randevu tarihi alanı */
+.appointment-date {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 65px;
+    margin-right: 10px;
+}
+
+.appointment-date .date {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+.appointment-date .time {
+    font-size: 12px;
+    color: #666;
+    margin-top: 3px;
+}
+
+/* Randevu bilgileri alanı */
+.appointment-info {
+    flex: 1;
+}
+
+.appointment-info p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.appointment-pet {
+    font-weight: bold;
+    color: #333;
+    font-size: 14px;
+}
+
+.appointment-owner,
+.appointment-chip {
+    font-size: 12px;
+    color: #666;
+}
+
+.appointment-reason {
+    font-size: 12px;
+    color: #555;
+    font-style: italic;
+    margin-top: 3px !important;
+}
+
+/* İçerik kaydırma alanı */
+.scrollable-content {
+    max-height: 250px;
+    /* Biraz daha uzun yapıldı */
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Randevu bölümünü küçültüyorum */
+.center-panel .appointments-section {
+    margin-top: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    /* Sabit yükseklik verelim */
+    height: 300px;
+    /* Daha kısa sabit bir yükseklik */
+}
+
+/* Randevu listesinin scrollbar'ını aktif ediyorum */
+.center-panel .appointments-list {
+    flex-grow: 1;
+    overflow-y: auto;
+    /* Scrollbar burada aktif */
+    padding: 0 15px;
+    /* Sabit yükseklik verelim */
+    max-height: 250px;
+    /* Liste için daha az yükseklik */
+}
+
+/* Randevu bölümünün başlığını küçültelim */
+.center-panel .appointments-section h3 {
+    margin: 0;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Randevu kartlarını küçültelim */
+.center-panel .appointment-item {
+    padding: 8px;
+    margin-bottom: 6px;
+}
+
+.appointment-date .date {
+    font-size: 13px;
+}
+
+.appointment-date .time {
+    font-size: 11px;
+}
+
+.appointment-pet {
+    font-size: 13px;
+}
+
+.appointment-owner,
+.appointment-chip,
+.appointment-reason {
+    font-size: 11px;
+}
+
+/* Orta panel içindeki diğer elemanları yeniden konumlandıralım */
+.center-panel h2 {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.center-panel .search-options {
+    margin-bottom: 10px;
+}
+
+.center-panel .search-bar {
+    margin-bottom: 15px;
+}
