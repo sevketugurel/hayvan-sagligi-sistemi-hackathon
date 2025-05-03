@@ -11,6 +11,7 @@ import AnimalDetails from './pages/AnimalDetails';
 import SearchPage from './pages/SearchPage';
 import Vaccines from './pages/Vaccines';
 import FormsPage from './pages/forms/FormsPage';
+import NewPatient from './pages/NewPatient';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -80,6 +81,7 @@ function App() {
 
             {/* Protected Routes */}
             <Route path="/dashboard" element={<VeterinerDashboard />} />
+            <Route path="/veteriner-dashboard" element={<VeterinerDashboard />} />
             <Route path="/vet-dashboard" element={<VetDashboard />} />
             <Route path="/owner-animals/:ownerId" element={<OwnerAnimals />} />
             <Route path="/animal-details/:animalId" element={<AnimalDetails />} />
@@ -90,6 +92,7 @@ function App() {
             <Route path="/animal-records" element={<Dashboard />} />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/users" element={<UserManagement />} />
+            <Route path="/new-patient" element={<NewPatient />} />
 
             {/* Form Routes */}
             <Route path="/forms" element={<FormsLayout />} />

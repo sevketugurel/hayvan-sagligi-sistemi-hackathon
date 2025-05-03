@@ -11,6 +11,64 @@ const VeterinerDashboard = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [searchType, setSearchType] = useState('chipNo'); // chipNo, tcNo, ownerName, animalName
     const [searchResults, setSearchResults] = useState(null);
+    const [showNewPatientPopup, setShowNewPatientPopup] = useState(false);
+    
+    // Yeni hasta formu için state
+    const [newPatientForm, setNewPatientForm] = useState({
+        ownerInfo: {
+            name: '',
+            tcNo: '',
+            phone: '',
+            email: '',
+            address: ''
+        },
+        animalInfo: {
+            name: '',
+            type: '',
+            breed: '',
+            age: '',
+            gender: '',
+            weight: '',
+            height: '',
+            sterilized: 'Hayır',
+            hospitalized: 'Hayır',
+            hospitalizationReason: '',
+            chipNo: ''
+        }
+    });
+
+    // Form değişikliği handler'ı
+    const handleFormChange = (section, field, value) => {
+        setNewPatientForm(prev => ({
+            ...prev,
+            [section]: {
+                ...prev[section],
+                [field]: value
+            }
+        }));
+    };
+
+    // Form gönderme handler'ı
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        // Burada API'ye form verileri gönderilecek
+        console.log("Yeni hasta bilgileri:", newPatientForm);
+        alert("Hasta kaydı başarıyla oluşturuldu!");
+        
+        // Formu sıfırla ve kapat
+        setNewPatientForm({
+            ownerInfo: { name: '', tcNo: '', phone: '', email: '', address: '' },
+            animalInfo: { name: '', type: '', breed: '', age: '', gender: '', weight: '', height: '', sterilized: 'Hayır', hospitalized: 'Hayır', hospitalizationReason: '', chipNo: '' }
+        });
+        setShowNewPatientPopup(false);
+    };
+
+    // Popup dışına tıklanınca kapatma
+    const handleOverlayClick = (e) => {
+        if (e.target.className === 'popup-overlay') {
+            setShowNewPatientPopup(false);
+        }
+    };
 
     // Çıkış işlemini gerçekleştirecek fonksiyon
     const handleLogout = () => {
@@ -41,6 +99,21 @@ const VeterinerDashboard = () => {
         { id: 8, sender: "Dr. Ayşe Demir", text: "Olabilir, ancak leptospiroz da olabilir. Son zamanlarda temas ettiği diğer hayvanlar var mı?", isCurrentUser: false },
         { id: 9, sender: "Dr. Ahmet Yılmaz", text: "Sahibi birkaç gün önce parkta başka köpeklerle oynamasına izin verdiğini söyledi. Leptospiroz için test yapmalıyım.", isCurrentUser: true },
         { id: 10, sender: "Dr. Ayşe Demir", text: "İyi olur. Ayrıca, tedavi olarak antibiyotik başlatmayı ve destekleyici sıvı tedavisi vermeyi düşünebilirsiniz.", isCurrentUser: false },
+        { id: 11, sender: "Dr. Ahmet Yılmaz", text: "Teşekkürler, antibiyotik için öneriniz var mı? Doksisiklin düşünüyorum.", isCurrentUser: true },
+        { id: 12, sender: "Dr. Ayşe Demir", text: "Evet, doksisiklin iyi bir seçenek. Penisilin G de kullanılabilir, ama doksisiklin daha etkili olabilir bu durumda.", isCurrentUser: false },
+        { id: 13, sender: "Dr. Ahmet Yılmaz", text: "Dozaj öneriniz nedir? Kilogram başına?", isCurrentUser: true },
+        { id: 14, sender: "Dr. Ayşe Demir", text: "Doksisiklin için, 5-10 mg/kg günde iki kez, 2 hafta boyunca öneriyorum.", isCurrentUser: false },
+        { id: 15, sender: "Dr. Ahmet Yılmaz", text: "Anladım, bu şekilde başlayacağım. Karaciğer koruyucu da eklemeli miyim?", isCurrentUser: true },
+        { id: 16, sender: "Dr. Ayşe Demir", text: "Kesinlikle, SAMe veya milk thistle içeren bir suplement faydalı olabilir.", isCurrentUser: false },
+        { id: 17, sender: "Dr. Ahmet Yılmaz", text: "Peki ya sıvı tedavisi için özel bir öneriniz var mı?", isCurrentUser: true },
+        { id: 18, sender: "Dr. Ayşe Demir", text: "Ringer laktat veya %0.9 NaCl IV olarak günlük sıvı ihtiyacına göre verebilirsiniz. İlk gün için hafif bir dehidrasyon varsa 60 ml/kg/gün uygundur.", isCurrentUser: false },
+        { id: 19, sender: "Dr. Ahmet Yılmaz", text: "Anladım, çok teşekkür ederim. Tedaviye hemen başlayacağım ve sonuçları sizinle paylaşacağım.", isCurrentUser: true },
+        { id: 20, sender: "Dr. Ayşe Demir", text: "Rica ederim. Hasta durumu hakkında bilgi vermeyi unutmayın. Gerekirse tedavi planını güncelleyebiliriz.", isCurrentUser: false },
+        { id: 21, sender: "Dr. Ahmet Yılmaz", text: "Ayrıca, sahibine hastalığın zoonotik olduğunu da söylemeli miyim?", isCurrentUser: true },
+        { id: 22, sender: "Dr. Ayşe Demir", text: "Evet, mutlaka bilgilendirin. Köpeğin idrarı ile temasta dikkatli olmaları gerektiğini ve eldivenle temizlik yapmalarını önerin.", isCurrentUser: false },
+        { id: 23, sender: "Dr. Ahmet Yılmaz", text: "Teşekkürler, bunu da ekleyeceğim bilgilendirmeye.", isCurrentUser: true },
+        { id: 24, sender: "Dr. Ayşe Demir", text: "Bir gelişme olursa bana yazın. Laboratuvar sonuçlarını da merak ediyorum.", isCurrentUser: false },
+        { id: 25, sender: "Dr. Ahmet Yılmaz", text: "Tabi, sonuçları alır almaz sizinle paylaşacağım.", isCurrentUser: true },
     ]);
 
     // Özel sohbet modu state'i
@@ -640,6 +713,7 @@ const VeterinerDashboard = () => {
                                                     ref={searchInputRef}
                                                 />
                                                 <button type="submit" className="search-button">Ara</button>
+                                                <button type="button" className="add-patient-button" onClick={() => setShowNewPatientPopup(true)}>+</button>
                                             </div>
                                         </form>
                                     </div>
@@ -817,11 +891,11 @@ const VeterinerDashboard = () => {
                                                         {/* Sadece diğer kullanıcıların mesajlarında gönderen adını göster */}
                                                         {!msg.isCurrentUser && <p className="sender">{msg.sender}</p>}
 
-                                                        {/* Mesaj metni */}
-                                                        <p className="message-text">{msg.text}</p>
-
-                                                        {/* Mesaj zamanı */}
-                                                        <span className="message-time">14:30</span>
+                                                        {/* Mesaj metni ve zamanı bir container içine alındı */}
+                                                        <div className="message-container">
+                                                            <p className="message-text">{msg.text}</p>
+                                                            <span className="message-time">14:30</span>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -1013,6 +1087,234 @@ const VeterinerDashboard = () => {
                     </div>
                 )}
             </div>
+            
+            {/* New Patient Popup */}
+            {showNewPatientPopup && (
+                <div className="popup-overlay" onClick={handleOverlayClick}>
+                    <div className="new-patient-popup">
+                        <div className="popup-header">
+                            <h2>Yeni Hasta Kaydı</h2>
+                            <button 
+                                className="close-popup-button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowNewPatientPopup(false);
+                                }}
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className="popup-content">
+                            <form onSubmit={handleFormSubmit}>
+                                <div className="form-sections-container">
+                                    <div className="form-section">
+                                        <h3>Sahip Bilgileri</h3>
+                                        <div className="form-group">
+                                            <label htmlFor="ownerName">Ad Soyad</label>
+                                            <input 
+                                                type="text" 
+                                                id="ownerName" 
+                                                required 
+                                                value={newPatientForm.ownerInfo.name}
+                                                onChange={(e) => handleFormChange('ownerInfo', 'name', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="tcNo">T.C. Kimlik No</label>
+                                            <input 
+                                                type="text" 
+                                                id="tcNo" 
+                                                required 
+                                                value={newPatientForm.ownerInfo.tcNo}
+                                                onChange={(e) => handleFormChange('ownerInfo', 'tcNo', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="phone">Telefon</label>
+                                            <input 
+                                                type="tel" 
+                                                id="phone" 
+                                                required 
+                                                value={newPatientForm.ownerInfo.phone}
+                                                onChange={(e) => handleFormChange('ownerInfo', 'phone', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="email">E-posta</label>
+                                            <input 
+                                                type="email" 
+                                                id="email" 
+                                                value={newPatientForm.ownerInfo.email}
+                                                onChange={(e) => handleFormChange('ownerInfo', 'email', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="address">Adres</label>
+                                            <textarea 
+                                                id="address" 
+                                                required 
+                                                value={newPatientForm.ownerInfo.address}
+                                                onChange={(e) => handleFormChange('ownerInfo', 'address', e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="form-section">
+                                        <h3>Hayvan Bilgileri</h3>
+                                        <div className="form-group">
+                                            <label htmlFor="animalName">Hayvan Adı</label>
+                                            <input 
+                                                type="text" 
+                                                id="animalName" 
+                                                required 
+                                                value={newPatientForm.animalInfo.name}
+                                                onChange={(e) => handleFormChange('animalInfo', 'name', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="animalType">Türü</label>
+                                            <select 
+                                                id="animalType" 
+                                                required
+                                                value={newPatientForm.animalInfo.type}
+                                                onChange={(e) => handleFormChange('animalInfo', 'type', e.target.value)}
+                                            >
+                                                <option value="">Seçiniz</option>
+                                                <option value="Kedi">Kedi</option>
+                                                <option value="Köpek">Köpek</option>
+                                                <option value="Kuş">Kuş</option>
+                                                <option value="Kemirgen">Kemirgen</option>
+                                                <option value="Diğer">Diğer</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="breed">Irk</label>
+                                            <input 
+                                                type="text" 
+                                                id="breed" 
+                                                required 
+                                                value={newPatientForm.animalInfo.breed}
+                                                onChange={(e) => handleFormChange('animalInfo', 'breed', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="age">Yaş</label>
+                                            <input 
+                                                type="number" 
+                                                id="age" 
+                                                min="0"
+                                                required 
+                                                value={newPatientForm.animalInfo.age}
+                                                onChange={(e) => handleFormChange('animalInfo', 'age', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="gender">Cinsiyet</label>
+                                            <select 
+                                                id="gender" 
+                                                required
+                                                value={newPatientForm.animalInfo.gender}
+                                                onChange={(e) => handleFormChange('animalInfo', 'gender', e.target.value)}
+                                            >
+                                                <option value="">Seçiniz</option>
+                                                <option value="Erkek">Erkek</option>
+                                                <option value="Dişi">Dişi</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="weight">Ağırlık (kg)</label>
+                                            <input 
+                                                type="number" 
+                                                step="0.1"
+                                                min="0"
+                                                id="weight" 
+                                                value={newPatientForm.animalInfo.weight}
+                                                onChange={(e) => handleFormChange('animalInfo', 'weight', e.target.value)}
+                                                placeholder="Örn: 5.2"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="height">Boy (cm)</label>
+                                            <input 
+                                                type="number" 
+                                                step="0.1"
+                                                min="0"
+                                                id="height" 
+                                                value={newPatientForm.animalInfo.height}
+                                                onChange={(e) => handleFormChange('animalInfo', 'height', e.target.value)}
+                                                placeholder="Örn: 35.5"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="sterilized">Kısırlaştırılmış mı?</label>
+                                            <select 
+                                                id="sterilized" 
+                                                required
+                                                value={newPatientForm.animalInfo.sterilized}
+                                                onChange={(e) => handleFormChange('animalInfo', 'sterilized', e.target.value)}
+                                            >
+                                                <option value="Hayır">Hayır</option>
+                                                <option value="Evet">Evet</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="hospitalized">Hospitalize mi?</label>
+                                            <select 
+                                                id="hospitalized" 
+                                                required
+                                                value={newPatientForm.animalInfo.hospitalized}
+                                                onChange={(e) => handleFormChange('animalInfo', 'hospitalized', e.target.value)}
+                                            >
+                                                <option value="Hayır">Hayır</option>
+                                                <option value="Evet">Evet</option>
+                                            </select>
+                                        </div>
+                                        {newPatientForm.animalInfo.hospitalized === 'Evet' && (
+                                            <div className="form-group">
+                                                <label htmlFor="hospitalizationReason">Hospitalizasyon Nedeni</label>
+                                                <textarea 
+                                                    id="hospitalizationReason" 
+                                                    value={newPatientForm.animalInfo.hospitalizationReason}
+                                                    onChange={(e) => handleFormChange('animalInfo', 'hospitalizationReason', e.target.value)}
+                                                />
+                                            </div>
+                                        )}
+                                        <div className="form-group">
+                                            <label htmlFor="chipNo">Çip/Küpe No</label>
+                                            <input 
+                                                type="text" 
+                                                id="chipNo" 
+                                                required 
+                                                value={newPatientForm.animalInfo.chipNo}
+                                                onChange={(e) => handleFormChange('animalInfo', 'chipNo', e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="form-actions">
+                                    <button 
+                                        type="button" 
+                                        className="cancel-button" 
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowNewPatientPopup(false);
+                                        }}
+                                    >
+                                        İptal
+                                    </button>
+                                    <button 
+                                        type="submit" 
+                                        className="save-button"
+                                    >
+                                        Kaydet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
