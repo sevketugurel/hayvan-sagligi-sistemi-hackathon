@@ -92,56 +92,58 @@ const OwnerAnimals = () => {
   return (
     <>
       <NavBar />
-      <div className="owner-animals-container">
-        <div className="owner-info-section">
-          <h1>{owner.name} - Hayvanları</h1>
-          <div className="owner-details">
-            <p><strong>Telefon:</strong> {owner.phone}</p>
-            <p><strong>E-posta:</strong> {owner.email}</p>
-            <p><strong>T.C. No:</strong> {owner.tcNo}</p>
-            <p><strong>Adres:</strong> {owner.address}</p>
-          </div>
-        </div>
-
-        <div className="animals-list-section">
-          <h2>Hayvanlar</h2>
-          {animals.length === 0 ? (
-            <p className="no-animals">Bu kişiye ait hayvan kaydı bulunmamaktadır.</p>
-          ) : (
-            <div className="animals-grid">
-              {animals.map(animal => (
-                <div 
-                  key={animal.id} 
-                  className="animal-card"
-                  onClick={() => handleAnimalSelect(animal.id)}
-                >
-                  <div className="animal-card-header">
-                    <h3>{animal.name}</h3>
-                    <span className="animal-type">{animal.species}</span>
-                  </div>
-                  <div className="animal-card-body">
-                    <p><strong>Irk:</strong> {animal.breed}</p>
-                    <p><strong>Yaş:</strong> {animal.age}</p>
-                    <p><strong>Cinsiyet:</strong> {animal.gender}</p>
-                    <p><strong>Çip No:</strong> {animal.chipNo}</p>
-                    <p><strong>Son Ziyaret:</strong> {animal.lastVisit}</p>
-                  </div>
-                  <div className="animal-card-footer">
-                    <button className="view-details-btn">Detayları Görüntüle</button>
-                  </div>
-                </div>
-              ))}
+      <div className="owner-animals-page">
+        <div className="owner-animals-container">
+          <div className="owner-info-section">
+            <h1>{owner.name} - Hayvanları</h1>
+            <div className="owner-details">
+              <p><strong>Telefon:</strong> {owner.phone}</p>
+              <p><strong>E-posta:</strong> {owner.email}</p>
+              <p><strong>T.C. No:</strong> {owner.tcNo}</p>
+              <p><strong>Adres:</strong> {owner.address}</p>
             </div>
-          )}
-        </div>
+          </div>
 
-        <div className="back-button-container">
-          <button 
-            className="back-button" 
-            onClick={() => navigate('/vet-dashboard')}
-          >
-            Geri Dön
-          </button>
+          <div className="animals-list-section">
+            <h2>Hayvanlar</h2>
+            {animals.length === 0 ? (
+              <p className="no-animals">Bu kişiye ait hayvan kaydı bulunmamaktadır.</p>
+            ) : (
+              <div className="animals-grid">
+                {animals.map(animal => (
+                  <div 
+                    key={animal.id} 
+                    className="animal-card"
+                    onClick={() => handleAnimalSelect(animal.id)}
+                  >
+                    <div className="animal-card-header">
+                      <h3>{animal.name}</h3>
+                      <span className="animal-type">{animal.species}</span>
+                    </div>
+                    <div className="animal-card-body">
+                      <p><strong>Irk:</strong> {animal.breed}</p>
+                      <p><strong>Yaş:</strong> {animal.age}</p>
+                      <p><strong>Cinsiyet:</strong> {animal.gender}</p>
+                      <p><strong>Çip No:</strong> {animal.chipNo}</p>
+                      <p><strong>Son Ziyaret:</strong> {animal.lastVisit}</p>
+                    </div>
+                    <div className="animal-card-footer">
+                      <button className="view-details-btn">Detayları Görüntüle</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="back-button-container">
+            <button 
+              className="back-button" 
+              onClick={() => navigate('/vet-dashboard')}
+            >
+              Geri Dön
+            </button>
+          </div>
         </div>
       </div>
     </>

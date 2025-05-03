@@ -7,6 +7,8 @@ import LoginPage from './pages/LoginPage';
 import VetDashboard from './pages/VetDashboard';
 import OwnerAnimals from './pages/OwnerAnimals';
 import AnimalDetails from './pages/AnimalDetails';
+import SearchPage from './pages/SearchPage';
+import Vaccines from './pages/Vaccines';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -88,6 +90,8 @@ function App() {
               <Route path="/vet-dashboard" element={<VetDashboard />} />
               <Route path="/owner-animals/:ownerId" element={<OwnerAnimals />} />
               <Route path="/animal-details/:animalId" element={<AnimalDetails />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/vaccines" element={<Vaccines />} />
               <Route path="/animals" element={<VetDashboard />} />
               <Route path="/treatments" element={<VetDashboard />} />
             </Route>

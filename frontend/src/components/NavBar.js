@@ -35,6 +35,12 @@ const NavBar = () => {
                 <Link to="/animals" className="nav-item">
                   Hayvan Kayıtları
                 </Link>
+                <Link to="/vaccines" className="nav-item">
+                  Aşılar
+                </Link>
+                <Link to="/search" className="nav-item">
+                  Gelişmiş Arama
+                </Link>
                 {hasPermission('treatment:create') && (
                   <Link to="/treatments" className="nav-item">
                     Tedaviler
@@ -45,9 +51,14 @@ const NavBar = () => {
             
             {/* Teknisyenler için özel menü */}
             {hasRole('technician') && (
-              <Link to="/animal-records" className="nav-item">
-                Kayıt Görüntüleme
-              </Link>
+              <>
+                <Link to="/animal-records" className="nav-item">
+                  Kayıt Görüntüleme
+                </Link>
+                <Link to="/search" className="nav-item">
+                  Hasta Arama
+                </Link>
+              </>
             )}
             
             {/* Admin için özel menü */}

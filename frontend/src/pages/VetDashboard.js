@@ -30,31 +30,33 @@ const VetDashboard = () => {
   return (
     <>
       <NavBar />
-      <div className="dashboard-container">
-        <h1>Veteriner Dashboard</h1>
-        
-        <div className="dashboard-actions">
-          <button 
-            className="search-button" 
-            onClick={openSearchModal}
-          >
-            <i className="search-icon">🔍</i>
-            Sorgula
-          </button>
-          {/* Other dashboard actions can be added here */}
-        </div>
+      <div className="dashboard-page">
+        <div className="dashboard-container">
+          <h1>Veteriner Dashboard</h1>
+          
+          <div className="dashboard-actions">
+            <button 
+              className="search-button" 
+              onClick={openSearchModal}
+            >
+              <i className="search-icon">🔍</i>
+              Sorgula
+            </button>
+            {/* Other dashboard actions can be added here */}
+          </div>
 
-        <div className="dashboard-content">
-          <p>Hoş geldiniz! Hasta kaydını sorgulamak için "Sorgula" butonunu kullanabilirsiniz.</p>
-          {/* Other dashboard content */}
-        </div>
+          <div className="dashboard-content">
+            <p>Hoş geldiniz! Hasta kaydını sorgulamak için "Sorgula" butonunu kullanabilirsiniz.</p>
+            {/* Other dashboard content */}
+          </div>
 
-        {showSearchModal && (
-          <SearchModal 
-            onClose={closeSearchModal} 
-            onSearchResult={handleSearchResult}
-          />
-        )}
+          {showSearchModal && (
+            <SearchModal 
+              onClose={closeSearchModal} 
+              onSearchResult={handleSearchResult}
+            />
+          )}
+        </div>
       </div>
     </>
   );
