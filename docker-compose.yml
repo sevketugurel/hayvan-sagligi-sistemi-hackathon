@@ -34,12 +34,18 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+      - "5005:5005"  # Debug port
+    volumes:
+      - ./backend:/app  # Mount source code for hot reload
+      - ~/.m2:/root/.m2  # Mount Maven cache
     depends_on:
       - mssql
     environment:
       - SPRING_DATASOURCE_URL=jdbc:sqlserver://mssql-hayvansaglik:1433;databaseName=hayvansaglikdb;encrypt=false;trustServerCertificate=true
       - SPRING_DATASOURCE_USERNAME=sa
       - SPRING_DATASOURCE_PASSWORD=StrongPassword123!
+      - SPRING_DEVTOOLS_REMOTE_SECRET=mysecret  # DevTools secret
+      - SPRING_DEVTOOLS_RESTART_ENABLED=true
     networks:
       - hayvansaglik-network
     restart: unless-stopped

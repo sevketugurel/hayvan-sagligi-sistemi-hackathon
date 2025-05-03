@@ -5,6 +5,9 @@ import veterinerImage from '../assets/images/veteriner.png';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 
+// API base URL - aynı AuthContext'te kullanılan değerle tutarlı olsun
+const API_BASE_URL = '/api';
+
 // Temporarily define base64 fallbacks until we fix the proper imports
 const petOwnerImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
 const vetImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
@@ -80,33 +83,22 @@ const LoginPage = () => {
     setLoginError('');
     setIsLoading(true);
 
-    // TC Kimlik No doğrulama
-    if (vetLoginType === 'tc' && !validateTCKimlik(vetUsername)) {
-      setLoginError('Geçerli bir T.C. Kimlik Numarası giriniz.');
-      setIsLoading(false);
-      return;
-    }
-
     try {
-      // AuthContext'teki login fonksiyonunu kullan
       const credentials = {
         username: vetUsername,
-        password: vetPassword,
-        rememberMe: rememberMe
+        password: vetPassword
       };
 
-      const result = await login(credentials, vetLoginType);
+      const result = await login(credentials);
       
       if (result.success) {
         setLoginSuccess(true);
-        setTimeout(() => {
-          // Başarılı girişten sonra, geldiği sayfaya yönlendir
-          navigate(from, { replace: true });
-        }, 1500);
+        navigate(from);
       } else {
-        setLoginError(result.error || 'Giriş başarısız oldu. Kullanıcı adı veya şifre hatalı.');
+        setLoginError(result.error || 'Giriş başarısız oldu. Lütfen bilgilerinizi kontrol edin.');
       }
     } catch (error) {
+      console.error('Login error:', error);
       setLoginError('Giriş sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
     } finally {
       setIsLoading(false);
@@ -126,7 +118,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.get(`http://localhost:8080/api/animals/chip/${chipNumber}`);
+      const response = await axios.get(`${API_BASE_URL}/animals/chip/${chipNumber}`);
       setIsLoading(false);
       
       if (response.data) {
@@ -163,11 +155,8 @@ const LoginPage = () => {
           <div className="success-container">
             <div className="success-icon">✓</div>
             <h2 style={{color: '#333', fontSize: '32px', marginBottom: '15px'}}>İşlem Başarılı!</h2>
-            <p style={{color: '#555', fontSize: '18px', marginBottom: '20px'}}>{activeTab === 'vet' ? 'Veteriner hekim girişiniz yapıldı.' : 'Hayvan bilgileri sorgulanıyor.'}</p>
+            <p style={{color: '#555', fontSize: '18px', marginBottom: '20px'}}>Giriş işleminiz başarıyla tamamlandı.</p>
             <p className="small-text" style={{color: '#888'}}>Ana sayfaya yönlendiriliyorsunuz...</p>
-            <p style={{color: '#555', fontSize: '16px', marginBottom: '0'}}>
-              Giriş yapılan rol: <strong>{currentUser?.role || 'Bilinmiyor'}</strong>
-            </p>
           </div>
         </div>
       </div>

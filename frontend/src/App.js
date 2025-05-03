@@ -56,6 +56,7 @@ const Unauthorized = () => (
   <div className="unauthorized-container">
     <h1>Yetkisiz Erişim</h1>
     <p>Bu sayfaya erişim yetkiniz bulunmamaktadır.</p>
+    <a href="/login" className="login-link">Giriş Sayfasına Dön</a>
   </div>
 );
 
@@ -67,52 +68,22 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/unauthorized" element={<Unauthorized />} />
+            
+            {/* Protected Routes */}
+            <Route path="/dashboard" element={<VeterinerDashboard />} />
+            <Route path="/vet-dashboard" element={<VetDashboard />} />
+            <Route path="/owner-animals/:ownerId" element={<OwnerAnimals />} />
+            <Route path="/animal-details/:animalId" element={<AnimalDetails />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/vaccines" element={<Vaccines />} />
+            <Route path="/animals" element={<VeterinerDashboard />} />
+            <Route path="/treatments" element={<VeterinerDashboard />} />
+            <Route path="/animal-records" element={<Dashboard />} />
+            <Route path="/admin" element={<AdminPanel />} />
+            <Route path="/users" element={<UserManagement />} />
 
-            {/* Veteriner Rotaları - Veteriner rolü ve animal:view izni gerektirir */}
-            <Route element={
-              <PrivateRoute
-                requiredRole="vet"
-                requiredPermission="animal:view"
-              />
-            }>
-              <Route path="/dashboard" element={<VeterinerDashboard />} />
-              <Route path="/vet-dashboard" element={<VetDashboard />} />
-              <Route path="/owner-animals/:ownerId" element={<OwnerAnimals />} />
-              <Route path="/animal-details/:animalId" element={<AnimalDetails />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/vaccines" element={<Vaccines />} />
-              <Route path="/animals" element={<VeterinerDashboard />} />
-              <Route path="/treatments" element={<VeterinerDashboard />} />
-            </Route>
-
-            {/* Teknisyen Rotaları - Teknisyen veya veteriner rolüne sahip olmalı */}
-            <Route element={
-              <PrivateRoute
-                requiredRole={['technician', 'vet']}
-                requiredPermission="animal:view"
-              />
-            }>
-              <Route path="/animal-records" element={<Dashboard />} />
-            </Route>
-
-            {/* Admin Rotaları - Admin rolü gerektirir */}
-            <Route element={<PrivateRoute requiredRole="admin" />}>
-              <Route path="/admin" element={<AdminPanel />} />
-            </Route>
-
-            {/* Kullanıcı Yönetimi - Admin rolü VE users:view iznine sahip olmalı */}
-            <Route element={
-              <PrivateRoute
-                requiredRole="admin"
-                requiredPermission={['users:view', 'users:update']}
-              />
-            }>
-              <Route path="/users" element={<UserManagement />} />
-            </Route>
-
-            {/* Default yönlendirmeler */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            {/* Default Routes */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </BrowserRouter>
