@@ -484,6 +484,28 @@ const AnimalDetails = () => {
             notes: 'Yaşa bağlı olarak özellikle arka bacak eklemlerinde gelişen osteoartrit. Aşırı aktiviteden kaçınılmalı, düzenli kısa yürüyüşler önerilir.'
           }
         ],
+        pathology: [
+          {
+            id: 1,
+            report: {
+              reportNo: '2025-PAT-0142',
+              date: '24.08.2035',
+              performer: 'AHMET YILDIZ'
+            },
+            sample: {
+              type: 'DOKU BİYOPSİSİ',
+              location: 'DERİ - SOL ÖN BACAK',
+              sampleNumber: 'S-2025-742'
+            },
+            macroscopic: 'Sol ön bacak lateral yüzünden alınmış 3.5 x 2.8 cm boyutlarında, oval şekilli deri biyopsisi. Kesit yüzeyi düzensiz, üst kısımda 2.2 x 1.8 cm boyutlarında düzgün sınırlı, grimsi beyaz renkte, sert kıvamlı nodüler kitle izlenmektedir.',
+            microscopic: 'Histopatolojik incelemede, dermiste iyi sınırlı, kapsüllü, yoğun kollajenöz stroma içerisinde iğsi hücrelerin düzensiz demetler oluşturduğu neoplastik doku izlenmektedir. Neoplastik hücreler, hafif pleomorfik, eozinofilik sitoplazmalı, oval-iğsi nükleuslu olup, mitotik aktivite düşüktür (1-2/10 BBA).',
+            diagnosis: 'DÜŞÜK DERECELİ KUTANÖZ LEİOMYOSARKOM',
+            grade: 'I (Düşük Dereceli)',
+            margins: 'Cerrahi sınırlarda tümör hücresi görülmemektedir (Temiz Sınır)',
+            metastasisRisk: 'Düşük (%10-15)',
+            comments: 'Düşük dereceli kutanöz leiomyosarkom tanısı konulan bu olguda, cerrahi sınırlar temiz olmakla birlikte, bölgesel lenf nodlarının kontrolü önerilir. Tümörün düşük dereceli olması ve temiz cerrahi sınırlarla çıkarılmış olması nedeniyle ek tedaviye gerek yoktur.'
+          }
+        ],
         necropsy: [          {             id: 1,             date: '03.05.2035',             vet: 'Dr. Mert Özçelik',             findings: 'Otopsi incelemesinde, abdominal kavitede yaklaşık 500 ml sarı, berrak sıvı saptandı. Karaciğer büyümüş ve yüzeyi düzensiz görünümdeydi. Histopatolojik incelemede kronik hepatit bulguları tespit edildi. Akciğerlerde belirgin bir patoloji saptanmadı. Mide mukozası hiperemikti, ancak ülserasyon gözlenmedi. Böbrekler normal boyutta fakat soluk görünümdeydi. Mikroskobik inceleme böbrek tübüler nekrozu gösterdi. Kalp normal boyutta, herhangi bir anomali saptanmadı. Beyin ve omurilik incelemesinde ödem haricinde belirgin patoloji görülmedi. Ölüm sebebi karaciğer ve böbrek yetmezliği olarak değerlendirildi.',            report: {              reportNo: '2025-NEK-0040',              date: '03.05.2035',              performer: 'Dr. Mert Özçelik'            },            animal: {              species: 'Kedi',              breed: 'Akkaraman',              age: 8,              identification: 'Çip No: 987654321098765'            }          }        ],
         notes: [
           { id: 1, date: '15.08.2023', author: 'Dr. Ayşe Demir', content: 'Hasta sahibi düzenli ilaç kullanımı konusunda tekrar bilgilendirildi. Antibiyotik tedavisinin tamamlanmasının önemini vurguladık. Hasta sahibi anlayış gösterdi ve geri kalan tedaviyi tamamlayacağını belirtti.' },
@@ -2608,6 +2630,259 @@ const AnimalDetails = () => {
           </div>
         );
       
+      case 'pathology':
+        return (
+          <div className="section-content pathology">
+            <h3>Patoloji Bulguları</h3>
+            <div className="necropsy-info-container">
+              <div className="necropsy-info-section">
+                <div className="necropsy-info-header">
+                  <h4>RAPOR BİLGİLERİ</h4>
+                </div>
+                <div className="necropsy-info-content">
+                  <div className="necropsy-info-item">
+                    <span className="info-label">RAPOR NO:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].report ? 
+                        sectionData[0].report.reportNo : '2025-PAT-0142'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">TARİH:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].report ? 
+                        sectionData[0].report.date : '24.08.2035'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">PATOLOJİ UZMAN HEKİM:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].report ? 
+                        sectionData[0].report.performer : 'AHMET YILDIZ'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-info-section">
+                <div className="necropsy-info-header">
+                  <h4>ÖRNEK BİLGİLERİ</h4>
+                </div>
+                <div className="necropsy-info-content">
+                  <div className="necropsy-info-item">
+                    <span className="info-label">ÖRNEK TİPİ:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].sample ? 
+                        sectionData[0].sample.type : 'DOKU BİYOPSİSİ'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">ALINDIĞI YER:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].sample ? 
+                        sectionData[0].sample.location : 'DERİ - SOL ÖN BACAK'}
+                    </span>
+                  </div>
+                  <div className="necropsy-info-item">
+                    <span className="info-label">ÖRNEK NUMARASI:</span>
+                    <span className="info-value">
+                      {sectionData.length > 0 && sectionData[0].sample ? 
+                        sectionData[0].sample.sampleNumber : 'S-2025-742'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="necropsy-assessment-sections">
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header" 
+                  onClick={() => toggleSection('microscopicFindings')}
+                >
+                  <h4>MİKROSKOBİK BULGULAR</h4>
+                  <span className="toggle-icon">{expandedSections.microscopicFindings ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.microscopicFindings ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">1. DOKU BÜTÜNLÜĞÜ VE HİSTOLOJİK YAPI</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Doku düzeni:</span>
+                      <span className="criteria-value">İyi diferansiye dermis ve epidermis dokuları, doku bütünlüğü korunmuş</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Epitel hücrelerin yapısı ve dizilişi:</span>
+                      <span className="criteria-value">Epidermiste normal sıralı çok katlı keratinize epitel, yer yer düzensiz dizilim</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Organın tabakaları:</span>
+                      <span className="criteria-value">Epidermis, dermis ve subkutan dokular belirgin, dermis içerisinde nodüler kitle mevcut</span>
+                    </div>
+                  </div>
+                  
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">2. HÜCRESEL DEĞİŞİKLİKLER</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Nekroz:</span>
+                      <span className="criteria-value">Tümöral dokuda minimal koagülasyon nekrozu odakları mevcut</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Apoptoz:</span>
+                      <span className="criteria-value">Belirgin apoptotik hücreler gözlenmedi</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Dejenerasyon:</span>
+                      <span className="criteria-value">Tümör periferinde hafif hidropic dejenerasyon</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Hiperplazi/hipertrofi/atrofi:</span>
+                      <span className="criteria-value">Neoplastik hücrelerde fokal hiperplastik değişiklikler</span>
+                    </div>
+                  </div>
+                  
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">3. İNFLAMATUAR YANITIN DEĞERLENDİRİLMESİ</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Akut/kronik:</span>
+                      <span className="criteria-value">Kronik inflamatuar yanıt</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Yayılım:</span>
+                      <span className="criteria-value">Lokal, tümör periferinde sınırlı</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">İçerik:</span>
+                      <span className="criteria-value">Seröz eksüdatif</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Granülom varlığı:</span>
+                      <span className="criteria-value">Granülom yapıları gözlenmedi</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Yangının şiddeti:</span>
+                      <span className="criteria-value">Hafif</span>
+                    </div>
+                  </div>
+                  
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">4. ETKENLERİN SAPTANMASI</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Bakteri, virüs, mantar, parazit varlığı:</span>
+                      <span className="criteria-value">Saptanmadı</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Giemsa, Ziehl-Neelsen, PAS boyama:</span>
+                      <span className="criteria-value">PAS boyama ile fungal etken negatif</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">İmmunohistokimyasal boyalar:</span>
+                      <span className="criteria-value">Vimentin (+), Desmin (+), SMA (+), S-100 (-), CD34 (-)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('macroscopicMicroscopicFindings')}
+                >
+                  <h4>MAKROSKOBİK VE MİKROSKOBİK BULGULAR</h4>
+                  <span className="toggle-icon">{expandedSections.macroscopicMicroscopicFindings ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.macroscopicMicroscopicFindings ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">1. NEOPLAZİNİN DEĞERLENDİRİLMESİ</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Tümör tipi:</span>
+                      <span className="criteria-value">Mezenkimal orjinli, düz kas hücrelerinden kaynaklanan neoplazi</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Malignite:</span>
+                      <span className="criteria-value">Düşük dereceli malign (mitoz 1-2/10 BBA, minimal hücresel atipi, düşük invazyon potansiyeli)</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Metastaz durumu:</span>
+                      <span className="criteria-value">Vasküler veya lenfatik invazyon gözlenmedi</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">İmmunohistokimyasal profil:</span>
+                      <span className="criteria-value">Vimentin, SMA ve Desmin ile pozitif reaksiyon (düz kas orjinini desteklemekte)</span>
+                    </div>
+                  </div>
+                  
+                  <div className="necropsy-criteria-group">
+                    <div className="criteria-group-header">2. VASKÜLER VE BAĞ DOKUSU DEĞİŞİKLİKLERİ</div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Hemorajiler:</span>
+                      <span className="criteria-value">Tümör dokusunda fokal hemorajik alanlar</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Tromboz veya emboli:</span>
+                      <span className="criteria-value">Saptanmadı</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Fibrozis:</span>
+                      <span className="criteria-value">Tümörde yoğun kollajenöz stroma, orta derecede fibrozis</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Ödem varlığı:</span>
+                      <span className="criteria-value">Çevre dokularda hafif ödem</span>
+                    </div>
+                    <div className="necropsy-criteria-item">
+                      <span className="criteria-label">Skar dokusu oluşumu:</span>
+                      <span className="criteria-value">Belirgin skar dokusu gözlenmedi</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section">
+                <div 
+                  className="necropsy-section-header"
+                  onClick={() => toggleSection('conclusion')}
+                >
+                  <h4>SONUÇ</h4>
+                  <span className="toggle-icon">{expandedSections.conclusion ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.conclusion ? 'expanded' : 'collapsed'}`}>
+                  <div className="necropsy-criteria-item conclusion-text">
+                    <p>"Dermiste iyi sınırlı, kapsüllü yapıda, yoğun kollajenöz stroma içerisinde iğsi hücrelerin düzensiz demetler oluşturduğu neoplastik doku gözlenmiştir."</p>
+                    <p>"Neoplastik hücreler, hafif pleomorfik, eozinofilik sitoplazmalı, oval-iğsi nükleuslu olup, mitotik aktivite düşüktür (1-2/10 BBA)."</p>
+                    <p>"İmmunohistokimyasal incelemede neoplastik hücreler vimentin, SMA ve desmin ile pozitif, S-100 ve CD34 ile negatif boyanma göstermektedir."</p>
+                    <p>"Tümör dokusu cerrahi sınırlar dışında kalmış olup, vasküler ya da lenfatik invazyon gözlenmemiştir."</p>
+                    <p>"Patolojik tanı: DÜŞÜK DERECELİ KUTANÖZ LEİOMYOSARKOM"</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="necropsy-section vet-info-section">
+                <div 
+                  className="vet-info-header"
+                  onClick={() => toggleSection('vetInfo')}
+                >
+                  <h4>PATOLOJİ UZMAN HEKİM BİLGİLERİ</h4>
+                  <span className="toggle-icon">{expandedSections.vetInfo ? '▼' : '►'}</span>
+                </div>
+                <div className={`necropsy-section-content ${expandedSections.vetInfo ? 'expanded' : 'collapsed'}`}>
+                  <div className="vet-info-item">
+                    <span className="info-label">AD SOYAD:</span>
+                    <span className="info-value">Dr. Ahmet YILDIZ</span>
+                  </div>
+                  <div className="vet-info-item">
+                    <span className="info-label">KLİNİK/FAKÜLTE/KURUM:</span>
+                    <span className="info-value">Veteriner Patoloji Laboratuvarı</span>
+                  </div>
+                  <div className="vet-info-item signature-item">
+                    <span className="info-label">İMZA:</span>
+                    <span className="signature-placeholder">___________________</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      
       default:
         return (
           <div className="no-data-message">
@@ -2810,6 +3085,12 @@ const AnimalDetails = () => {
                 onClick={() => handleSectionClick('allergies')}
               >
                 Alerji/Kronik Rahatsızlık
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'pathology' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('pathology')}
+              >
+                Patoloji Bulguları
               </button>
               <button 
                 className={`sidebar-btn ${activeSection === 'necropsy' ? 'active' : ''}`}
