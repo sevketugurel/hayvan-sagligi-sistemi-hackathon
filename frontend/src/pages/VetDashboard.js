@@ -33,10 +33,10 @@ const VetDashboard = () => {
       <div className="dashboard-page">
         <div className="dashboard-container">
           <h1>Veteriner Dashboard</h1>
-          
+
           <div className="dashboard-actions">
-            <button 
-              className="search-button" 
+            <button
+              className="search-button"
               onClick={openSearchModal}
             >
               <i className="search-icon">🔍</i>
@@ -51,8 +51,8 @@ const VetDashboard = () => {
           </div>
 
           {showSearchModal && (
-            <SearchModal 
-              onClose={closeSearchModal} 
+            <SearchModal
+              onClose={closeSearchModal}
               onSearchResult={handleSearchResult}
             />
           )}

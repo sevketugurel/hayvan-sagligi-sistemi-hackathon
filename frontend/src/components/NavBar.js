@@ -18,38 +18,24 @@ const NavBar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/dashboard" className="navbar-logo">
-          Hayvan Sağlık Sistemi
+          DOSTLAR VETERİNER KLİNİĞİ
         </Link>
-        
+
         {currentUser && (
           <div className="nav-menu">
             <Link to="/dashboard" className="nav-item">
               Ana Sayfa
             </Link>
-            
+
             {/* Veterinerler için özel menü */}
             {hasRole('vet') && hasPermission('animal:view') && (
               <>
-                <Link to="/vet-dashboard" className="nav-item">
-                  Veteriner Paneli
-                </Link>
-                <Link to="/animals" className="nav-item">
-                  Hayvan Kayıtları
-                </Link>
-                <Link to="/vaccines" className="nav-item">
-                  Aşılar
-                </Link>
                 <Link to="/search" className="nav-item">
                   Gelişmiş Arama
                 </Link>
-                {hasPermission('treatment:create') && (
-                  <Link to="/treatments" className="nav-item">
-                    Tedaviler
-                  </Link>
-                )}
               </>
             )}
-            
+
             {/* Teknisyenler için özel menü */}
             {hasRole('technician') && (
               <>
@@ -61,7 +47,7 @@ const NavBar = () => {
                 </Link>
               </>
             )}
-            
+
             {/* Admin için özel menü */}
             {hasRole('admin') && (
               <>
@@ -75,34 +61,15 @@ const NavBar = () => {
                 )}
               </>
             )}
-            
+
             <div className="nav-user">
               <div className="user-info">
                 <span className="user-name">
-                  Hoş geldiniz, {currentUser.name}
+                  Hoş geldiniz, Dr. {currentUser.name}
                 </span>
                 <span className="user-role">
-                  Rol: {currentUser.role}
-                  <button 
-                    className="permissions-toggle"
-                    onClick={() => setShowPermissions(!showPermissions)}
-                    title="İzinleri göster/gizle"
-                  >
-                    {showPermissions ? '▲' : '▼'}
-                  </button>
+                  {currentUser.role}
                 </span>
-                
-                {/* İzinleri görüntüle */}
-                {showPermissions && userPermissions.length > 0 && (
-                  <div className="permissions-dropdown">
-                    <div className="permissions-header">İzinleriniz:</div>
-                    <ul className="permissions-list">
-                      {userPermissions.map((permission, index) => (
-                        <li key={index}>{permission}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
               </div>
               <button onClick={handleLogout} className="logout-btn">
                 Çıkış Yap

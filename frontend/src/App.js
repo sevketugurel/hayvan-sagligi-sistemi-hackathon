@@ -5,6 +5,7 @@ import './App.css';
 // Pages
 import LoginPage from './pages/LoginPage';
 import VeterinerDashboard from './pages/VeterinerDashboard';
+import VetDashboard from './pages/VetDashboard';
 import OwnerAnimals from './pages/OwnerAnimals';
 import AnimalDetails from './pages/AnimalDetails';
 import SearchPage from './pages/SearchPage';
@@ -75,12 +76,12 @@ function App() {
                 requiredPermission="animal:view"
               />
             }>
-              <Route path="/vet-dashboard" element={<VeterinerDashboard />} />
+              <Route path="/dashboard" element={<VeterinerDashboard />} />
+              <Route path="/vet-dashboard" element={<VetDashboard />} />
               <Route path="/owner-animals/:ownerId" element={<OwnerAnimals />} />
               <Route path="/animal-details/:animalId" element={<AnimalDetails />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/vaccines" element={<Vaccines />} />
-              {/* Ek veteriner sayfaları */}
               <Route path="/animals" element={<VeterinerDashboard />} />
               <Route path="/treatments" element={<VeterinerDashboard />} />
             </Route>
@@ -111,7 +112,7 @@ function App() {
             </Route>
 
             {/* Default yönlendirmeler */}
-            <Route path="/" element={<Navigate to="/vet-dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
           </Routes>
         </BrowserRouter>
