@@ -10,6 +10,7 @@ import OwnerAnimals from './pages/OwnerAnimals';
 import AnimalDetails from './pages/AnimalDetails';
 import SearchPage from './pages/SearchPage';
 import Vaccines from './pages/Vaccines';
+import FormsPage from './pages/forms/FormsPage';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -60,6 +61,14 @@ const Unauthorized = () => (
   </div>
 );
 
+// Formlar Sayfası Layout
+const FormsLayout = () => (
+  <>
+    <NavBar />
+    <FormsPage />
+  </>
+);
+
 function App() {
   return (
     <div className="App">
@@ -68,7 +77,7 @@ function App() {
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
-            
+
             {/* Protected Routes */}
             <Route path="/dashboard" element={<VeterinerDashboard />} />
             <Route path="/vet-dashboard" element={<VetDashboard />} />
@@ -81,6 +90,10 @@ function App() {
             <Route path="/animal-records" element={<Dashboard />} />
             <Route path="/admin" element={<AdminPanel />} />
             <Route path="/users" element={<UserManagement />} />
+
+            {/* Form Routes */}
+            <Route path="/forms" element={<FormsLayout />} />
+            <Route path="/forms/:formType" element={<FormsLayout />} />
 
             {/* Default Routes */}
             <Route path="/" element={<Navigate to="/login" replace />} />

@@ -90,6 +90,13 @@ const NavBar = () => {
                 <i className="fas fa-search"></i>
                 Gelişmiş Arama
               </Link>
+
+              {/* Formlar Sayfası Bağlantısı */}
+              <Link to="/forms" className={`nav-item ${location.pathname.includes('/forms') ? 'active' : ''}`}>
+                <i className="fas fa-file-alt"></i>
+                Formlar
+              </Link>
+
               <Link to="/animal-records" className={`nav-item ${location.pathname === '/animal-records' ? 'active' : ''}`}>
                 <i className="fas fa-folder"></i>
                 Kayıt Görüntüleme
