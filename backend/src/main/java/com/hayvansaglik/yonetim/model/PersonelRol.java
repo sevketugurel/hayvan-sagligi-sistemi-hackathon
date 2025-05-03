@@ -2,12 +2,18 @@ package com.hayvansaglik.yonetim.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "personel_rol")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"personel", "rol"})
+@EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class PersonelRol {

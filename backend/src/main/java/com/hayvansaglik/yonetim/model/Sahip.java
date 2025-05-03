@@ -33,7 +33,7 @@ public class Sahip {
     private String telefon2;
     
     @Column(name = "e_posta", length = 150)
-    private String ePosta;
+    private String eposta;
     
     @Column(name = "adres")
     private String adres;

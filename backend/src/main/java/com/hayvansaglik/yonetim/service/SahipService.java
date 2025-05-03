@@ -40,7 +40,7 @@ public class SahipService {
     }
     
     public List<Sahip> findByEPosta(String ePosta) {
-        return sahipRepository.findByEPostaContainingIgnoreCase(ePosta);
+        return sahipRepository.findByEpostaContainingIgnoreCase(ePosta);
     }
     
     /**
@@ -65,7 +65,7 @@ public class SahipService {
         sahip.setSoyad(sahipDetails.getSoyad());
         sahip.setTelefon1(sahipDetails.getTelefon1());
         sahip.setTelefon2(sahipDetails.getTelefon2());
-        sahip.setEPosta(sahipDetails.getEPosta());
+        sahip.setEposta(sahipDetails.getEposta());
         sahip.setAdres(sahipDetails.getAdres());
         sahip.setTercihEdilenIletisim(sahipDetails.getTercihEdilenIletisim());
         

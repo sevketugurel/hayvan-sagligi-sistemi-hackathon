@@ -127,7 +127,7 @@ public class SahipController {
                 sahip.getSoyad(),
                 sahip.getTelefon1(),
                 sahip.getTelefon2(),
-                sahip.getEPosta(),
+                sahip.getEposta(),
                 sahip.getAdres(),
                 sahip.getTercihEdilenIletisim(),
                 sahip.getHayvanlar() != null ? sahip.getHayvanlar().size() : 0
@@ -140,7 +140,7 @@ public class SahipController {
         sahip.setSoyad(request.getSoyad());
         sahip.setTelefon1(request.getTelefon1());
         sahip.setTelefon2(request.getTelefon2());
-        sahip.setEPosta(request.getEPosta());
+        sahip.setEposta(request.getEPosta());
         sahip.setAdres(request.getAdres());
         sahip.setTercihEdilenIletisim(request.getTercihEdilenIletisim());
         

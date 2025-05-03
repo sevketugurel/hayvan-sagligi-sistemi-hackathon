@@ -2,8 +2,11 @@ package com.hayvansaglik.yonetim.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -11,7 +14,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "personel")
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"randevular", "personelRoller", "kullanici"})
+@EqualsAndHashCode(of = {"id"})
 @NoArgsConstructor
 @AllArgsConstructor
 public class Personel {

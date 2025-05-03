@@ -31,7 +31,7 @@ public class TurController {
     public ResponseEntity<ApiResponse> getAllTurler() {
         List<Tur> turler = turService.findAll();
         List<TurResponse> turResponses = turler.stream()
-                .map(tur -> new TurResponse(tur.getId(), tur.getIsim()))
+                .map(this::convertToTurResponse)
                 .collect(Collectors.toList());
         
         return ResponseEntity.ok(new ApiResponse(true, "Türler başarıyla getirildi", turResponses));
@@ -42,7 +42,7 @@ public class TurController {
     public ResponseEntity<ApiResponse> getTurById(@PathVariable Integer id) {
         try {
             Tur tur = turService.findById(id);
-            TurResponse turResponse = new TurResponse(tur.getId(), tur.getIsim());
+            TurResponse turResponse = convertToTurResponse(tur);
             return ResponseEntity.ok(new ApiResponse(true, "Tür başarıyla getirildi", turResponse));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -55,7 +55,7 @@ public class TurController {
     public ResponseEntity<ApiResponse> getTurByIsim(@PathVariable String isim) {
         try {
             Tur tur = turService.findByIsim(isim);
-            TurResponse turResponse = new TurResponse(tur.getId(), tur.getIsim());
+            TurResponse turResponse = convertToTurResponse(tur);
             return ResponseEntity.ok(new ApiResponse(true, "Tür başarıyla getirildi", turResponse));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -70,7 +70,7 @@ public class TurController {
         tur.setIsim(turRequest.getIsim());
         
         Tur savedTur = turService.save(tur);
-        TurResponse turResponse = new TurResponse(savedTur.getId(), savedTur.getIsim());
+        TurResponse turResponse = convertToTurResponse(savedTur);
         
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ApiResponse(true, "Tür başarıyla oluşturuldu", turResponse));
@@ -85,7 +85,7 @@ public class TurController {
             turDetails.setIsim(turRequest.getIsim());
             
             Tur updatedTur = turService.update(id, turDetails);
-            TurResponse turResponse = new TurResponse(updatedTur.getId(), updatedTur.getIsim());
+            TurResponse turResponse = convertToTurResponse(updatedTur);
             
             return ResponseEntity.ok(new ApiResponse(true, "Tür başarıyla güncellendi", turResponse));
         } catch (EntityNotFoundException e) {
@@ -104,5 +104,9 @@ public class TurController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ApiResponse(false, e.getMessage()));
         }
+    }
+    
+    private TurResponse convertToTurResponse(Tur tur) {
+        return new TurResponse(tur.getId(), tur.getIsim());
     }
 } 

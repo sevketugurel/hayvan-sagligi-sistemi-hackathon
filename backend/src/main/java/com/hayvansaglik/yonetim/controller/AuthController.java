@@ -113,11 +113,16 @@ public class AuthController {
         // Rol atama işlemi
         Set<String> strRoles = signUpRequest.getRoles();
         
-        if (strRoles == null || strRoles.isEmpty()) {
-            // Varsayılan rol atama (SAHIP)
+        // Veritabanında SAHIP rolünü oluştur - eğer yoksa
+        try {
             Rol sahipRol = rolRepository.findByAd("SAHIP")
-                    .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
+                    .orElseGet(() -> {
+                        Rol newRol = new Rol();
+                        newRol.setAd("SAHIP");
+                        return rolRepository.save(newRol);
+                    });
             
+            // Personele SAHIP rolünü ata
             PersonelRol personelRol = new PersonelRol();
             PersonelRolId rolId = new PersonelRolId(personel.getId(), sahipRol.getId());
             personelRol.setId(rolId);
@@ -126,47 +131,12 @@ public class AuthController {
             
             personel.getPersonelRoller().add(personelRol);
             personelRepository.save(personel);
-        } else {
-            strRoles.forEach(role -> {
-                Rol userRole;
-                switch (role) {
-                    case "admin":
-                        userRole = rolRepository.findByAd("ADMIN")
-                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
-                        break;
-                    case "veteriner":
-                        userRole = rolRepository.findByAd("VETERINER")
-                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
-                        break;
-                    case "laborant":
-                        userRole = rolRepository.findByAd("LABORANT")
-                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
-                        break;
-                    case "hemsire":
-                        userRole = rolRepository.findByAd("HEMSIRE")
-                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
-                        break;
-                    case "muhasebe":
-                        userRole = rolRepository.findByAd("MUHASEBE")
-                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
-                        break;
-                    default:
-                        userRole = rolRepository.findByAd("SAHIP")
-                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
-                }
-                
-                PersonelRol personelRol = new PersonelRol();
-                PersonelRolId rolId = new PersonelRolId(personel.getId(), userRole.getId());
-                personelRol.setId(rolId);
-                personelRol.setPersonel(personel);
-                personelRol.setRol(userRole);
-                
-                personel.getPersonelRoller().add(personelRol);
-            });
             
-            personelRepository.save(personel);
+            return ResponseEntity.ok(new MessageResponse("Kullanıcı başarıyla kaydedildi!"));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Hata: Kayıt işlemi sırasında bir sorun oluştu. " + e.getMessage()));
         }
-
-        return ResponseEntity.ok(new MessageResponse("Kullanıcı başarıyla kaydedildi!"));
     }
 } 

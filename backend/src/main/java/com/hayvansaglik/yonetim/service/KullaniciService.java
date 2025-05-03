@@ -5,7 +5,7 @@ import com.hayvansaglik.yonetim.model.Personel;
 import com.hayvansaglik.yonetim.repository.KullaniciRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,10 +16,10 @@ import java.util.Optional;
 public class KullaniciService {
     
     private final KullaniciRepository kullaniciRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     
     @Autowired
-    public KullaniciService(KullaniciRepository kullaniciRepository, BCryptPasswordEncoder passwordEncoder) {
+    public KullaniciService(KullaniciRepository kullaniciRepository, PasswordEncoder passwordEncoder) {
         this.kullaniciRepository = kullaniciRepository;
         this.passwordEncoder = passwordEncoder;
     }
