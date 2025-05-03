@@ -2086,4 +2086,60 @@
   .signature-item {
     align-items: flex-start;
   }
+}
+
+/* Section header with button styles */
+.section-header-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-header-with-button h3 {
+  margin: 0;
+}
+
+.add-button {
+  background-color: #607d8b;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: #455a64;
+}
+
+.add-icon {
+  font-size: 14px;
+}
+
+/* Condition severity colors */
+.severity-hafif {
+  color: #4caf50;
+}
+
+.severity-orta {
+  color: #ff9800;
+}
+
+.severity-ciddi {
+  color: #f44336;
+}
+
+/* Condition card types */
+.chronic-card .prescription-header {
+  background-color: #5c6bc0;
+}
+
+.allergy-card .prescription-header {
+  background-color: #ef5350;
 } 

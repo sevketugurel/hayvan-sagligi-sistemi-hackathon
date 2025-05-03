@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.add-vaccine-modal {
+.modal-container {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
@@ -27,7 +27,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  background-color: #4caf50;
+  background-color: #3f51b5;
   color: white;
   border-radius: 8px 8px 0 0;
 }
@@ -49,7 +49,7 @@
   line-height: 1;
 }
 
-.add-vaccine-form {
+.modal-body {
   padding: 20px;
 }
 
@@ -79,21 +79,36 @@
   min-height: 80px;
 }
 
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-group input {
+  width: auto;
+}
+
+.checkbox-group label {
+  margin-bottom: 0;
+}
+
 .error-text {
   color: #e53935;
   font-size: 12px;
   margin-top: 4px;
 }
 
-.form-actions {
+.modal-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 24px;
+  padding: 16px 20px;
+  border-top: 1px solid #eee;
   gap: 12px;
 }
 
-.cancel-btn,
-.save-btn {
+.cancel-button,
+.save-button {
   padding: 10px 16px;
   border-radius: 4px;
   font-weight: 500;
@@ -101,105 +116,28 @@
   transition: background-color 0.2s;
 }
 
-.cancel-btn {
+.cancel-button {
   background-color: #f5f5f5;
   border: 1px solid #ccc;
   color: #333;
 }
 
-.save-btn {
-  background-color: #4caf50;
+.save-button {
+  background-color: #3f51b5;
   border: none;
   color: white;
 }
 
-.cancel-btn:hover {
+.cancel-button:hover {
   background-color: #e0e0e0;
 }
 
-.save-btn:hover {
-  background-color: #43a047;
-}
-
-/* Styles for treatments in condition modal */
-.treatments-group {
-  margin-bottom: 20px;
-}
-
-.treatment-input-container {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
-  align-items: center;
-}
-
-.treatment-input-container input {
-  flex: 1;
-}
-
-.remove-treatment-btn, .add-treatment-btn {
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  text-align: center;
-}
-
-.remove-treatment-btn {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  font-size: 16px;
-  line-height: 1;
-  min-width: 36px;
-}
-
-.remove-treatment-btn:disabled {
-  background-color: #e0e0e0;
-  cursor: not-allowed;
-}
-
-.add-treatment-btn {
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  margin-top: 10px;
-  width: 100%;
-  transition: background-color 0.2s;
-}
-
-.add-treatment-btn:hover {
-  background-color: #1976d2;
-}
-
-/* Condition modal specific styles */
-.condition-modal .modal-header {
-  background-color: #3f51b5;
-}
-
-.condition-modal .save-btn {
-  background-color: #3f51b5;
-}
-
-.condition-modal .save-btn:hover {
+.save-button:hover {
   background-color: #303f9f;
 }
 
-/* Note modal specific styles */
-.note-modal .modal-header {
-  background-color: #607d8b;
-}
-
-.note-modal .save-btn {
-  background-color: #607d8b;
-}
-
-.note-modal .save-btn:hover {
-  background-color: #455a64;
-}
-
 @media screen and (max-width: 600px) {
-  .add-vaccine-modal {
+  .modal-container {
     width: 95%;
   }
 } 
