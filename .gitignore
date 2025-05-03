@@ -9,6 +9,9 @@ yarn-error.log
 /dist
 /.next
 /out
+target/
+**/target/
+*.class
 
 # Environment variables
 .env

@@ -1,0 +1,1056 @@
+{
+	"info": {
+		"_postman_id": "a2b7e9c5-f8c2-4d81-95a3-12d890e5f4b3",
+		"name": "Hayvan Sağlığı Yönetim Sistemi",
+		"description": "Hayvan Sağlığı Yönetim Sisteminin API İstekleri",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Kimlik Doğrulama (Authentication)",
+			"item": [
+				{
+					"name": "Giriş (Login)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"authToken\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"vet@example.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Sisteme giriş yapar ve token alır"
+					},
+					"response": []
+				},
+				{
+					"name": "Kayıt (Register)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newvet@example.com\",\n  \"password\": \"password123\",\n  \"ad\": \"Yeni\",\n  \"soyad\": \"Veteriner\",\n  \"telefon\": \"5551234567\",\n  \"unvan\": \"Uzman Veteriner Hekim\",\n  \"role\": \"VET\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Sisteme yeni kullanıcı kaydeder (Admin yetkisi gerektirir)"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.globals.set(\"adminToken\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Admin kullanıcısı olarak giriş yaparak admin token'ı alır"
+					},
+					"response": []
+				},
+				{
+					"name": "Kullanıcı Bilgilerini Getir",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"me"
+							]
+						},
+						"description": "Giriş yapmış kullanıcının bilgilerini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Şifre Değiştir",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"oldPassword\": \"password123\",\n  \"newPassword\": \"newPassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/change-password",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"change-password"
+							]
+						},
+						"description": "Kullanıcının şifresini değiştirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Tüm Kullanıcıları Listele",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						},
+						"description": "Sistemdeki tüm kullanıcıları listeler (Admin yetkisi gerektirir)"
+					},
+					"response": []
+				}
+			],
+			"description": "Kimlik doğrulama ve yetkilendirme işlemleri"
+		},
+		{
+			"name": "Kullanıcı Yönetimi",
+			"item": [
+				{
+					"name": "Veteriner Hesabı Güncelle",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ad\": \"Mehmet\",\n  \"soyad\": \"Yılmaz\",\n  \"telefon\": \"5551234567\",\n  \"unvan\": \"Kıdemli Veteriner Hekim\",\n  \"email\": \"mehmet.yilmaz@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2"
+							]
+						},
+						"description": "Veteriner hesap bilgilerini günceller"
+					},
+					"response": []
+				},
+				{
+					"name": "Kullanıcı Sil",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/3",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"3"
+							]
+						},
+						"description": "Kullanıcıyı sistemden siler (Admin yetkisi gerektirir)"
+					},
+					"response": []
+				},
+				{
+					"name": "Rol Değiştir",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"role\": \"ADMIN\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/users/2/role",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2",
+								"role"
+							]
+						},
+						"description": "Kullanıcının rolünü değiştirir (Admin yetkisi gerektirir)"
+					},
+					"response": []
+				},
+				{
+					"name": "Kullanıcı Detaylarını Getir",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/users/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"2"
+							]
+						},
+						"description": "Belirli bir kullanıcının detaylarını getirir"
+					},
+					"response": []
+				}
+			],
+			"description": "Kullanıcı yönetimi ile ilgili işlemler"
+		},
+		{
+			"name": "Sahip (Owner)",
+			"item": [
+				{
+					"name": "Tüm Sahipleri Listele",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/sahipler",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"sahipler"
+							]
+						},
+						"description": "Sistemdeki tüm sahipleri listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "ID'ye Göre Sahip Getir",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/sahipler/5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"sahipler",
+								"5"
+							]
+						},
+						"description": "Belirli bir ID'ye sahip hayvan sahibini getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Ad ve Soyadına Göre Sahip Ara",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/sahipler/search?ad=Ahmet&soyad=Yılmaz",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"sahipler",
+								"search"
+							],
+							"query": [
+								{
+									"key": "ad",
+									"value": "Ahmet"
+								},
+								{
+									"key": "soyad",
+									"value": "Yılmaz"
+								}
+							]
+						},
+						"description": "Ad ve soyadı kriterlerine göre hayvan sahiplerini arar"
+					},
+					"response": []
+				},
+				{
+					"name": "Yeni Sahip Ekle",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ad\": \"Mehmet\",\n  \"soyad\": \"Kaya\",\n  \"telefon\": \"5551234567\",\n  \"eposta\": \"mehmet.kaya@email.com\",\n  \"adres\": \"Atatürk Cad. No:123 Ankara\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/sahipler",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"sahipler"
+							]
+						},
+						"description": "Sisteme yeni bir hayvan sahibi ekler"
+					},
+					"response": []
+				},
+				{
+					"name": "Sahip Bilgilerini Güncelle",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ad\": \"Mehmet\",\n  \"soyad\": \"Kaya\",\n  \"telefon\": \"5551234567\",\n  \"eposta\": \"mehmet.kaya2@email.com\",\n  \"adres\": \"İnönü Cad. No:45 Ankara\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/sahipler/5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"sahipler",
+								"5"
+							]
+						},
+						"description": "Var olan bir hayvan sahibinin bilgilerini günceller"
+					},
+					"response": []
+				},
+				{
+					"name": "Sahip Sil",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/sahipler/5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"sahipler",
+								"5"
+							]
+						},
+						"description": "Belirli bir ID'ye sahip hayvan sahibini siler"
+					},
+					"response": []
+				}
+			],
+			"description": "Hayvan sahipleri ile ilgili işlemleri içerir"
+		},
+		{
+			"name": "Hayvan (Animal)",
+			"item": [
+				{
+					"name": "Tüm Hayvanları Listele",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar"
+							]
+						},
+						"description": "Sistemdeki tüm hayvanları listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "ID'ye Göre Hayvan Getir",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar/10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar",
+								"10"
+							]
+						},
+						"description": "Belirli bir ID'ye sahip hayvanı getirir"
+					},
+					"response": []
+				},
+				{
+					"name": "Sahibine Göre Hayvanları Getir",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar/sahip/5",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar",
+								"sahip",
+								"5"
+							]
+						},
+						"description": "Belirli bir sahibe ait hayvanları listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "İsme Göre Hayvan Ara",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar/search?ad=Karabaş",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar",
+								"search"
+							],
+							"query": [
+								{
+									"key": "ad",
+									"value": "Karabaş"
+								}
+							]
+						},
+						"description": "Hayvanın adına göre arama yapar"
+					},
+					"response": []
+				},
+				{
+					"name": "Türe Göre Hayvan Ara",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar/tur/2",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar",
+								"tur",
+								"2"
+							]
+						},
+						"description": "Belirli bir türe ait hayvanları listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "Irka Göre Hayvan Ara",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar/irk/7",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar",
+								"irk",
+								"7"
+							]
+						},
+						"description": "Belirli bir ırka ait hayvanları listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "Mikroçip Numarasına Göre Hayvan Ara",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar/mikrocip/TR12345678",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar",
+								"mikrocip",
+								"TR12345678"
+							]
+						},
+						"description": "Mikroçip numarasına göre hayvan arar"
+					},
+					"response": []
+				},
+				{
+					"name": "Yeni Hayvan Ekle",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ad\": \"Boncuk\",\n  \"dogumTarihi\": \"2020-03-15\",\n  \"cinsiyet\": \"DİŞİ\",\n  \"renk\": \"Beyaz\",\n  \"mikrocipNo\": \"TR98765432\",\n  \"notlar\": \"Çok sakin bir yapısı var\",\n  \"sahipId\": 5,\n  \"turId\": 1,\n  \"irkId\": 4\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar"
+							]
+						},
+						"description": "Sisteme yeni bir hayvan ekler"
+					},
+					"response": []
+				},
+				{
+					"name": "Hayvan Bilgilerini Güncelle",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ad\": \"Boncuk\",\n  \"dogumTarihi\": \"2020-03-15\",\n  \"cinsiyet\": \"DİŞİ\",\n  \"renk\": \"Beyaz-Siyah\",\n  \"mikrocipNo\": \"TR98765432\",\n  \"notlar\": \"Aşıları tamamlandı, çok sakin bir yapısı var\",\n  \"sahipId\": 5,\n  \"turId\": 1,\n  \"irkId\": 4\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar/10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar",
+								"10"
+							]
+						},
+						"description": "Var olan bir hayvanın bilgilerini günceller"
+					},
+					"response": []
+				},
+				{
+					"name": "Hayvan Sil",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/hayvanlar/10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"hayvanlar",
+								"10"
+							]
+						},
+						"description": "Belirli bir ID'ye sahip hayvanı siler"
+					},
+					"response": []
+				}
+			],
+			"description": "Hayvanlar ile ilgili işlemleri içerir"
+		},
+		{
+			"name": "Tür ve Irk",
+			"item": [
+				{
+					"name": "Tüm Türleri Listele",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/turler",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"turler"
+							]
+						},
+						"description": "Sistemdeki tüm hayvan türlerini listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "Tüm Irkları Listele",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/irklar",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"irklar"
+							]
+						},
+						"description": "Sistemdeki tüm hayvan ırklarını listeler"
+					},
+					"response": []
+				},
+				{
+					"name": "Türe Göre Irkları Listele",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/irklar/tur/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"irklar",
+								"tur",
+								"1"
+							]
+						},
+						"description": "Belirli bir türe ait ırkları listeler"
+					},
+					"response": []
+				}
+			],
+			"description": "Hayvanların türleri ve ırkları ile ilgili işlemleri içerir"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "adminToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+} 
