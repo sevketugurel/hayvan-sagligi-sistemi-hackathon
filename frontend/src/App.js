@@ -4,6 +4,9 @@ import './App.css';
 
 // Pages
 import LoginPage from './pages/LoginPage';
+import VetDashboard from './pages/VetDashboard';
+import OwnerAnimals from './pages/OwnerAnimals';
+import AnimalDetails from './pages/AnimalDetails';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -20,19 +23,6 @@ const Dashboard = () => {
       <div className="dashboard-container">
         <h1>Dashboard</h1>
         <p>Hoş geldiniz! Burası dashboard sayfasıdır.</p>
-      </div>
-    </>
-  );
-};
-
-// Veteriner özel dashboard - gerçek uygulama için ayrı bir dosyada oluşturulacak
-const VetDashboard = () => {
-  return (
-    <>
-      <NavBar />
-      <div className="dashboard-container">
-        <h1>Veteriner Dashboard</h1>
-        <p>Hoş geldiniz! Burası veterinerlere özel dashboard sayfasıdır.</p>
       </div>
     </>
   );
@@ -96,6 +86,8 @@ function App() {
                 requiredPermission="animal:view" 
               />}>
               <Route path="/vet-dashboard" element={<VetDashboard />} />
+              <Route path="/owner-animals/:ownerId" element={<OwnerAnimals />} />
+              <Route path="/animal-details/:animalId" element={<AnimalDetails />} />
               <Route path="/animals" element={<VetDashboard />} />
               <Route path="/treatments" element={<VetDashboard />} />
             </Route>
