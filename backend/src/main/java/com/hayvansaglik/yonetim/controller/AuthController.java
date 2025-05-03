@@ -1,14 +1,17 @@
 package com.hayvansaglik.yonetim.controller;
 
-import com.hayvansaglik.yonetim.model.Role;
-import com.hayvansaglik.yonetim.model.Role.ERole;
-import com.hayvansaglik.yonetim.model.User;
+import com.hayvansaglik.yonetim.model.Kullanici;
+import com.hayvansaglik.yonetim.model.Personel;
+import com.hayvansaglik.yonetim.model.PersonelRol;
+import com.hayvansaglik.yonetim.model.PersonelRolId;
+import com.hayvansaglik.yonetim.model.Rol;
 import com.hayvansaglik.yonetim.payload.request.LoginRequest;
 import com.hayvansaglik.yonetim.payload.request.SignupRequest;
 import com.hayvansaglik.yonetim.payload.response.JwtResponse;
 import com.hayvansaglik.yonetim.payload.response.MessageResponse;
-import com.hayvansaglik.yonetim.repository.RoleRepository;
-import com.hayvansaglik.yonetim.repository.UserRepository;
+import com.hayvansaglik.yonetim.repository.KullaniciRepository;
+import com.hayvansaglik.yonetim.repository.PersonelRepository;
+import com.hayvansaglik.yonetim.repository.RolRepository;
 import com.hayvansaglik.yonetim.security.JwtTokenProvider;
 import com.hayvansaglik.yonetim.security.UserPrincipal;
 import jakarta.validation.Valid;
@@ -21,6 +24,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,10 +39,13 @@ public class AuthController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserRepository userRepository;
+    private KullaniciRepository kullaniciRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    private PersonelRepository personelRepository;
+
+    @Autowired
+    private RolRepository rolRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -73,77 +81,92 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        // Check if username already exists
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
+        // Kullanıcı adı kontrolü
+        if (kullaniciRepository.existsByKullaniciAdi(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new MessageResponse("Hata: Bu kullanıcı adı zaten kullanılıyor!"));
         }
 
-        // Check if email already exists
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
-        }
-
-        // Create new user
-        User user = new User(
-                signUpRequest.getUsername(),
-                signUpRequest.getEmail(),
-                passwordEncoder.encode(signUpRequest.getPassword())
-        );
-
-        user.setFirstName(signUpRequest.getFirstName());
-        user.setLastName(signUpRequest.getLastName());
-        user.setPhone(signUpRequest.getPhone());
-
+        // Personel oluşturma
+        final Personel personel = new Personel();
+        personel.setAd(signUpRequest.getFirstName());
+        personel.setSoyad(signUpRequest.getLastName());
+        personel.setEPosta(signUpRequest.getEmail());
+        personel.setTelefon(signUpRequest.getPhone());
+        personel.setIseBaslamaTarihi(LocalDate.now());
+        personel.setAktif(true);
+        
+        // Personel kaydedilmesi
+        personelRepository.save(personel);
+        
+        // Kullanıcı oluşturma
+        Kullanici kullanici = new Kullanici();
+        kullanici.setKullaniciAdi(signUpRequest.getUsername());
+        kullanici.setParolaHash(passwordEncoder.encode(signUpRequest.getPassword()));
+        kullanici.setPersonel(personel);
+        kullanici.setOlusturmaTarihi(LocalDateTime.now());
+        
+        // Kullanıcı kaydedilmesi
+        kullaniciRepository.save(kullanici);
+        
+        // Rol atama işlemi
         Set<String> strRoles = signUpRequest.getRoles();
-        Set<Role> roles = new HashSet<>();
-
+        
         if (strRoles == null || strRoles.isEmpty()) {
-            Role userRole = roleRepository.findByName(ERole.ROLE_SAHIP)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
+            // Varsayılan rol atama (SAHIP)
+            Rol sahipRol = rolRepository.findByAd("SAHIP")
+                    .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
+            
+            PersonelRol personelRol = new PersonelRol();
+            PersonelRolId rolId = new PersonelRolId(personel.getId(), sahipRol.getId());
+            personelRol.setId(rolId);
+            personelRol.setPersonel(personel);
+            personelRol.setRol(sahipRol);
+            
+            personel.getPersonelRoller().add(personelRol);
+            personelRepository.save(personel);
         } else {
             strRoles.forEach(role -> {
+                Rol userRole;
                 switch (role) {
                     case "admin":
-                        Role adminRole = roleRepository.findByName(ERole.ROLE_ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
+                        userRole = rolRepository.findByAd("ADMIN")
+                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
                         break;
                     case "veteriner":
-                        Role vetRole = roleRepository.findByName(ERole.ROLE_VETERINER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(vetRole);
+                        userRole = rolRepository.findByAd("VETERINER")
+                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
                         break;
                     case "laborant":
-                        Role labRole = roleRepository.findByName(ERole.ROLE_LABORANT)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(labRole);
+                        userRole = rolRepository.findByAd("LABORANT")
+                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
                         break;
                     case "hemsire":
-                        Role nurseRole = roleRepository.findByName(ERole.ROLE_HEMSIRE)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(nurseRole);
+                        userRole = rolRepository.findByAd("HEMSIRE")
+                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
                         break;
                     case "muhasebe":
-                        Role accountantRole = roleRepository.findByName(ERole.ROLE_MUHASEBE)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(accountantRole);
+                        userRole = rolRepository.findByAd("MUHASEBE")
+                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
                         break;
                     default:
-                        Role userRole = roleRepository.findByName(ERole.ROLE_SAHIP)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
+                        userRole = rolRepository.findByAd("SAHIP")
+                                .orElseThrow(() -> new RuntimeException("Hata: Rol bulunamadı."));
                 }
+                
+                PersonelRol personelRol = new PersonelRol();
+                PersonelRolId rolId = new PersonelRolId(personel.getId(), userRole.getId());
+                personelRol.setId(rolId);
+                personelRol.setPersonel(personel);
+                personelRol.setRol(userRole);
+                
+                personel.getPersonelRoller().add(personelRol);
             });
+            
+            personelRepository.save(personel);
         }
 
-        user.setRoles(roles);
-        userRepository.save(user);
-
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new MessageResponse("Kullanıcı başarıyla kaydedildi!"));
     }
 } 

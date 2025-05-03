@@ -11,11 +11,15 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HayvanResponse {
+    
     private Integer id;
+    private Integer sahipId;
+    private String sahipAdSoyad;
     private String ad;
-    private SahipResponse sahip;
-    private TurResponse tur;
-    private IrkResponse irk;
+    private Integer turId;
+    private String turAd;
+    private Integer irkId;
+    private String irkAd;
     private String cinsiyet;
     private LocalDate dogumTarihi;
     private BigDecimal kilo;
@@ -23,6 +27,4 @@ public class HayvanResponse {
     private String mikrocipNo;
     private String alerjiler;
     private String kronikHastaliklar;
-    private Integer yasYil;
-    private Integer yasAy;
 } 

@@ -8,6 +8,6 @@ import lombok.Data;
 public class RolRequest {
     
     @NotBlank(message = "Rol adı boş olamaz")
-    @Size(min = 2, max = 50, message = "Rol adı 2-50 karakter arasında olmalıdır")
+    @Size(min = 2, max = 50, message = "Rol adı en az 2, en fazla 50 karakter olmalıdır")
     private String ad;
 } 

@@ -2,10 +2,8 @@ package com.hayvansaglik.yonetim.controller;
 
 import com.hayvansaglik.yonetim.model.Rol;
 import com.hayvansaglik.yonetim.payload.request.RolRequest;
-import com.hayvansaglik.yonetim.payload.response.ApiResponse;
 import com.hayvansaglik.yonetim.payload.response.RolResponse;
 import com.hayvansaglik.yonetim.service.RolService;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/rol")
+@RequestMapping("/api/roller")
+@CrossOrigin(origins = "*", maxAge = 3600)
 public class RolController {
     
     private final RolService rolService;
@@ -26,70 +25,67 @@ public class RolController {
         this.rolService = rolService;
     }
     
-    // Tüm rolleri getir
     @GetMapping
-    public ResponseEntity<ApiResponse> getAllRoller() {
-        List<Rol> roller = rolService.findAll();
-        List<RolResponse> rolResponses = roller.stream()
-                .map(rol -> new RolResponse(rol.getId(), rol.getAd()))
+    public ResponseEntity<List<RolResponse>> tumRolleriGetir() {
+        List<RolResponse> rolResponseList = rolService.findAll()
+                .stream()
+                .map(this::mapToRolResponse)
                 .collect(Collectors.toList());
         
-        return ResponseEntity.ok(new ApiResponse(true, "Roller başarıyla getirildi", rolResponses));
+        return ResponseEntity.ok(rolResponseList);
     }
     
-    // ID'ye göre rol getir
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> getRolById(@PathVariable Integer id) {
-        try {
-            Rol rol = rolService.findById(id);
-            RolResponse rolResponse = new RolResponse(rol.getId(), rol.getAd());
-            return ResponseEntity.ok(new ApiResponse(true, "Rol başarıyla getirildi", rolResponse));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse(false, e.getMessage()));
-        }
+    public ResponseEntity<RolResponse> rolGetir(@PathVariable Integer id) {
+        Rol rol = rolService.findById(id);
+        return ResponseEntity.ok(mapToRolResponse(rol));
     }
     
-    // Yeni rol oluştur
+    @GetMapping("/ad/{ad}")
+    public ResponseEntity<RolResponse> adaGoreRolGetir(@PathVariable String ad) {
+        return rolService.findByAd(ad)
+                .map(rol -> ResponseEntity.ok(mapToRolResponse(rol)))
+                .orElse(ResponseEntity.notFound().build());
+    }
+    
     @PostMapping
-    public ResponseEntity<ApiResponse> createRol(@Valid @RequestBody RolRequest rolRequest) {
+    public ResponseEntity<RolResponse> rolOlustur(@Valid @RequestBody RolRequest rolRequest) {
+        Rol rol = mapToRol(rolRequest);
+        Rol kaydedilmisRol = rolService.save(rol);
+        return new ResponseEntity<>(mapToRolResponse(kaydedilmisRol), HttpStatus.CREATED);
+    }
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<RolResponse> rolGuncelle(@PathVariable Integer id, 
+                                      @Valid @RequestBody RolRequest rolRequest) {
         Rol rol = new Rol();
         rol.setAd(rolRequest.getAd());
         
-        Rol savedRol = rolService.save(rol);
-        RolResponse rolResponse = new RolResponse(savedRol.getId(), savedRol.getAd());
-        
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new ApiResponse(true, "Rol başarıyla oluşturuldu", rolResponse));
+        Rol guncellenmisRol = rolService.update(id, rol);
+        return ResponseEntity.ok(mapToRolResponse(guncellenmisRol));
     }
     
-    // Rol güncelle
-    @PutMapping("/{id}")
-    public ResponseEntity<ApiResponse> updateRol(@PathVariable Integer id, 
-                                                @Valid @RequestBody RolRequest rolRequest) {
-        try {
-            Rol rolDetails = new Rol();
-            rolDetails.setAd(rolRequest.getAd());
-            
-            Rol updatedRol = rolService.update(id, rolDetails);
-            RolResponse rolResponse = new RolResponse(updatedRol.getId(), updatedRol.getAd());
-            
-            return ResponseEntity.ok(new ApiResponse(true, "Rol başarıyla güncellendi", rolResponse));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse(false, e.getMessage()));
-        }
-    }
-    
-    // Rol sil
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteRol(@PathVariable Integer id) {
-        try {
-            rolService.delete(id);
-            return ResponseEntity.ok(new ApiResponse(true, "Rol başarıyla silindi"));
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ApiResponse(false, e.getMessage()));
-        }
+    public ResponseEntity<Void> rolSil(@PathVariable Integer id) {
+        rolService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+    
+    // RolRequest'ten Rol nesnesine dönüştürme
+    private Rol mapToRol(RolRequest rolRequest) {
+        Rol rol = new Rol();
+        rol.setAd(rolRequest.getAd());
+        
+        return rol;
+    }
+    
+    // Rol nesnesinden RolResponse nesnesine dönüştürme
+    private RolResponse mapToRolResponse(Rol rol) {
+        RolResponse response = new RolResponse();
+        
+        response.setId(rol.getId());
+        response.setAd(rol.getAd());
+        
+        return response;
     }
 } 

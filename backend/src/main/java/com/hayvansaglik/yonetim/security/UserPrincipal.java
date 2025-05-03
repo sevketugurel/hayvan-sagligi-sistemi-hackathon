@@ -1,7 +1,8 @@
 package com.hayvansaglik.yonetim.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.hayvansaglik.yonetim.model.User;
+import com.hayvansaglik.yonetim.model.Kullanici;
+import com.hayvansaglik.yonetim.model.PersonelRol;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +13,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserPrincipal implements UserDetails {
-    private Long id;
+    private Integer id;
     private String name;
     private String username;
     private String email;
@@ -22,7 +23,7 @@ public class UserPrincipal implements UserDetails {
     
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String name, String username, String email, String password, 
+    public UserPrincipal(Integer id, String name, String username, String email, String password, 
                          Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.name = name;
@@ -32,27 +33,27 @@ public class UserPrincipal implements UserDetails {
         this.authorities = authorities;
     }
 
-    public static UserPrincipal create(User user) {
-        List<GrantedAuthority> authorities = user.getRoles().stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName().name()))
+    public static UserPrincipal create(Kullanici kullanici) {
+        List<GrantedAuthority> authorities = kullanici.getPersonel().getPersonelRoller().stream()
+                .map(personelRol -> new SimpleGrantedAuthority("ROLE_" + personelRol.getRol().getAd().toUpperCase()))
                 .collect(Collectors.toList());
 
-        // Combining firstName and lastName to create a full name
-        String fullName = (user.getFirstName() != null ? user.getFirstName() : "") + 
-                          (user.getLastName() != null ? " " + user.getLastName() : "");
+        // Personel'in adı ve soyadını birleştirme
+        String fullName = (kullanici.getPersonel().getAd() != null ? kullanici.getPersonel().getAd() : "") + 
+                          (kullanici.getPersonel().getSoyad() != null ? " " + kullanici.getPersonel().getSoyad() : "");
         fullName = fullName.trim();
         
         return new UserPrincipal(
-                user.getId(),
+                kullanici.getId(),
                 fullName,
-                user.getUsername(),
-                user.getEmail(),
-                user.getPassword(),
+                kullanici.getKullaniciAdi(),
+                kullanici.getPersonel().getEPosta(),
+                kullanici.getParolaHash(),
                 authorities
         );
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 

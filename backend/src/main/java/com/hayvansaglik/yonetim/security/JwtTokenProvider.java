@@ -33,14 +33,14 @@ public class JwtTokenProvider {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
 
         return Jwts.builder()
-                .setSubject(Long.toString(userPrincipal.getId()))
+                .setSubject(Integer.toString(userPrincipal.getId()))
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
                 .signWith(key)
                 .compact();
     }
 
-    public Long getUserIdFromJWT(String token) {
+    public Integer getUserIdFromJWT(String token) {
         Key key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
@@ -48,7 +48,7 @@ public class JwtTokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        return Long.parseLong(claims.getSubject());
+        return Integer.parseInt(claims.getSubject());
     }
 
     public boolean validateToken(String authToken) {

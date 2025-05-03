@@ -1,7 +1,7 @@
 package com.hayvansaglik.yonetim.security;
 
-import com.hayvansaglik.yonetim.model.User;
-import com.hayvansaglik.yonetim.repository.UserRepository;
+import com.hayvansaglik.yonetim.model.Kullanici;
+import com.hayvansaglik.yonetim.repository.KullaniciRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,22 +13,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private KullaniciRepository kullaniciRepository;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+        Kullanici kullanici = kullaniciRepository.findByKullaniciAdi(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı: " + username));
 
-        return UserPrincipal.create(user);
+        return UserPrincipal.create(kullanici);
     }
 
     @Transactional
-    public UserDetails loadUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with id: " + id));
+    public UserDetails loadUserById(Integer id) {
+        Kullanici kullanici = kullaniciRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Kullanıcı bulunamadı, ID: " + id));
 
-        return UserPrincipal.create(user);
+        return UserPrincipal.create(kullanici);
     }
 } 

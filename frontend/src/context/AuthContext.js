@@ -5,10 +5,12 @@ const AuthContext = createContext(null);
 
 // Kullanıcı rollerine göre izin kontrol işlemleri
 const PERMISSIONS = {
-  vet: ['dashboard:view', 'animal:view', 'animal:update', 'treatment:create', 'treatment:update', 'prescription:create'],
+  veteriner: ['dashboard:view', 'animal:view', 'animal:update', 'treatment:create', 'treatment:update', 'prescription:create'],
   admin: ['dashboard:view', 'users:view', 'users:create', 'users:update', 'users:delete', 'animal:view', 'animal:update', 'system:settings'],
-  petOwner: ['myPets:view', 'myPets:history'],
-  technician: ['dashboard:view', 'animal:view', 'treatment:view'],
+  sahip: ['myPets:view', 'myPets:history'],
+  laborant: ['dashboard:view', 'animal:view', 'labTests:manage'],
+  hemsire: ['dashboard:view', 'animal:view', 'treatment:assist'],
+  muhasebe: ['dashboard:view', 'finances:view', 'invoices:manage'],
 };
 
 export const AuthProvider = ({ children }) => {
@@ -24,7 +26,6 @@ export const AuthProvider = ({ children }) => {
         
         if (token) {
           // Token'ı kullanarak kullanıcı bilgilerini al
-          // Not: Bu kısım backend API'ye göre düzenlenmelidir
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           
           const userInfo = JSON.parse(localStorage.getItem('userInfo'));
@@ -32,7 +33,7 @@ export const AuthProvider = ({ children }) => {
           
           // Kullanıcı rolüne göre izinleri ayarla
           if (userInfo && userInfo.role) {
-            setUserPermissions(PERMISSIONS[userInfo.role] || []);
+            setUserPermissions(PERMISSIONS[userInfo.role.toLowerCase()] || []);
           }
         }
       } catch (error) {
@@ -50,16 +51,20 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Login fonksiyonu
-  const login = async (credentials, type = 'tc') => {
+  const login = async (credentials) => {
     try {
       const response = await axios.post('http://localhost:8080/api/auth/signin', credentials);
       
       const { token, id, username, email, roles } = response.data;
+      
+      // Rol için format düzeltme (ROLE_ önekini kaldır ve küçük harfe çevir)
+      const mainRole = roles.length > 0 ? roles[0].replace('ROLE_', '').toLowerCase() : '';
+      
       const user = {
         id,
         username,
         email,
-        role: roles[0].replace('ROLE_', '').toLowerCase()
+        role: mainRole
       };
       
       // Token'ı ve kullanıcı bilgisini localStorage'a kaydet
@@ -73,7 +78,7 @@ export const AuthProvider = ({ children }) => {
       setCurrentUser(user);
       
       // Kullanıcı role'üne göre izinleri set et
-      setUserPermissions(PERMISSIONS[user.role] || []);
+      setUserPermissions(PERMISSIONS[mainRole] || []);
       
       return { success: true };
     } catch (error) {
