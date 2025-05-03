@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   mssql:
     container_name: mssql-hayvansaglik

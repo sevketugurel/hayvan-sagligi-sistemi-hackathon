@@ -27,12 +27,6 @@ export const AuthProvider = ({ children }) => {
           // Not: Bu kısım backend API'ye göre düzenlenmelidir
           axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
           
-          // Örnek API çağrısı - gerçek endpoint'e göre değiştirilmelidir
-          // const response = await axios.get('/api/auth/me');
-          // setCurrentUser(response.data);
-          
-          // Geçici olarak token'dan user bilgisini çıkarıyoruz
-          // Backend entegrasyonunda bu kısım güncellenecek
           const userInfo = JSON.parse(localStorage.getItem('userInfo'));
           setCurrentUser(userInfo);
           
@@ -58,42 +52,15 @@ export const AuthProvider = ({ children }) => {
   // Login fonksiyonu
   const login = async (credentials, type = 'tc') => {
     try {
-      // Örnek API çağrısı - gerçek endpoint'e göre değiştirilmelidir
-      // const response = await axios.post('/api/auth/login', { ...credentials, type });
+      const response = await axios.post('http://localhost:8080/api/auth/signin', credentials);
       
-      // Simüle edilmiş başarılı login (Backend entegrasyonunda güncellenecek)
-      // Gerçek uygulamada, bu bilgiler API'den gelecek
-      const mockResponses = {
-        tc: {
-          data: {
-            token: 'sample-jwt-token-for-tc',
-            user: {
-              id: 1,
-              name: 'Dr. Ahmet Yılmaz',
-              role: 'vet',
-              tcKimlikNo: credentials.username,
-              veterinerOdaNo: 'VET12345',
-              email: 'ahmet.yilmaz@vet.example.com'
-            }
-          }
-        },
-        username: {
-          data: {
-            token: 'sample-jwt-token-for-username',
-            user: {
-              id: 2,
-              name: 'Admin Kullanıcı',
-              role: 'admin',
-              username: credentials.username,
-              email: 'admin@example.com'
-            }
-          }
-        }
+      const { token, id, username, email, roles } = response.data;
+      const user = {
+        id,
+        username,
+        email,
+        role: roles[0].replace('ROLE_', '').toLowerCase()
       };
-
-      // Login tipine göre farklı yanıtlar dönelim
-      const mockResponse = mockResponses[type] || mockResponses.username;
-      const { token, user } = mockResponse.data;
       
       // Token'ı ve kullanıcı bilgisini localStorage'a kaydet
       localStorage.setItem('authToken', token);

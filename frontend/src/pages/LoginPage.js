@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import '../styles/LoginPage.css';
 import veterinerImage from '../assets/images/veteriner.png';
 import { useAuth } from '../context/AuthContext';
+import axios from 'axios';
 
 // Temporarily define base64 fallbacks until we fix the proper imports
 const petOwnerImageBase64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=';
@@ -112,7 +113,7 @@ const LoginPage = () => {
     }
   };
 
-  const handlePetOwnerLookup = (e) => {
+  const handlePetOwnerLookup = async (e) => {
     e.preventDefault();
     setLoginError('');
     setIsLoading(true);
@@ -124,13 +125,22 @@ const LoginPage = () => {
       return;
     }
 
-    // Backend entegrasyonu burada yapılacak
-    setTimeout(() => {
-      // Simüle edilmiş başarılı sorgu
+    try {
+      const response = await axios.get(`http://localhost:8080/api/animals/chip/${chipNumber}`);
       setIsLoading(false);
-      setLoginSuccess(true);
-      console.log('Hayvan sorgu:', chipNumber);
-    }, 1500);
+      
+      if (response.data) {
+        setLoginSuccess(true);
+        setTimeout(() => {
+          navigate(`/animals/${chipNumber}`, { replace: true });
+        }, 1500);
+      } else {
+        setLoginError('Hayvan bulunamadı. Lütfen çip numarasını kontrol ediniz.');
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setLoginError('Sorgu sırasında bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+    }
   };
 
   const formatChipNumber = (value) => {
