@@ -1,0 +1,52 @@
+services:
+  mssql:
+    container_name: mssql-hayvansaglik
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=StrongPassword123!
+      - MSSQL_PID=Developer
+    volumes:
+      - ./init-db.sql:/init-db.sql
+      - mssql-data:/var/opt/mssql
+    command: /bin/bash -c "(/opt/mssql/bin/sqlservr &) && sleep 45 && /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P StrongPassword123! -i /init-db.sql -C -N -t 60 && tail -f /dev/null"
+    restart: unless-stopped
+    networks:
+      - hayvansaglik-network
+
+  adminer:
+    container_name: hayvansaglik-adminer
+    image: adminer:latest
+    restart: always
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mssql
+    networks:
+      - hayvansaglik-network
+  
+  backend:
+    container_name: hayvansaglik-backend
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mssql
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://mssql-hayvansaglik:1433;databaseName=hayvansaglikdb;encrypt=false;trustServerCertificate=true
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=StrongPassword123!
+    networks:
+      - hayvansaglik-network
+    restart: unless-stopped
+
+networks:
+  hayvansaglik-network:
+    driver: bridge 
+
+volumes:
+  mssql-data: 
