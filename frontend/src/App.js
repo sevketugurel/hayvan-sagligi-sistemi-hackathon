@@ -4,6 +4,7 @@ import './App.css';
 
 // Pages
 import LoginPage from './pages/LoginPage';
+import VeterinerDashboard from './pages/VeterinerDashboard';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -12,7 +13,7 @@ import NavBar from './components/NavBar';
 // Context
 import { AuthProvider } from './context/AuthContext';
 
-// Geçici Dashboard bileşeni - gerçek uygulama için ayrı bir dosyada oluşturulacak
+// Geçici Dashboard bileşeni
 const Dashboard = () => {
   return (
     <>
@@ -64,7 +65,7 @@ const UserManagement = () => {
   );
 };
 
-// Geçici Unauthorized bileşeni - gerçek uygulama için ayrı bir dosyada oluşturulacak
+// Geçici Unauthorized bileşeni
 const Unauthorized = () => {
   return (
     <div className="unauthorized-container">
@@ -83,45 +84,43 @@ function App() {
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
-            
-            {/* Protected Routes - Herhangi bir authentication gerektiren rotalar */}
+
+            {/* Veteriner Dashboard - Veteriner rolü gerektirir */}
+            <Route element={<PrivateRoute
+              requiredRole="vet"
+              requiredPermission="animal:view"
+            />}>
+              <Route path="/vet-dashboard" element={<VeterinerDashboard />} />
+            </Route>
+
+            {/* Protected Routes */}
             <Route element={<PrivateRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              {/* Add more private routes here */}
+              <Route path="/dashboard" element={<VeterinerDashboard />} />
+              {/* Buraya daha fazla route eklenebilir */}
             </Route>
-            
-            {/* Veteriner Rotaları - Veteriner rolü ve animal:view izni gerektirir */}
-            <Route element={<PrivateRoute 
-                requiredRole="vet" 
-                requiredPermission="animal:view" 
-              />}>
-              <Route path="/vet-dashboard" element={<VetDashboard />} />
-              <Route path="/animals" element={<VetDashboard />} />
-              <Route path="/treatments" element={<VetDashboard />} />
-            </Route>
-            
+
             {/* Teknisyen Rotaları - Teknisyen veya veteriner rolüne sahip olmalı */}
-            <Route element={<PrivateRoute 
-                requiredRole={['technician', 'vet']} 
-                requiredPermission="animal:view" 
-              />}>
+            <Route element={<PrivateRoute
+              requiredRole={['technician', 'vet']}
+              requiredPermission="animal:view"
+            />}>
               <Route path="/animal-records" element={<Dashboard />} />
             </Route>
-            
+
             {/* Admin Rotaları - Admin rolü gerektirir */}
             <Route element={<PrivateRoute requiredRole="admin" />}>
               <Route path="/admin" element={<AdminPanel />} />
             </Route>
-            
+
             {/* Kullanıcı Yönetimi - Admin rolü VE users:view iznine sahip olmalı */}
-            <Route element={<PrivateRoute 
-                requiredRole="admin" 
-                requiredPermission={['users:view', 'users:update']} 
-              />}>
+            <Route element={<PrivateRoute
+              requiredRole="admin"
+              requiredPermission={['users:view', 'users:update']}
+            />}>
               <Route path="/users" element={<UserManagement />} />
             </Route>
-            
-            {/* Redirect to login page for undefined routes */}
+
+            {/* Default yönlendirmeler */}
             <Route path="/" element={<Navigate to="/dashboard" />} />
             <Route path="*" element={<Navigate to="/login" />} />
           </Routes>
