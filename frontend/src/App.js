@@ -13,6 +13,7 @@ import SearchPage from './pages/SearchPage';
 import Vaccines from './pages/Vaccines';
 import FormsPage from './pages/forms/FormsPage';
 import NewPatient from './pages/NewPatient';
+import Medications from './pages/Medications';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -88,6 +89,7 @@ function App() {
             <Route path="/animal-details/:animalId" element={<AnimalDetails />} />
             <Route path="/search" element={<SearchPage />} />
             <Route path="/vaccines" element={<Vaccines />} />
+            <Route path="/medications" element={<Medications />} />
             <Route path="/animals" element={<VeterinerDashboard />} />
             <Route path="/treatments" element={<VeterinerDashboard />} />
             <Route path="/animal-records" element={<Dashboard />} />
