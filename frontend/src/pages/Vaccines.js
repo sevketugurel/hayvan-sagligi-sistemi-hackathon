@@ -15,6 +15,7 @@ const Vaccines = () => {
   const [filterBreed, setFilterBreed] = useState('all');
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedAnimalInfo, setSelectedAnimalInfo] = useState(null);
+  const [lowStockNotifications, setLowStockNotifications] = useState([]);
 
   // Hayvan türüne göre ırkları tanımlama
   const breedsByAnimalType = {
@@ -34,7 +35,7 @@ const Vaccines = () => {
           {
             id: 1,
             name: 'Kuduz Aşısı',
-            stockAmount: 45,
+            stockAmount: 6,
             manufacturer: 'VetBioTech',
             expiryDate: '2024-11-15',
             minimalAge: 3,
@@ -49,7 +50,7 @@ const Vaccines = () => {
           {
             id: 2,
             name: 'Parvovirüs Aşısı',
-            stockAmount: 28,
+            stockAmount: 3,
             manufacturer: 'PetVax',
             expiryDate: '2024-09-20',
             minimalAge: 2,
@@ -124,7 +125,7 @@ const Vaccines = () => {
           {
             id: 7,
             name: 'Leptospiroz Aşısı',
-            stockAmount: 18,
+            stockAmount: 4,
             manufacturer: 'VetBioTech',
             expiryDate: '2024-11-30',
             minimalAge: 4,
@@ -260,6 +261,21 @@ const Vaccines = () => {
 
         setVaccines(mockVaccines);
         setFilteredVaccines(mockVaccines);
+
+        // Stok kontrolü yap ve bildirim oluştur
+        const lowStockItems = mockVaccines.filter(vaccine => vaccine.stockAmount < 10);
+        if (lowStockItems.length > 0) {
+          const notifications = lowStockItems.map(vaccine => ({
+            id: vaccine.id,
+            message: `${vaccine.name} stok seviyesi kritik: ${vaccine.stockAmount} adet kaldı!`,
+            date: new Date().toLocaleDateString()
+          }));
+          setLowStockNotifications(notifications);
+
+          // Bildirim sistemine gönder (mock işlem)
+          console.log("Düşük aşı stok bildirimleri:", notifications);
+        }
+
         setIsLoading(false);
       } catch (error) {
         console.error('Aşı bilgileri yüklenirken hata:', error);
@@ -346,6 +362,113 @@ const Vaccines = () => {
     return 'normal';
   };
 
+  // Stok durumuna göre renk sınıfı belirle
+  const getStockStatusClass = (amount) => {
+    if (amount < 10) return 'low-stock';
+    if (amount < 20) return 'medium-stock';
+    return 'good-stock';
+  };
+
+  // Yeni aşı ekleme fonksiyonu
+  const [newVaccine, setNewVaccine] = useState({
+    name: '',
+    manufacturer: '',
+    stockAmount: 0,
+    expiryDate: '',
+    minimalAge: 0,
+    dosage: '',
+    animalTypes: [],
+    applicableBreeds: [],
+    protectsAgainst: [],
+    sideEffects: '',
+    price: 0,
+    notes: ''
+  });
+
+  // Form alanlarını güncelleme
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewVaccine({
+      ...newVaccine,
+      [name]: value
+    });
+  };
+
+  // Çoklu seçim alanlarını güncelleme
+  const handleMultiSelect = (name, value) => {
+    if (name === 'animalTypes') {
+      const updatedTypes = [...newVaccine.animalTypes];
+      if (updatedTypes.includes(value)) {
+        const index = updatedTypes.indexOf(value);
+        updatedTypes.splice(index, 1);
+      } else {
+        updatedTypes.push(value);
+      }
+      setNewVaccine({
+        ...newVaccine,
+        animalTypes: updatedTypes
+      });
+    } else if (name === 'protectsAgainst') {
+      setNewVaccine({
+        ...newVaccine,
+        protectsAgainst: value.split(',').map(item => item.trim()).filter(item => item !== '')
+      });
+    }
+  };
+
+  // Yeni aşı kaydetme işlemi
+  const handleSaveVaccine = () => {
+    // Form doğrulama
+    if (!newVaccine.name || !newVaccine.manufacturer || newVaccine.animalTypes.length === 0) {
+      alert('Lütfen gerekli alanları doldurun: Aşı Adı, Üretici ve Hayvan Türleri');
+      return;
+    }
+
+    // Yeni ID oluştur
+    const newId = Math.max(...vaccines.map(v => v.id), 0) + 1;
+
+    // Yeni aşı nesnesi
+    const vaccineToAdd = {
+      ...newVaccine,
+      id: newId,
+      stockAmount: parseInt(newVaccine.stockAmount),
+      minimalAge: parseInt(newVaccine.minimalAge),
+      price: parseInt(newVaccine.price)
+    };
+
+    // Mevcut aşılara ekle
+    const updatedVaccines = [...vaccines, vaccineToAdd];
+    setVaccines(updatedVaccines);
+    setFilteredVaccines(updatedVaccines);
+
+    // Stok kontrolü
+    if (vaccineToAdd.stockAmount < 10) {
+      const newNotification = {
+        id: vaccineToAdd.id,
+        message: `${vaccineToAdd.name} stok seviyesi kritik: ${vaccineToAdd.stockAmount} adet kaldı!`,
+        date: new Date().toLocaleDateString()
+      };
+      setLowStockNotifications([...lowStockNotifications, newNotification]);
+    }
+
+    // Modalı kapat ve formu sıfırla
+    setShowAddModal(false);
+    setNewVaccine({
+      name: '',
+      manufacturer: '',
+      stockAmount: 0,
+      expiryDate: '',
+      minimalAge: 0,
+      dosage: '',
+      animalTypes: [],
+      applicableBreeds: [],
+      protectsAgainst: [],
+      sideEffects: '',
+      price: 0,
+      notes: ''
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -405,74 +528,91 @@ const Vaccines = () => {
             >
               Aşı Geçmişi
             </button>
+            <button
+              className={`tab-btn ${activeTab === 'notifications' ? 'active' : ''}`}
+              onClick={() => setActiveTab('notifications')}
+            >
+              Stok Bildirimleri
+              {lowStockNotifications.length > 0 && (
+                <span className="notification-badge">{lowStockNotifications.length}</span>
+              )}
+            </button>
           </div>
 
-          <div className="filters-section">
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Aşı adı, üretici veya hastalık ara..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
-              />
-              <button className="search-btn">
-                <i className="fas fa-search"></i>
-              </button>
-            </div>
-
-            <div className="filter-group">
-              <div className="animal-filter">
-                <label>Hayvan Türü:</label>
-                <select
-                  value={filterAnimalType}
-                  onChange={(e) => {
-                    setFilterAnimalType(e.target.value);
-                    if (activeTab === 'usage') {
-                      showAnimalVaccineInfo(e.target.value);
-                    }
-                  }}
-                  className="animal-select"
-                >
-                  <option value="all">Tümü</option>
-                  <option value="Köpek">Köpek</option>
-                  <option value="Kedi">Kedi</option>
-                  <option value="Küçükbaş">Küçükbaş</option>
-                  <option value="Büyükbaş">Büyükbaş</option>
-                </select>
+          {/* Arama ve filtreleme bölümünü sadece stok bildirimleri sekmesi aktif değilse göster */}
+          {activeTab !== 'notifications' && (
+            <div className="filters-section">
+              <div className="search-container">
+                <input
+                  type="text"
+                  placeholder="Aşı adı, üretici veya hastalık ara..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="search-input"
+                />
+                <button className="search-btn">
+                  <i className="fas fa-search"></i>
+                </button>
               </div>
 
-              {filterAnimalType !== 'all' && breedsByAnimalType[filterAnimalType] && (
-                <div className="breed-filter">
-                  <label>Irk:</label>
+              <div className="filter-group">
+                <div className="animal-filter">
+                  <label>Hayvan Türü:</label>
                   <select
-                    value={filterBreed}
-                    onChange={(e) => setFilterBreed(e.target.value)}
-                    className="breed-select"
+                    value={filterAnimalType}
+                    onChange={(e) => {
+                      setFilterAnimalType(e.target.value);
+                      if (activeTab === 'usage') {
+                        showAnimalVaccineInfo(e.target.value);
+                      }
+                    }}
+                    className="animal-select"
                   >
-                    <option value="all">Tüm Irklar</option>
-                    {breedsByAnimalType[filterAnimalType].map(breed => (
-                      <option key={breed} value={breed}>{breed}</option>
-                    ))}
+                    <option value="all">Tümü</option>
+                    <option value="Köpek">Köpek</option>
+                    <option value="Kedi">Kedi</option>
+                    <option value="Küçükbaş">Küçükbaş</option>
+                    <option value="Büyükbaş">Büyükbaş</option>
                   </select>
                 </div>
-              )}
+
+                {filterAnimalType !== 'all' && breedsByAnimalType[filterAnimalType] && (
+                  <div className="breed-filter">
+                    <label>Irk:</label>
+                    <select
+                      value={filterBreed}
+                      onChange={(e) => setFilterBreed(e.target.value)}
+                      className="breed-select"
+                    >
+                      <option value="all">Tüm Irklar</option>
+                      {breedsByAnimalType[filterAnimalType].map(breed => (
+                        <option key={breed} value={breed}>{breed}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
+        {/* Aşı Stok Bilgisi */}
         {activeTab === 'stock' && (
-          <div className="vaccine-stock-container">
+          <div className="stock-section">
+            <div className="filter-container">
+              {/* ... existing filter content ... */}
+            </div>
+
             <table className="vaccine-table">
               <thead>
                 <tr>
                   <th>Aşı Adı</th>
-                  <th>Stok Miktarı</th>
                   <th>Üretici</th>
-                  <th>Son Kullanma Tarihi</th>
-                  <th>Fiyat (₺)</th>
                   <th>Uygun Türler</th>
-                  <th>Uygun Irklar</th>
+                  <th>Son Kullanma</th>
+                  <th>Doz</th>
+                  <th>Koruma</th>
+                  <th>Stok Durumu</th>
                   <th>İşlemler</th>
                 </tr>
               </thead>
@@ -481,25 +621,22 @@ const Vaccines = () => {
                   filteredVaccines.map(vaccine => (
                     <tr key={vaccine.id}>
                       <td>{vaccine.name}</td>
-                      <td className={`stock-amount ${getStockStatus(vaccine.stockAmount)}`}>
-                        {vaccine.stockAmount}
-                      </td>
                       <td>{vaccine.manufacturer}</td>
-                      <td>{new Date(vaccine.expiryDate).toLocaleDateString('tr-TR')}</td>
-                      <td>{vaccine.price.toFixed(2)}</td>
                       <td>{vaccine.animalTypes.join(', ')}</td>
-                      <td>{vaccine.applicableBreeds.includes('Tüm ırklar')
-                        ? 'Tüm ırklar'
-                        : vaccine.applicableBreeds.join(', ')}</td>
-                      <td className="action-buttons">
-                        <button className="action-btn stok-ekle-btn">
-                          <i className="fas fa-plus-circle"></i>
+                      <td>{vaccine.expiryDate}</td>
+                      <td>{vaccine.dosage}</td>
+                      <td>{vaccine.protectsAgainst.join(', ')}</td>
+                      <td className={getStockStatusClass(vaccine.stockAmount)}>
+                        {vaccine.stockAmount} {vaccine.stockAmount < 10 &&
+                          <i className="fas fa-exclamation-triangle" title="Kritik stok seviyesi!"></i>
+                        }
+                      </td>
+                      <td>
+                        <button className="action-button view" title="Detay Görüntüle">
+                          <i className="fas fa-eye"></i>
                         </button>
-                        <button className="action-btn stok-azalt-btn">
-                          <i className="fas fa-minus-circle"></i>
-                        </button>
-                        <button className="action-btn detay-btn">
-                          <i className="fas fa-info-circle"></i>
+                        <button className="action-button edit" title="Düzenle">
+                          <i className="fas fa-edit"></i>
                         </button>
                       </td>
                     </tr>
@@ -599,7 +736,181 @@ const Vaccines = () => {
             </div>
           </div>
         )}
+
+        {activeTab === 'notifications' && (
+          <div className="notifications-section">
+            <h3>Aşı Stok Bildirim Merkezi</h3>
+            {lowStockNotifications.length > 0 ? (
+              <div className="notifications-list">
+                {lowStockNotifications.map(notification => (
+                  <div key={notification.id} className="notification-item">
+                    <div className="notification-icon">
+                      <i className="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div className="notification-content">
+                      <p className="notification-message">{notification.message}</p>
+                      <span className="notification-time">{notification.date}</span>
+                    </div>
+                    <button className="order-button">Sipariş Ver</button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="no-notifications">Kritik stok seviyesinde aşı bulunmamaktadır.</p>
+            )}
+          </div>
+        )}
       </div>
+
+      {/* Yeni Aşı Ekleme Modal */}
+      {showAddModal && (
+        <div className="modal-overlay">
+          <div className="modal-container">
+            <div className="modal-header">
+              <h3>Yeni Aşı Ekle</h3>
+              <button className="close-button" onClick={() => setShowAddModal(false)}>
+                <i className="fas fa-times"></i>
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Aşı Adı</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={newVaccine.name}
+                    onChange={handleInputChange}
+                    placeholder="Aşı adını girin"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Üretici</label>
+                  <input
+                    type="text"
+                    name="manufacturer"
+                    value={newVaccine.manufacturer}
+                    onChange={handleInputChange}
+                    placeholder="Üretici firma adını girin"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Stok Miktarı</label>
+                  <input
+                    type="number"
+                    name="stockAmount"
+                    value={newVaccine.stockAmount}
+                    onChange={handleInputChange}
+                    min="0"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Son Kullanma Tarihi</label>
+                  <input
+                    type="date"
+                    name="expiryDate"
+                    value={newVaccine.expiryDate}
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Minimum Yaş (ay)</label>
+                  <input
+                    type="number"
+                    name="minimalAge"
+                    value={newVaccine.minimalAge}
+                    onChange={handleInputChange}
+                    min="0"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Doz</label>
+                  <input
+                    type="text"
+                    name="dosage"
+                    value={newVaccine.dosage}
+                    onChange={handleInputChange}
+                    placeholder="Örn: 1 ml"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Hayvan Türleri</label>
+                <div className="checkbox-group">
+                  {['Köpek', 'Kedi', 'Küçükbaş', 'Büyükbaş'].map(type => (
+                    <label key={type} className="checkbox-label">
+                      <input
+                        type="checkbox"
+                        checked={newVaccine.animalTypes.includes(type)}
+                        onChange={() => handleMultiSelect('animalTypes', type)}
+                      />
+                      {type}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Koruduğu Hastalıklar (virgülle ayırın)</label>
+                <textarea
+                  name="protectsAgainst"
+                  value={newVaccine.protectsAgainst.join(', ')}
+                  onChange={(e) => handleMultiSelect('protectsAgainst', e.target.value)}
+                  placeholder="Örn: Kuduz Virüsü, Parvovirüs"
+                  rows="2"
+                ></textarea>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Yan Etkiler</label>
+                  <input
+                    type="text"
+                    name="sideEffects"
+                    value={newVaccine.sideEffects}
+                    onChange={handleInputChange}
+                    placeholder="Yan etkileri girin"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Fiyat (TL)</label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={newVaccine.price}
+                    onChange={handleInputChange}
+                    min="0"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Notlar</label>
+                <textarea
+                  name="notes"
+                  value={newVaccine.notes}
+                  onChange={handleInputChange}
+                  placeholder="Aşı ile ilgili önemli notları buraya yazın"
+                  rows="2"
+                ></textarea>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="cancel-button" onClick={() => setShowAddModal(false)}>İptal</button>
+              <button className="save-button" onClick={handleSaveVaccine}>Kaydet</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

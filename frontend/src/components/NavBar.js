@@ -102,13 +102,14 @@ const NavBar = () => {
                 Aşı Yönetimi
               </Link>
 
+              <Link to="/medications" className={`nav-item ${location.pathname === '/medications' ? 'active' : ''}`}>
+                <i className="fas fa-pills"></i>
+                İlaç Yönetimi
+              </Link>
+
               <Link to="/admin" className={`nav-item ${location.pathname === '/admin' ? 'active' : ''}`}>
                 <i className="fas fa-cog"></i>
                 Admin Panel
-              </Link>
-              <Link to="/users" className={`nav-item ${location.pathname === '/users' ? 'active' : ''}`}>
-                <i className="fas fa-users"></i>
-                Kullanıcı Yönetimi
               </Link>
             </div>
 
