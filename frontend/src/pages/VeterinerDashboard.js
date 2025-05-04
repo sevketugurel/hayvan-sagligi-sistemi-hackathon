@@ -87,33 +87,13 @@ const VeterinerDashboard = () => {
     const [currentUser, setCurrentUser] = useState("Dr. Ahmet Yılmaz");
     const [newMessage, setNewMessage] = useState("");
 
-    // Mesajlar state'i
+    // Mesajlar state'i - Mesaj sayısını yorum satırında belirtilen değerden azaltarak daha iyi görünmesini sağlayalım
     const [messages, setMessages] = useState([
         { id: 1, sender: "Dr. Ahmet Yılmaz", text: "Merhaba, yeni bir vaka hakkında danışmak istiyorum.", isCurrentUser: true },
         { id: 2, sender: "Dr. Ayşe Demir", text: "Tabi, hangi tür vaka?", isCurrentUser: false },
-        { id: 3, sender: "Dr. Ahmet Yılmaz", text: "4 yaşında bir golden retriever, son birkaç gündür iştahsız ve halsiz. Kan tahlillerinde bazı değerler yüksek çıktı.", isCurrentUser: true },
+        { id: 3, sender: "Dr. Ahmet Yılmaz", text: "4 yaşında bir golden retriever, son birkaç gündür iştahsız ve halsiz.", isCurrentUser: true },
         { id: 4, sender: "Dr. Ayşe Demir", text: "Hangi değerler yüksek? Karaciğer enzimleri mi?", isCurrentUser: false },
-        { id: 5, sender: "Dr. Ahmet Yılmaz", text: "Evet, ALT ve ALP değerleri normalin çok üzerinde. Ayrıca lökosit sayısı da artmış durumda.", isCurrentUser: true },
-        { id: 6, sender: "Dr. Ayşe Demir", text: "Ultrason yaptınız mı? Karaciğerde bir problem olabilir.", isCurrentUser: false },
-        { id: 7, sender: "Dr. Ahmet Yılmaz", text: "Hayır, henüz yapmadım. Yarın sabah planlıyordum. Sizce hepatit olabilir mi?", isCurrentUser: true },
-        { id: 8, sender: "Dr. Ayşe Demir", text: "Olabilir, ancak leptospiroz da olabilir. Son zamanlarda temas ettiği diğer hayvanlar var mı?", isCurrentUser: false },
-        { id: 9, sender: "Dr. Ahmet Yılmaz", text: "Sahibi birkaç gün önce parkta başka köpeklerle oynamasına izin verdiğini söyledi. Leptospiroz için test yapmalıyım.", isCurrentUser: true },
-        { id: 10, sender: "Dr. Ayşe Demir", text: "İyi olur. Ayrıca, tedavi olarak antibiyotik başlatmayı ve destekleyici sıvı tedavisi vermeyi düşünebilirsiniz.", isCurrentUser: false },
-        { id: 11, sender: "Dr. Ahmet Yılmaz", text: "Teşekkürler, antibiyotik için öneriniz var mı? Doksisiklin düşünüyorum.", isCurrentUser: true },
-        { id: 12, sender: "Dr. Ayşe Demir", text: "Evet, doksisiklin iyi bir seçenek. Penisilin G de kullanılabilir, ama doksisiklin daha etkili olabilir bu durumda.", isCurrentUser: false },
-        { id: 13, sender: "Dr. Ahmet Yılmaz", text: "Dozaj öneriniz nedir? Kilogram başına?", isCurrentUser: true },
-        { id: 14, sender: "Dr. Ayşe Demir", text: "Doksisiklin için, 5-10 mg/kg günde iki kez, 2 hafta boyunca öneriyorum.", isCurrentUser: false },
-        { id: 15, sender: "Dr. Ahmet Yılmaz", text: "Anladım, bu şekilde başlayacağım. Karaciğer koruyucu da eklemeli miyim?", isCurrentUser: true },
-        { id: 16, sender: "Dr. Ayşe Demir", text: "Kesinlikle, SAMe veya milk thistle içeren bir suplement faydalı olabilir.", isCurrentUser: false },
-        { id: 17, sender: "Dr. Ahmet Yılmaz", text: "Peki ya sıvı tedavisi için özel bir öneriniz var mı?", isCurrentUser: true },
-        { id: 18, sender: "Dr. Ayşe Demir", text: "Ringer laktat veya %0.9 NaCl IV olarak günlük sıvı ihtiyacına göre verebilirsiniz. İlk gün için hafif bir dehidrasyon varsa 60 ml/kg/gün uygundur.", isCurrentUser: false },
-        { id: 19, sender: "Dr. Ahmet Yılmaz", text: "Anladım, çok teşekkür ederim. Tedaviye hemen başlayacağım ve sonuçları sizinle paylaşacağım.", isCurrentUser: true },
-        { id: 20, sender: "Dr. Ayşe Demir", text: "Rica ederim. Hasta durumu hakkında bilgi vermeyi unutmayın. Gerekirse tedavi planını güncelleyebiliriz.", isCurrentUser: false },
-        { id: 21, sender: "Dr. Ahmet Yılmaz", text: "Ayrıca, sahibine hastalığın zoonotik olduğunu da söylemeli miyim?", isCurrentUser: true },
-        { id: 22, sender: "Dr. Ayşe Demir", text: "Evet, mutlaka bilgilendirin. Köpeğin idrarı ile temasta dikkatli olmaları gerektiğini ve eldivenle temizlik yapmalarını önerin.", isCurrentUser: false },
-        { id: 23, sender: "Dr. Ahmet Yılmaz", text: "Teşekkürler, bunu da ekleyeceğim bilgilendirmeye.", isCurrentUser: true },
-        { id: 24, sender: "Dr. Ayşe Demir", text: "Bir gelişme olursa bana yazın. Laboratuvar sonuçlarını da merak ediyorum.", isCurrentUser: false },
-        { id: 25, sender: "Dr. Ahmet Yılmaz", text: "Tabi, sonuçları alır almaz sizinle paylaşacağım.", isCurrentUser: true },
+        { id: 5, sender: "Dr. Ahmet Yılmaz", text: "Evet, ALT ve ALP değerleri normalin çok üzerinde.", isCurrentUser: true }
     ]);
 
     // Özel sohbet modu state'i
@@ -885,7 +865,7 @@ const VeterinerDashboard = () => {
 
                                             {/* Chat mesajları */}
                                             <div className="scrollable-content chat-messages" ref={messageListRef}>
-                                                {messages.length > 0 ? (
+                                                {messages && messages.length > 0 ? (
                                                     messages.map(msg => {
                                                         // Boş mesajları atlayalım
                                                         if (!msg.text || msg.text.trim() === '') return null;
