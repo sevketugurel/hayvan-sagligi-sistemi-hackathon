@@ -1,162 +1,117 @@
 import React, { useState } from 'react';
 import '../styles/AddClinicalExamModal.css';
 
-const AddClinicalExamModal = ({ onClose, onSave, veterinerId, veterinerName, randevuId }) => {
+const AddClinicalExamModal = ({ onClose, onAdd, animalId }) => {
   const [formData, setFormData] = useState({
-    sikayetler: '',
-    anamnez: '',
-    bulgular: '',
-    birincilTani: '',
-    ikincilTani: '',
-    islemler: '',
-    notlar: '',
-    randevuId: randevuId || null
+    anamnesis: '',
+    complaints: '',
+    findings: '',
+    primaryDiagnosis: '',
+    secondaryDiagnosis: '',
+    procedures: '',
+    veterinerId: 1
   });
-
-  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value
-    });
-  };
-
-  const validateForm = () => {
-    let tempErrors = {};
-    let formIsValid = true;
-
-    if (!formData.birincilTani) {
-      tempErrors.birincilTani = "Birincil tanı zorunludur";
-      formIsValid = false;
-    }
-
-    if (!formData.sikayetler) {
-      tempErrors.sikayetler = "Şikayetler zorunludur";
-      formIsValid = false;
-    }
-
-    if (!formData.bulgular) {
-      tempErrors.bulgular = "Bulgular zorunludur";
-      formIsValid = false;
-    }
-
-    setErrors(tempErrors);
-    return formIsValid;
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Add id and veteriner info
-      const newClinicalExam = {
-        ...formData,
-        id: Date.now(), // Temporary ID
-        veterinerId: veterinerId,
-        veterinerAdSoyad: veterinerName
-      };
-      onSave(newClinicalExam);
-    }
+    onAdd(formData);
   };
 
   return (
     <div className="modal-overlay">
-      <div className="clinical-exam-modal">
+      <div className="modal-content">
         <div className="modal-header">
-          <h2>Yeni Klinik İnceleme Ekle</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <h3>Yeni Klinik İnceleme Ekle</h3>
+          <button className="close-modal-btn" onClick={onClose}>×</button>
         </div>
-
-        <form onSubmit={handleSubmit} className="clinical-exam-form">
-          <div className="form-group">
-            <label htmlFor="sikayetler">Şikayetler:</label>
-            <textarea
-              id="sikayetler"
-              name="sikayetler"
-              value={formData.sikayetler}
-              onChange={handleChange}
-              placeholder="Hayvanın şikayetleri"
-              rows="3"
-            />
-            {errors.sikayetler && <div className="error-text">{errors.sikayetler}</div>}
+        
+        <form onSubmit={handleSubmit}>
+          <div className="modal-body">
+            <div className="form-group mb-3">
+              <label htmlFor="anamnesis" className="form-label">Anamnez</label>
+              <textarea
+                id="anamnesis"
+                name="anamnesis"
+                className="form-control"
+                value={formData.anamnesis}
+                onChange={handleChange}
+                rows="3"
+                required
+              />
+            </div>
+            
+            <div className="form-group mb-3">
+              <label htmlFor="complaints" className="form-label">Şikayetler</label>
+              <textarea
+                id="complaints"
+                name="complaints"
+                className="form-control"
+                value={formData.complaints}
+                onChange={handleChange}
+                rows="3"
+                required
+              />
+            </div>
+            
+            <div className="form-group mb-3">
+              <label htmlFor="findings" className="form-label">Bulgular</label>
+              <textarea
+                id="findings"
+                name="findings"
+                className="form-control"
+                value={formData.findings}
+                onChange={handleChange}
+                rows="3"
+                required
+              />
+            </div>
+            
+            <div className="form-group mb-3">
+              <label htmlFor="primaryDiagnosis" className="form-label">Birincil Tanı</label>
+              <input
+                type="text"
+                id="primaryDiagnosis"
+                name="primaryDiagnosis"
+                className="form-control"
+                value={formData.primaryDiagnosis}
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div className="form-group mb-3">
+              <label htmlFor="secondaryDiagnosis" className="form-label">İkincil Tanı</label>
+              <input
+                type="text"
+                id="secondaryDiagnosis"
+                name="secondaryDiagnosis"
+                className="form-control"
+                value={formData.secondaryDiagnosis}
+                onChange={handleChange}
+              />
+            </div>
+            
+            <div className="form-group mb-3">
+              <label htmlFor="procedures" className="form-label">Yapılan İşlemler</label>
+              <textarea
+                id="procedures"
+                name="procedures"
+                className="form-control"
+                value={formData.procedures}
+                onChange={handleChange}
+                rows="3"
+              />
+            </div>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="anamnez">Anamnez:</label>
-            <textarea
-              id="anamnez"
-              name="anamnez"
-              value={formData.anamnez}
-              onChange={handleChange}
-              placeholder="Anamnez bilgileri"
-              rows="3"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="bulgular">Bulgular:</label>
-            <textarea
-              id="bulgular"
-              name="bulgular"
-              value={formData.bulgular}
-              onChange={handleChange}
-              placeholder="Klinik bulgular"
-              rows="3"
-            />
-            {errors.bulgular && <div className="error-text">{errors.bulgular}</div>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="birincilTani">Birincil Tanı:</label>
-            <input
-              type="text"
-              id="birincilTani"
-              name="birincilTani"
-              value={formData.birincilTani}
-              onChange={handleChange}
-              placeholder="Örn: Böbrek Yetmezliği"
-            />
-            {errors.birincilTani && <div className="error-text">{errors.birincilTani}</div>}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="ikincilTani">İkincil Tanı:</label>
-            <input
-              type="text"
-              id="ikincilTani"
-              name="ikincilTani"
-              value={formData.ikincilTani}
-              onChange={handleChange}
-              placeholder="Varsa ikincil tanı"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="islemler">Yapılan İşlemler:</label>
-            <textarea
-              id="islemler"
-              name="islemler"
-              value={formData.islemler}
-              onChange={handleChange}
-              placeholder="Uygulanan tedavi ve işlemler"
-              rows="3"
-            />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="notlar">Notlar:</label>
-            <textarea
-              id="notlar"
-              name="notlar"
-              value={formData.notlar}
-              onChange={handleChange}
-              placeholder="Ek notlar"
-              rows="3"
-            />
-          </div>
-
-          <div className="form-actions">
+          
+          <div className="modal-footer">
             <button type="button" className="cancel-btn" onClick={onClose}>İptal</button>
             <button type="submit" className="save-btn">Kaydet</button>
           </div>

@@ -1,0 +1,50 @@
+.turkey-disease-map-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+}
+
+.map-legend {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+/* Leaflet stil düzeltmeleri */
+.leaflet-container {
+  font: inherit;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.leaflet-popup-content {
+  margin: 10px;
+}
+
+.leaflet-popup-custom h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.leaflet-popup-custom p {
+  margin: 4px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+/* Tooltip stillendirmesi */
+.leaflet-tooltip {
+  padding: 6px 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  font-size: 12px;
+  white-space: nowrap;
+} 
