@@ -97,10 +97,11 @@ const NavBar = () => {
                 Formlar
               </Link>
 
-              <Link to="/animal-records" className={`nav-item ${location.pathname === '/animal-records' ? 'active' : ''}`}>
-                <i className="fas fa-folder"></i>
-                Kayıt Görüntüleme
+              <Link to="/vaccines" className={`nav-item ${location.pathname === '/vaccines' ? 'active' : ''}`}>
+                <i className="fas fa-syringe"></i>
+                Aşı Yönetimi
               </Link>
+
               <Link to="/admin" className={`nav-item ${location.pathname === '/admin' ? 'active' : ''}`}>
                 <i className="fas fa-cog"></i>
                 Admin Panel
