@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NavBar from '../components/NavBar';
 import '../styles/Global.css';
-import { useAuth } from '../context/AuthContext';
 
 // Örnek ürün verileri
 const initialProducts = [
@@ -82,7 +81,6 @@ const initialProducts = [
 
 const DirectSalesPage = () => {
     const navigate = useNavigate();
-    const { addNotification } = useAuth();
     const [products, setProducts] = useState(initialProducts);
     const [cart, setCart] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('Tümü');
@@ -94,6 +92,28 @@ const DirectSalesPage = () => {
         email: '',
         paymentMethod: 'nakit'
     });
+
+    // Bildirim ekleme fonksiyonu
+    const addStockNotification = (productName, stock) => {
+        // LocalStorage'dan mevcut bildirimleri al veya boş array oluştur
+        const storedNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
+
+        // Yeni bildirimi oluştur
+        const newNotification = {
+            id: Date.now(),
+            type: 'stock',
+            message: `Düşük stok uyarısı: ${productName} (${stock} adet kaldı)`,
+            time: 'Şimdi',
+            isRead: false
+        };
+
+        // Bildirimleri güncelle ve localStorage'a kaydet
+        const updatedNotifications = [newNotification, ...storedNotifications];
+        localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+
+        // NavBar'daki bildirim sayısını güncellemek için event yayınla
+        window.dispatchEvent(new CustomEvent('newNotification', { detail: newNotification }));
+    };
 
     // Kategoriye ve arama terimine göre filtrelenmiş ürünler
     const filteredProducts = products.filter(product => {
@@ -188,10 +208,7 @@ const DirectSalesPage = () => {
 
         // Düşük stok bildirimleri gönder
         lowStockItems.forEach(item => {
-            addNotification({
-                type: 'stock',
-                message: `Düşük stok uyarısı: ${item.name} (${item.stock} adet kaldı)`,
-            });
+            addStockNotification(item.name, item.stock);
         });
 
         // Sipariş özeti

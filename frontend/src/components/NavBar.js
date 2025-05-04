@@ -8,30 +8,64 @@ const NavBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [notifications, setNotifications] = useState([
-    {
-      id: 1,
-      type: 'appointment',
-      message: 'Yeni randevu talebi - Max (Golden Retriever)',
-      time: '5 dakika önce',
-      isRead: false
-    },
-    {
-      id: 2,
-      type: 'emergency',
-      message: 'Acil vaka bildirimi - Luna (Kedi)',
-      time: '15 dakika önce',
-      isRead: false
-    },
-    {
-      id: 3,
-      type: 'lab',
-      message: 'Laboratuvar sonuçları hazır - Pamuk',
-      time: '1 saat önce',
-      isRead: true
+
+  // localStorage'dan bildirimleri yükle veya varsayılan bildirimleri kullan
+  const [notifications, setNotifications] = useState(() => {
+    const storedNotifications = localStorage.getItem('notifications');
+    if (storedNotifications) {
+      return JSON.parse(storedNotifications);
+    } else {
+      const defaultNotifications = [
+        {
+          id: 1,
+          type: 'appointment',
+          message: 'Yeni randevu talebi - Max (Golden Retriever)',
+          time: '5 dakika önce',
+          isRead: false
+        },
+        {
+          id: 2,
+          type: 'emergency',
+          message: 'Acil vaka bildirimi - Luna (Kedi)',
+          time: '15 dakika önce',
+          isRead: false
+        },
+        {
+          id: 3,
+          type: 'lab',
+          message: 'Laboratuvar sonuçları hazır - Pamuk',
+          time: '1 saat önce',
+          isRead: true
+        }
+      ];
+      localStorage.setItem('notifications', JSON.stringify(defaultNotifications));
+      return defaultNotifications;
     }
-  ]);
+  });
+
   const [showNotifications, setShowNotifications] = useState(false);
+
+  // localStorage'a bildirim değişikliklerini kaydet
+  useEffect(() => {
+    localStorage.setItem('notifications', JSON.stringify(notifications));
+  }, [notifications]);
+
+  // DirectSalesPage'den gelen yeni bildirim olaylarını dinle
+  useEffect(() => {
+    const handleNewNotification = (e) => {
+      setNotifications(prevNotifications => {
+        const updatedNotifications = [e.detail, ...prevNotifications];
+        localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+        return updatedNotifications;
+      });
+    };
+
+    window.addEventListener('newNotification', handleNewNotification);
+
+    return () => {
+      window.removeEventListener('newNotification', handleNewNotification);
+    };
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -47,9 +81,13 @@ const NavBar = () => {
   };
 
   const markNotificationAsRead = (id) => {
-    setNotifications(notifications.map(notif =>
-      notif.id === id ? { ...notif, isRead: true } : notif
-    ));
+    setNotifications(prevNotifications => {
+      const updatedNotifications = prevNotifications.map(notif =>
+        notif.id === id ? { ...notif, isRead: true } : notif
+      );
+      localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+      return updatedNotifications;
+    });
   };
 
   const unreadNotificationsCount = notifications.filter(n => !n.isRead).length;
@@ -62,6 +100,8 @@ const NavBar = () => {
         return '🚨';
       case 'lab':
         return '🔬';
+      case 'stock':
+        return '📦';
       default:
         return '📌';
     }
@@ -128,7 +168,16 @@ const NavBar = () => {
                   <div className="notifications-dropdown">
                     <div className="notifications-header">
                       <h3>Bildirimler</h3>
-                      <button className="mark-all-read">Tümünü Okundu İşaretle</button>
+                      <button
+                        className="mark-all-read"
+                        onClick={() => {
+                          const updatedNotifications = notifications.map(n => ({ ...n, isRead: true }));
+                          setNotifications(updatedNotifications);
+                          localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
+                        }}
+                      >
+                        Tümünü Okundu İşaretle
+                      </button>
                     </div>
                     <div className="notifications-list">
                       {notifications.length > 0 ? (
@@ -138,9 +187,13 @@ const NavBar = () => {
                             className={`notification-item ${!notification.isRead ? 'unread' : ''}`}
                             onClick={() => markNotificationAsRead(notification.id)}
                           >
-                            <span className="notification-icon">
-                              {getNotificationIcon(notification.type)}
-                            </span>
+                            <div className="notification-icon">
+                              {notification.type === 'appointment' && <i className="fas fa-calendar"></i>}
+                              {notification.type === 'emergency' && <i className="fas fa-exclamation-triangle"></i>}
+                              {notification.type === 'lab' && <i className="fas fa-flask"></i>}
+                              {notification.type === 'stock' && <i className="fas fa-box" style={{ color: '#e74c3c' }}></i>}
+                              {!['appointment', 'emergency', 'lab', 'stock'].includes(notification.type) && <i className="fas fa-bell"></i>}
+                            </div>
                             <div className="notification-content">
                               <p className="notification-message">{notification.message}</p>
                               <span className="notification-time">{notification.time}</span>
