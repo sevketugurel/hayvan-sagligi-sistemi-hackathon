@@ -223,8 +223,8 @@ const TurkeyDiseaseMap = ({ diseaseOutbreaks = [], onRegionClick, onAddOutbreak 
         let coordinates;
 
         // Eğer özel koordinatlar varsa onları kullan
-        if (outbreak.coordinates && outbreak.coordinates.length === 2) {
-          coordinates = [outbreak.coordinates[1], outbreak.coordinates[0]];
+        if (outbreak.coordinates && breakout.coordinates.length === 2) {
+          coordinates = [outbreak.coordinates[1], breakout.coordinates[0]];
         } else if (outbreak.location) {
           // İl adı varsa, o ilin koordinatlarını bul
           const cityCoords = findCityCoordinates(outbreak.location);
@@ -284,6 +284,14 @@ const TurkeyDiseaseMap = ({ diseaseOutbreaks = [], onRegionClick, onAddOutbreak 
     <div className="turkey-disease-map-container">
       <div className="map-header">
         <h3>Salgın Hastalık Haritası</h3>
+        {onAddOutbreak && (
+          <button
+            className="add-disease-button"
+            onClick={onAddOutbreak}
+          >
+            Yeni Vaka Ekle
+          </button>
+        )}
       </div>
 
       <div

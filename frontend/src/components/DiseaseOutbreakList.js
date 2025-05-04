@@ -27,25 +27,6 @@ const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, onAddOutbreak, style 
         marginBottom: '15px'
       }}>
         <h3 style={{ margin: '0', fontSize: '16px' }}>Aktif Salgın Hastalıklar</h3>
-        {onAddOutbreak && (
-          <button
-            onClick={onAddOutbreak}
-            style={{
-              backgroundColor: '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              padding: '6px 12px',
-              cursor: 'pointer',
-              fontSize: '13px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <span style={{ fontSize: '14px' }}>+</span> Yeni Vaka Ekle
-          </button>
-        )}
       </div>
 
       {outbreaks.length === 0 ? (
@@ -71,7 +52,7 @@ const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, onAddOutbreak, style 
               onMouseEnter={(e) => e.currentTarget.style.background = '#f1f1f1'}
               onMouseLeave={(e) => e.currentTarget.style.background = 'white'}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{outbreak.diseaseName}</div>
                   <div style={{ fontSize: '13px', color: '#555' }}>

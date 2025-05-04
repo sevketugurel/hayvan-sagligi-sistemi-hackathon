@@ -7,6 +7,7 @@ import TurkeyDiseaseMap from '../components/TurkeyDiseaseMap';
 import DiseaseOutbreakList from '../components/DiseaseOutbreakList';
 import DiseaseOutbreakModal from '../components/DiseaseOutbreakModal';
 import diseaseOutbreaks from '../data/diseaseOutbreaks';
+import { TURKEY_CITIES, findCityCoordinates } from '../components/TurkeyDiseaseMap';
 
 const VeterinerDashboard = () => {
     // Auth context'ten logout fonksiyonunu alıyoruz
@@ -20,9 +21,11 @@ const VeterinerDashboard = () => {
 
     // Disease map states
     const [selectedOutbreak, setSelectedOutbreak] = useState(null);
+    const [outbreakData, setOutbreakData] = useState(diseaseOutbreaks);
     const [filteredOutbreaks, setFilteredOutbreaks] = useState(diseaseOutbreaks);
     const [selectedDiseaseType, setSelectedDiseaseType] = useState('all');
     const [selectedRegion, setSelectedRegion] = useState(null);
+    const [showAddModal, setShowAddModal] = useState(false);
 
     // Handle outbreak selection
     const handleOutbreakClick = (outbreak) => {
@@ -38,6 +41,24 @@ const VeterinerDashboard = () => {
     const handleRegionClick = (region) => {
         setSelectedRegion(region);
         // You could filter outbreaks by region here
+    };
+
+    // Yeni salgın vakası ekleme
+    const handleAddOutbreak = (newOutbreakData) => {
+        // Yeni veriyi ekle
+        const updatedOutbreaks = [...filteredOutbreaks, newOutbreakData];
+        setOutbreakData(updatedOutbreaks);
+
+        // Filtrelenmiş listeyi güncelle
+        if (selectedDiseaseType === 'all' || newOutbreakData.diseaseName === selectedDiseaseType) {
+            setFilteredOutbreaks(updatedOutbreaks);
+        }
+
+        // Modalı kapat
+        setShowAddModal(false);
+
+        // Başarılı mesajı göster
+        alert("Yeni salgın vakası başarıyla eklendi!");
     };
 
     // Filter outbreaks by disease type
@@ -1018,7 +1039,7 @@ const VeterinerDashboard = () => {
                         <div className="disease-map-section" style={{ marginTop: '30px' }}>
                             <h2 className="section-title">Salgın Hastalık Haritası</h2>
 
-                            <div style={{ display: 'flex', gap: '15px', marginTop: '15px' }}>
+                            <div style={{ display: 'flex', gap: '15px', marginTop: '15px', alignItems: 'center', justifyContent: 'space-between' }}>
                                 {/* Filtreler */}
                                 <div style={{ marginBottom: '15px' }}>
                                     <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: 'bold' }}>
@@ -1045,6 +1066,29 @@ const VeterinerDashboard = () => {
                                         <option value="Anaplazmozis">Anaplazmozis</option>
                                     </select>
                                 </div>
+
+                                {/* Yeni Vaka Ekle Butonu */}
+                                <div>
+                                    <button
+                                        className="add-disease-button"
+                                        onClick={() => setShowAddModal(true)}
+                                        style={{
+                                            padding: '8px 16px',
+                                            backgroundColor: '#4CAF50',
+                                            color: 'white',
+                                            border: 'none',
+                                            borderRadius: '4px',
+                                            cursor: 'pointer',
+                                            fontSize: '14px',
+                                            transition: 'background-color 0.3s',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '6px'
+                                        }}
+                                    >
+                                        <span style={{ fontSize: '18px' }}>+</span> Yeni Vaka Ekle
+                                    </button>
+                                </div>
                             </div>
 
                             <div style={{ display: 'flex', gap: '20px' }}>
@@ -1061,7 +1105,6 @@ const VeterinerDashboard = () => {
                                     <DiseaseOutbreakList
                                         outbreaks={filteredOutbreaks}
                                         onOutbreakClick={handleOutbreakClick}
-                                        onAddOutbreak={() => setShowAddModal(true)}
                                         style={{ height: '400px', maxHeight: 'none', overflowY: 'auto' }}
                                     />
                                 </div>
@@ -1582,6 +1625,141 @@ const VeterinerDashboard = () => {
                     outbreak={selectedOutbreak}
                     onClose={closeOutbreakModal}
                 />
+            )}
+
+            {/* Yeni vaka ekleme modalı */}
+            {showAddModal && (
+                <div className="popup-overlay" onClick={(e) => {
+                    if (e.target.className === 'popup-overlay') {
+                        setShowAddModal(false);
+                    }
+                }}>
+                    <div className="new-disease-popup">
+                        <div className="popup-header">
+                            <h2>Yeni Salgın Vakası Ekle</h2>
+                            <button
+                                className="close-popup-button"
+                                onClick={() => setShowAddModal(false)}
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className="popup-content">
+                            <form onSubmit={(e) => {
+                                e.preventDefault();
+                                // Girilen il adının koordinatlarını bul
+                                const locationName = e.target.location.value;
+                                const coordinates = findCityCoordinates(locationName);
+
+                                // Geçerli bir il mi kontrol et
+                                const validCity = TURKEY_CITIES.find(city =>
+                                    city.name.toLowerCase() === locationName.toLowerCase());
+
+                                if (!validCity) {
+                                    alert("Lütfen geçerli bir il adı giriniz! Türkiye'nin 81 ilinden birini yazmalısınız.");
+                                    return;
+                                }
+
+                                const newOutbreak = {
+                                    id: Date.now(), // Benzersiz ID
+                                    diseaseName: e.target.diseaseName.value,
+                                    animalType: e.target.animalType.value,
+                                    count: parseInt(e.target.count.value),
+                                    date: e.target.date.value,
+                                    status: e.target.status.value,
+                                    location: validCity.name, // Doğru formatta il adını kullan
+                                    coordinates: [validCity.lng, validCity.lat], // [lng, lat] formatında kaydet
+                                    description: e.target.description.value
+                                };
+                                handleAddOutbreak(newOutbreak);
+                            }}>
+                                <div className="form-group">
+                                    <label htmlFor="diseaseName">Hastalık Adı</label>
+                                    <input
+                                        type="text"
+                                        id="diseaseName"
+                                        name="diseaseName"
+                                        placeholder="Hastalık adını giriniz"
+                                        required
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="animalType">Hayvan Türü</label>
+                                    <select id="animalType" name="animalType" required>
+                                        <option value="">Seçiniz</option>
+                                        <option value="Sığır">Sığır</option>
+                                        <option value="Koyun">Koyun</option>
+                                        <option value="Keçi">Keçi</option>
+                                        <option value="Kanatlı">Kanatlı</option>
+                                        <option value="Köpek">Köpek</option>
+                                        <option value="Kedi">Kedi</option>
+                                        <option value="Diğer">Diğer</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="count">Vaka Sayısı</label>
+                                    <input type="number" id="count" name="count" min="1" required />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="date">Tarih</label>
+                                    <input type="date" id="date" name="date" required />
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="status">Durum</label>
+                                    <select id="status" name="status" required>
+                                        <option value="">Seçiniz</option>
+                                        <option value="aktif">Aktif</option>
+                                        <option value="kontrol altında">Kontrol Altında</option>
+                                        <option value="azalıyor">Azalıyor</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="location">Konum (İl Adı)</label>
+                                    <input
+                                        type="text"
+                                        id="location"
+                                        name="location"
+                                        placeholder="İl adını giriniz"
+                                        required
+                                        list="il-listesi"
+                                    />
+                                    <datalist id="il-listesi">
+                                        {TURKEY_CITIES.map(city => (
+                                            <option key={city.name} value={city.name} />
+                                        ))}
+                                    </datalist>
+                                    <p className="help-text">Lütfen il adını doğru şekilde giriniz (Örn: İstanbul, Ankara, İzmir)</p>
+                                </div>
+
+                                <div className="form-group">
+                                    <label htmlFor="description">Açıklama</label>
+                                    <textarea id="description" name="description" placeholder="Vaka hakkında detaylı bilgi giriniz"></textarea>
+                                </div>
+
+                                <div className="form-actions">
+                                    <button
+                                        type="button"
+                                        className="cancel-button"
+                                        onClick={() => setShowAddModal(false)}
+                                    >
+                                        İptal
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="save-button"
+                                    >
+                                        Kaydet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             )}
         </div>
     );

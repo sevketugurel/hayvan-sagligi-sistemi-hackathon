@@ -2239,11 +2239,139 @@ html {
         padding: 10px;
     }
 
-    .disease-map-section > div {
+    .disease-map-section>div {
         width: 100% !important;
     }
 
-    .disease-map-section > div > div {
+    .disease-map-section>div>div {
         border-radius: 5px;
     }
+}
+
+/* New Disease Popup Styles */
+.new-disease-popup {
+    background-color: #fff;
+    width: 90%;
+    max-width: 700px;
+    border-radius: 8px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUp 0.3s ease;
+}
+
+.new-disease-popup .popup-header {
+    background-color: #f5f5f5;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.new-disease-popup .popup-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.new-disease-popup .popup-content {
+    padding: 20px;
+}
+
+.new-disease-popup form {
+    display: flex;
+    flex-direction: column;
+}
+
+.new-disease-popup .form-group {
+    margin-bottom: 15px;
+}
+
+.new-disease-popup .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #555;
+    font-weight: 500;
+}
+
+.new-disease-popup .form-group input,
+.new-disease-popup .form-group select,
+.new-disease-popup .form-group textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.new-disease-popup .form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.new-disease-popup .form-group input:focus,
+.new-disease-popup .form-group select:focus,
+.new-disease-popup .form-group textarea:focus {
+    outline: none;
+    border-color: #2d5986;
+    box-shadow: 0 0 0 2px rgba(45, 89, 134, 0.1);
+}
+
+.new-disease-popup .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.new-disease-popup .cancel-button {
+    background-color: #f8f9fa;
+    color: #555;
+    border: 1px solid #ddd;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.new-disease-popup .save-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.new-disease-popup .cancel-button:hover {
+    background-color: #e9ecef;
+}
+
+.new-disease-popup .save-button:hover {
+    background-color: #218838;
+}
+
+.new-disease-popup .close-popup-button {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #777;
+    padding: 0;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.new-disease-popup .close-popup-button:hover {
+    color: #333;
 }
