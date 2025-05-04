@@ -115,8 +115,52 @@ const NavBar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <Link to="/dashboard" className="navbar-logo">
-          DOSTLAR VETERİNER KLİNİĞİ
+        <Link to="/dashboard" className="navbar-logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div className="logo-container" style={{ 
+            position: 'relative',
+            width: '45px',
+            height: '45px',
+          }}>
+            <div className="logo-background" style={{ 
+              background: 'linear-gradient(135deg, #36D1DC 0%, #5B86E5 100%)',
+              width: '100%',
+              height: '100%',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 3px 6px rgba(0,0,0,0.16)',
+              border: '2px solid rgba(255,255,255,0.3)',
+              transform: 'rotate(45deg)'
+            }}></div>
+            <div style={{ 
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'column'
+            }}>
+              <span style={{ 
+                fontFamily: '"Segoe UI", Arial, sans-serif',
+                fontWeight: 'bold',
+                fontSize: '22px',
+                color: 'white',
+                textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
+                marginTop: '-4px'
+              }}>V</span>
+              <i className="fas fa-paw" style={{ 
+                fontSize: '14px', 
+                marginTop: '-7px',
+                color: 'white', 
+                opacity: 0.9 
+              }}></i>
+            </div>
+          </div>
+          VETVERSE VETERİNER KLİNİĞİ
         </Link>
 
         {currentUser && (
