@@ -14,6 +14,8 @@ import { checkMedicationRisksForBreed } from '../utils/medicationRisks';
 
 // Import a default profile image
 import defaultAnimalImage from '../assets/images/default-animal.png';
+// Import Pamuk's profile image
+import pamukImage from '../assets/images/Scottish-Fold.jpg';
 
 const AnimalDetails = () => {
   const { animalId } = useParams();
@@ -73,33 +75,61 @@ const AnimalDetails = () => {
       // Mock API call (replace with actual API in production)
       setTimeout(() => {
         // Mock data
-        const mockAnimal = {
-          id: parseInt(animalId),
-          name: 'Max',
-          age: 3,
-          breed: 'Golden Retriever',
-          chipNo: '123456789012345',
-          species: 'Köpek',
-          gender: 'Erkek',
-          neutered: true,
-          hospitalStatus: 'Taburcu', // or "Yatılı Tedavi"
-          birthDate: '10.05.2020',
-          color: 'Sarı',
-          weight: '32.5 kg',
-          height: '60 cm',
-          owner: {
-            id: 1,
-            name: 'Ahmet Yılmaz',
-            phone: '05551234567'
-          },
-          profileImage: '/assets/profile-photos/max.jpeg', // Updated to point to our uploaded image
-          alerts: [
-            { id: 1, type: 'allergy', severity: 'high', message: 'Tavuk proteinine karşı alerjisi bulunmaktadır!' },
-            { id: 2, type: 'vaccine', severity: 'medium', message: 'Kuduz aşısı 15 gün içinde yapılmalıdır.' },
-            { id: 3, type: 'chronic', severity: 'medium', message: 'Kronik böbrek yetmezliği - Düzenli kontrol gerekli' },
-            { id: 4, type: 'medication', severity: 'low', message: 'Antibiyotik tedavisi devam ediyor (5 gün kaldı).' }
-          ]
-        };
+        const mockAnimal = animalId === '3' 
+          ? {
+              id: 3,
+              name: 'Pamuk',
+              age: 5,
+              breed: 'Scottish Fold',
+              chipNo: '567891234567890',
+              species: 'Kedi',
+              gender: 'Erkek',
+              neutered: true,
+              hospitalStatus: 'Taburcu', // or "Yatılı Tedavi"
+              birthDate: '15.08.2018',
+              color: 'Beyaz-Gri',
+              weight: '4.2 kg',
+              height: '25 cm',
+              owner: {
+                id: 1,
+                name: 'Ahmet Yılmaz',
+                phone: '05551234567'
+              },
+              profileImage: pamukImage,
+              alerts: [
+                { id: 1, type: 'allergy', severity: 'high', message: 'Balık proteinine karşı alerjisi bulunmaktadır!' },
+                { id: 2, type: 'vaccine', severity: 'medium', message: 'Karma aşısı 10 gün içinde yapılmalıdır.' },
+                { id: 3, type: 'chronic', severity: 'medium', message: 'Kronik idrar yolu enfeksiyonu - Düzenli kontrol gerekli' },
+                { id: 4, type: 'medication', severity: 'low', message: 'Antibiyotik tedavisi devam ediyor (3 gün kaldı).' }
+              ]
+            }
+          : {
+              id: parseInt(animalId),
+              name: 'Max',
+              age: 3,
+              breed: 'Golden Retriever',
+              chipNo: '123456789012345',
+              species: 'Köpek',
+              gender: 'Erkek',
+              neutered: true,
+              hospitalStatus: 'Taburcu', // or "Yatılı Tedavi"
+              birthDate: '10.05.2020',
+              color: 'Sarı',
+              weight: '32.5 kg',
+              height: '60 cm',
+              owner: {
+                id: 1,
+                name: 'Ahmet Yılmaz',
+                phone: '05551234567'
+              },
+              profileImage: '/assets/profile-photos/max.jpeg', // Updated to point to our uploaded image
+              alerts: [
+                { id: 1, type: 'allergy', severity: 'high', message: 'Tavuk proteinine karşı alerjisi bulunmaktadır!' },
+                { id: 2, type: 'vaccine', severity: 'medium', message: 'Kuduz aşısı 15 gün içinde yapılmalıdır.' },
+                { id: 3, type: 'chronic', severity: 'medium', message: 'Kronik böbrek yetmezliği - Düzenli kontrol gerekli' },
+                { id: 4, type: 'medication', severity: 'low', message: 'Antibiyotik tedavisi devam ediyor (5 gün kaldı).' }
+              ]
+            };
 
         setAnimal(mockAnimal);
         setAlerts(mockAnimal.alerts);
@@ -147,7 +177,41 @@ const AnimalDetails = () => {
     setTimeout(() => {
       // Different mock data for each section
       const mockData = {
-        clinicalExam: [
+        clinicalExam: animalId === '3' ? [
+          { 
+            id: 1, 
+            date: '05.05.2023', 
+            vet: 'Dr. Ayşe Demir', 
+            anamnesis: 'Sahibi 2 gündür iştahsızlık ve idrar yaparken zorlandığını belirtti.',
+            complaints: 'İştahsızlık, idrar yaparken zorlanma, artmış su tüketimi',
+            findings: 'Idrar yollarında hassasiyet. Mukozalar normal. Ateş yok (38.5°C).',
+            primaryDiagnosis: 'İdrar Yolu Enfeksiyonu',
+            secondaryDiagnosis: '',
+            procedures: 'İdrar tahlili, antibiyotik (amoksisilin) başlandı, bol su tüketimi önerildi.'
+          },
+          { 
+            id: 2, 
+            date: '20.06.2023', 
+            vet: 'Dr. Mehmet Yılmaz', 
+            anamnesis: 'Kontrol muayenesi. Sahibi aşırı tüy dökülmesi olduğunu belirtti.',
+            complaints: 'Tüy dökülmesi, deride pullanma',
+            findings: 'Sırt ve boyun bölgesinde deride pullanma ve kızarıklık. Kaşıntı belirtileri var.',
+            primaryDiagnosis: 'Alerjik Dermatit',
+            secondaryDiagnosis: '',
+            procedures: 'Deri testi, antihistaminik, özel şampuan reçete edildi, alerji testleri önerildi.'
+          },
+          { 
+            id: 3, 
+            date: '15.09.2023', 
+            vet: 'Dr. Ayşe Demir', 
+            anamnesis: 'Yıllık sağlık kontrolü ve aşılar için geldi.',
+            complaints: 'Herhangi bir şikayet yok',
+            findings: 'Genel sağlık durumu iyi. Ağız içi kontrol yapıldı, diş eti hafif kızarık.',
+            primaryDiagnosis: 'Sağlıklı',
+            secondaryDiagnosis: 'Hafif gingivitis',
+            procedures: 'Diş taşı kontrolü, sonbahar aşıları yapıldı, diş bakımı önerildi.'
+          }
+        ] : [
           { 
             id: 1, 
             date: '10.07.2023', 
@@ -182,7 +246,44 @@ const AnimalDetails = () => {
             procedures: 'Diş taşı temizliği önerildi, sonbahar aşıları yapıldı.'
           }
         ],
-        diseaseHistory: [
+        diseaseHistory: animalId === '3' ? [
+          { 
+            id: 1, 
+            patientName: 'Pamuk',
+            diseaseName: 'İdrar Yolu Enfeksiyonu', 
+            diagnosisDate: '15.03.2022',
+            endDate: '25.03.2022', 
+            details: 'İdrar yaparken zorlanma ve sık idrara çıkma şikayetiyle başvurdu. İdrar tahlilinde bakteri tespit edildi.', 
+            treatment: 'Antibiyotik tedavisi (Enrofloksasin), bol su tüketimi', 
+            hospitalized: false,
+            hospitalizationDays: 0,
+            status: 'İyileşti'
+          },
+          { 
+            id: 2, 
+            patientName: 'Pamuk',
+            diseaseName: 'Alerjik Dermatit', 
+            diagnosisDate: '20.06.2023',
+            endDate: '10.07.2023', 
+            details: 'Sırt ve boyun bölgesinde kaşıntı, tüy dökülmesi ve deride pullanma şikayeti. Alerji testi sonucunda balık proteinine karşı alerji tespit edildi.', 
+            treatment: 'Antihistaminik, özel şampuan, beslenme düzenlemesi (balık içermeyen mama)', 
+            hospitalized: false,
+            hospitalizationDays: 0,
+            status: 'İyileşti'
+          },
+          { 
+            id: 3, 
+            patientName: 'Pamuk',
+            diseaseName: 'Kronik İdrar Yolu Enfeksiyonu', 
+            diagnosisDate: '05.05.2023',
+            endDate: '', 
+            details: 'Tekrarlayan idrar yolu enfeksiyonu. İdrar pH değerinde düzensizlik ve kristal oluşumu gözlendi.', 
+            treatment: 'Periyodik antibiyotik tedavisi, özel diyet mama, asit/baz dengeleyici takviyeler', 
+            hospitalized: false,
+            hospitalizationDays: 0,
+            status: 'Devam Ediyor'
+          }
+        ] : [
           { 
             id: 1, 
             patientName: 'Max',
@@ -220,7 +321,98 @@ const AnimalDetails = () => {
             status: 'Devam Ediyor'
           }
         ],
-        appointments: [
+        appointments: animalId === '3' ? [
+          { 
+            id: 1, 
+            date: '2023-07-10', 
+            time: '10:15', 
+            reason: 'İdrar yolu enfeksiyonu kontrolü', 
+            status: 'Tamamlandı',
+            type: 'examination',
+            notes: 'Tekrarlayan enfeksiyon takibi'
+          },
+          { 
+            id: 2, 
+            date: '2023-09-05', 
+            time: '14:30', 
+            reason: 'Karma Aşı', 
+            status: 'Tamamlandı',
+            type: 'vaccine',
+            notes: 'Yıllık karma aşı, sorunsuz uygulandı'
+          },
+          { 
+            id: 3, 
+            date: '2023-10-10', 
+            time: '11:45', 
+            reason: 'Dermatit takibi', 
+            status: 'Tamamlandı',
+            type: 'examination',
+            notes: 'Alerjik dermatit takip kontrolü'
+          },
+          { 
+            id: 4, 
+            date: '2023-10-20', 
+            time: '16:30', 
+            reason: 'İdrar tahlili', 
+            status: 'Tamamlandı',
+            type: 'treatment',
+            notes: 'Kronik idrar yolu enfeksiyonu takibi'
+          },
+          { 
+            id: 5, 
+            date: '2023-11-08', 
+            time: '09:45', 
+            reason: 'Diş kontrolü', 
+            status: 'Tamamlandı',
+            type: 'examination',
+            notes: 'Gingivitis ve diş taşı kontrolü'
+          },
+          { 
+            id: 6, 
+            date: '2023-11-15', 
+            time: '13:00', 
+            reason: 'Kan testi', 
+            status: 'Planlandı',
+            type: 'treatment',
+            notes: 'Rutin kan değerleri kontrolü'
+          },
+          { 
+            id: 7, 
+            date: '2023-11-25', 
+            time: '15:30', 
+            reason: 'İlaç tedavisi takibi', 
+            status: 'Planlandı',
+            type: 'treatment',
+            notes: 'Antibiyotik tedavisinin etkinliği'
+          },
+          { 
+            id: 8, 
+            date: '2023-12-05', 
+            time: '10:30', 
+            reason: 'Karma Aşı Hatırlatma', 
+            status: 'Planlandı',
+            type: 'vaccine',
+            notes: 'Yıllık karma aşı hatırlatması'
+          },
+          { 
+            id: 9, 
+            date: '2023-12-15', 
+            time: '14:15', 
+            reason: 'Ultrason', 
+            status: 'Planlandı',
+            type: 'treatment',
+            notes: 'İdrar yolları ultrason kontrolü'
+          },
+          { 
+            id: 10, 
+            date: '2023-12-22', 
+            time: '11:30', 
+            reason: 'Genel kontrol', 
+            status: 'Planlandı',
+            type: 'examination',
+            notes: 'Yıl sonu genel durum değerlendirmesi'
+          }
+        ] : [
           { 
             id: 1, 
             date: '2023-10-15', 
@@ -339,7 +531,53 @@ const AnimalDetails = () => {
             notes: 'Düzenli parazit koruma tedavisi'
           }
         ],
-        radiology: [
+        radiology: animalId === '3' ? [
+          { 
+            id: 1, 
+            date: '05.05.2023', 
+            type: 'USG', 
+            region: 'Üriner Sistem', 
+            findings: 'Mesanede minimal kalınlaşma, idrar yollarında hafif inflamasyon. Böbrekler normal.', 
+            image: 'ultrasound-url.jpg',
+            notes: 'İdrar yolu enfeksiyonu şüphesi nedeniyle çekildi.'
+          },
+          { 
+            id: 2, 
+            date: '06.05.2023', 
+            type: 'Röntgen', 
+            region: 'Abdomen', 
+            findings: 'Abdominal organlar normal görünümde. İdrar kesesi normal boyutlarda.', 
+            image: 'xray-url.jpg',
+            notes: 'Üriner sistem kontrolü için çekildi.'
+          },
+          { 
+            id: 3, 
+            date: '20.06.2023', 
+            type: 'Dermoskopi', 
+            region: 'Deri', 
+            findings: 'Sırt ve boyun bölgesinde deride pullanma, inflamasyon ve eritem görüldü.', 
+            image: 'derm-url.jpg',
+            notes: 'Dermatit şikayeti için inceleme yapıldı.'
+          },
+          { 
+            id: 4, 
+            date: '10.09.2023', 
+            type: 'USG', 
+            region: 'Abdomen', 
+            findings: 'Organlar normal, idrar yollarında iyileşme belirtileri. Minimal iltihap bulgularına rastlandı.', 
+            image: 'ultrasound2-url.jpg',
+            notes: 'Kontrol muayenesi için çekildi.'
+          },
+          { 
+            id: 5, 
+            date: '15.10.2023', 
+            type: 'EKG', 
+            region: 'Kardiyak', 
+            findings: 'Normal sinüs ritmi. Kalp hızı: 180 atım/dk. Tüm ölçümler normal sınırlarda.', 
+            image: 'ekg-url.jpg',
+            notes: 'Anestezi öncesi rutin inceleme için yapıldı.'
+          }
+        ] : [
           { 
             id: 1, 
             date: '15.08.2023', 
@@ -386,11 +624,51 @@ const AnimalDetails = () => {
             notes: 'Arka ayak zayıflığı şikayeti için inceleme yapıldı.'
           }
         ],
-        labTests: [
+        labTests: animalId === '3' ? [
+          { id: 1, date: '05.05.2023', test: 'İdrar Tahlili', results: 'İdrarda lökosit ve bakteri (+), pH yüksek', report: 'report-url.pdf' },
+          { id: 2, date: '05.05.2023', test: 'İdrar Kültürü', results: 'E. coli üremesi', report: 'report-url.pdf' },
+          { id: 3, date: '20.06.2023', test: 'Alerji Testi', results: 'Balık proteinine karşı yüksek duyarlılık', report: 'report-url.pdf' },
+          { id: 4, date: '10.09.2023', test: 'Tam Kan Sayımı', results: 'Normal değerler', report: 'report-url.pdf' },
+          { id: 5, date: '10.09.2023', test: 'İdrar Tahlili Kontrol', results: 'İdrarda lökosit (-), bakteri (-), pH normal', report: 'report-url.pdf' }
+        ] : [
           { id: 1, date: '10.08.2023', test: 'Tam Kan Sayımı', results: 'Normal değerler', report: 'report-url.pdf' },
           { id: 2, date: '10.08.2023', test: 'Karaciğer Fonksiyon Testleri', results: 'ALT hafif yüksek', report: 'report-url.pdf' }
         ],
-        prescriptions: [
+        prescriptions: animalId === '3' ? [
+          { 
+            id: 1, 
+            date: '05.05.2023', 
+            medications: [
+              'Enrofloksasin 50mg Tablet (1x1)', 
+              'Üriner Diyet Mama (Günlük 100g)'
+            ], 
+            duration: '10 gün', 
+            prescribedBy: 'Dr. Ayşe Demir',
+            veterinaryClinic: 'Hayat Veteriner Kliniği'
+          },
+          { 
+            id: 2, 
+            date: '20.06.2023', 
+            medications: [
+              'Setirizin 5mg Tablet (1x1/2)', 
+              'Hipoalerjenik Şampuan (Haftada 1)'
+            ], 
+            duration: '30 gün', 
+            prescribedBy: 'Dr. Mehmet Yılmaz',
+            veterinaryClinic: 'Hayat Veteriner Kliniği'
+          },
+          { 
+            id: 3, 
+            date: '10.10.2023', 
+            medications: [
+              'Amoksisilin 50mg Tablet (2x1)', 
+              'Üriner pH Dengeleyici (1x1)'
+            ], 
+            duration: '7 gün', 
+            prescribedBy: 'Dr. Ayşe Demir',
+            veterinaryClinic: 'Hayat Veteriner Kliniği'
+          }
+        ] : [
           { 
             id: 1, 
             date: '15.08.2023', 
@@ -398,47 +676,30 @@ const AnimalDetails = () => {
               'Amoksisilin 250mg Tablet (2x1)', 
               'Probiyotik Süspansiyon (1x1)'
             ], 
-            duration: '7 gün',
+            duration: '7 gün', 
             prescribedBy: 'Dr. Mehmet Yılmaz',
             veterinaryClinic: 'Hayat Veteriner Kliniği'
           },
           { 
             id: 2, 
-            date: '25.03.2023', 
+            date: '22.10.2023', 
             medications: [
-              'Gentamisin Kulak Damlası (3x1)',
-              'Prednizolon 5mg Tablet (1x1, azalan dozda)'
+              'Prednol 5mg Tablet (1x1)', 
+              'Dermatin Merhem (2x1)'
             ], 
-            duration: '5 gün',
-            prescribedBy: 'Dr. Ayşe Demir',
-            veterinaryClinic: 'Hayat Veteriner Kliniği'
-          },
-          { 
-            id: 3, 
-            date: '10.02.2023', 
-            medications: [
-              'Metronidazol 250mg Tablet (2x1)',
-              'Elektrolit Solüsyon (günde 2 kez, 10ml)',
-              'Karaciğer Desteği Şurup (1x1)'
-            ], 
-            duration: '10 gün',
-            prescribedBy: 'Dr. Mehmet Yılmaz',
-            veterinaryClinic: 'Hayat Veteriner Kliniği'
-          },
-          { 
-            id: 4, 
-            date: '05.01.2023', 
-            medications: [
-              'Meloksikam Enjeksiyon (tek doz)',
-              'Sefazolin 500mg Tablet (2x1)',
-              'Anti-enflamatuar Krem (2x1, lokal uygulama)'
-            ], 
-            duration: '7 gün',
+            duration: '14 gün', 
             prescribedBy: 'Dr. Ayşe Demir',
             veterinaryClinic: 'Hayat Veteriner Kliniği'
           }
         ],
-        vaccinations: [
+        vaccinations: animalId === '3' ? [
+          { id: 1, date: '15.08.2019', vaccine: 'Kuduz Aşısı', nextDue: '15.08.2020', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
+          { id: 2, date: '20.09.2020', vaccine: 'Kuduz Aşısı', nextDue: '20.09.2021', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
+          { id: 3, date: '15.10.2021', vaccine: 'Kuduz Aşısı', nextDue: '15.10.2022', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
+          { id: 4, date: '10.11.2022', vaccine: 'Kuduz Aşısı', nextDue: '10.11.2023', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
+          { id: 5, date: '05.09.2023', vaccine: 'Karma Aşı (FVRCP)', nextDue: '05.09.2024', status: 'Tamamlandı', notes: 'Feline Viral Rhinotracheitis, Calicivirus, Panleukopenia' },
+          { id: 6, date: '', vaccine: 'FeLV Aşısı', nextDue: '05.12.2023', status: 'Planlandı', notes: 'Feline Leukemia Virus - Yıllık hatırlatma' }
+        ] : [
           { id: 1, date: '10.05.2021', vaccine: 'Kuduz Aşısı', nextDue: '10.05.2022', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
           { id: 2, date: '15.06.2022', vaccine: 'Kuduz Aşısı', nextDue: '15.06.2023', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
           { id: 3, date: '20.07.2023', vaccine: 'Kuduz Aşısı', nextDue: '20.07.2024', status: 'Tamamlandı', notes: 'Yıllık zorunlu aşı' },
@@ -447,7 +708,44 @@ const AnimalDetails = () => {
           { id: 6, date: '', vaccine: 'Lyme Hastalığı Aşısı', nextDue: '28.11.2023', status: 'Planlandı', notes: 'İlk kez uygulanacak' },
           { id: 7, date: '', vaccine: 'Bordetella Aşısı', nextDue: '15.12.2023', status: 'Planlandı', notes: 'Kennel Cough (Köpek Öksürüğü) için' }
         ],
-        allergies: [
+        allergies: animalId === '3' ? [
+          { 
+            id: 1, 
+            type: 'allergy',
+            allergen: 'Balık proteini', 
+            severity: 'Yüksek', 
+            symptoms: 'Kaşıntı, kızarıklık, aşırı tüy dökülmesi, kulak enfeksiyonları', 
+            diagnosisDate: '20.06.2023',
+            diagnosedBy: 'Dr. Mehmet Yılmaz',
+            status: 'Aktif',
+            treatments: ['Hipoalerjenik diyet', 'Antihistamin', 'Özel şampuan'],
+            notes: 'Gıda alerjisi, balık içeren mamalardan kaçınılmalı. Tavuk veya kuzu proteini içeren diyetler tercih edilmeli.'
+          },
+          { 
+            id: 2, 
+            type: 'allergy',
+            allergen: 'Çimen poleni', 
+            severity: 'Hafif', 
+            symptoms: 'Hapşırma, gözlerde sulanma, burun akıntısı', 
+            diagnosisDate: '10.04.2022',
+            diagnosedBy: 'Dr. Ayşe Demir',
+            status: 'Mevsimsel',
+            treatments: ['Antihistamin (mevsimsel)', 'Göz damlaları'],
+            notes: 'Mevsimsel alerji, ilkbahar ve yaz aylarında belirgin. Semptomlar görüldüğünde ilaç tedavisi başlanmalı.'
+          },
+          {
+            id: 3,
+            type: 'chronic',
+            allergen: 'Kronik İdrar Yolu Enfeksiyonu',
+            severity: 'Orta',
+            symptoms: 'Sık idrara çıkma, idrarken zorlanma, bazen kanlı idrar',
+            diagnosisDate: '05.05.2023',
+            diagnosedBy: 'Dr. Ayşe Demir',
+            status: 'Aktif - Takip Altında',
+            treatments: ['Periyodik antibiyotik tedavisi', 'Özel diyet', 'İdrar pH dengeleyici takviyeleri'],
+            notes: 'Tekrarlayan idrar yolu enfeksiyonları için 3 ayda bir kontrol önerilir. İdrar pH değerinde dengesizlik tespit edildi, düzenli testler gerekli.'
+          }
+        ] : [
           { 
             id: 1, 
             type: 'allergy',
