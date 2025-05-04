@@ -16,6 +16,7 @@
 .profile-left {
   flex: 0 0 200px;
   margin-right: 30px;
+  margin-top: 75px;
 }
 
 .profile-image-container {
