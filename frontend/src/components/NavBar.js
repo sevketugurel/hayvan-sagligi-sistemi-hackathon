@@ -91,6 +91,12 @@ const NavBar = () => {
                 Gelişmiş Arama
               </Link>
 
+              {/* Çiftlik Hayvanları Sayfası Bağlantısı */}
+              <Link to="/farm-animals" className={`nav-item ${location.pathname.includes('/farm-animals') ? 'active' : ''}`}>
+                <i className="fas fa-horse"></i>
+                Çiftlik Hayvanları
+              </Link>
+
               {/* Formlar Sayfası Bağlantısı */}
               <Link to="/forms" className={`nav-item ${location.pathname.includes('/forms') ? 'active' : ''}`}>
                 <i className="fas fa-file-alt"></i>
@@ -105,11 +111,6 @@ const NavBar = () => {
               <Link to="/medications" className={`nav-item ${location.pathname === '/medications' ? 'active' : ''}`}>
                 <i className="fas fa-pills"></i>
                 İlaç Yönetimi
-              </Link>
-
-              <Link to="/admin" className={`nav-item ${location.pathname === '/admin' ? 'active' : ''}`}>
-                <i className="fas fa-cog"></i>
-                Admin Panel
               </Link>
             </div>
 

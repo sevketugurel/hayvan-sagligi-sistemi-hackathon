@@ -14,13 +14,15 @@ import Vaccines from './pages/Vaccines';
 import FormsPage from './pages/forms/FormsPage';
 import NewPatient from './pages/NewPatient';
 import Medications from './pages/Medications';
+import AnimalDetailsPage from './pages/AnimalDetailsPage';
+import FarmAnimalsPage from './pages/FarmAnimalsPage';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
 import NavBar from './components/NavBar';
 
 // Context
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 // Geçici Dashboard bileşeni
 const Dashboard = () => (
@@ -72,6 +74,19 @@ const FormsLayout = () => (
   </>
 );
 
+// Route koruması için özel komponent
+const ProtectedRoute = ({ element }) => {
+  const { currentUser } = useAuth();
+
+  // Kullanıcı giriş yapmamışsa, login sayfasına yönlendir
+  if (!currentUser) {
+    return <Navigate to="/login" />;
+  }
+
+  // Kullanıcı giriş yapmışsa, istenilen sayfayı göster
+  return element;
+};
+
 function App() {
   return (
     <div className="App">
@@ -82,28 +97,30 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
 
             {/* Protected Routes */}
-            <Route path="/dashboard" element={<VeterinerDashboard />} />
-            <Route path="/veteriner-dashboard" element={<VeterinerDashboard />} />
-            <Route path="/vet-dashboard" element={<VetDashboard />} />
-            <Route path="/owner-animals/:ownerId" element={<OwnerAnimals />} />
-            <Route path="/animal-details/:animalId" element={<AnimalDetails />} />
-            <Route path="/search" element={<SearchPage />} />
-            <Route path="/vaccines" element={<Vaccines />} />
-            <Route path="/medications" element={<Medications />} />
-            <Route path="/animals" element={<VeterinerDashboard />} />
-            <Route path="/treatments" element={<VeterinerDashboard />} />
-            <Route path="/animal-records" element={<Dashboard />} />
-            <Route path="/admin" element={<AdminPanel />} />
-            <Route path="/users" element={<UserManagement />} />
-            <Route path="/new-patient" element={<NewPatient />} />
+            <Route path="/dashboard" element={<ProtectedRoute element={<VeterinerDashboard />} />} />
+            <Route path="/veteriner-dashboard" element={<ProtectedRoute element={<VeterinerDashboard />} />} />
+            <Route path="/vet-dashboard" element={<ProtectedRoute element={<VetDashboard />} />} />
+            <Route path="/owner-animals/:ownerId" element={<ProtectedRoute element={<OwnerAnimals />} />} />
+            <Route path="/animal-details/:animalId" element={<ProtectedRoute element={<AnimalDetails />} />} />
+            <Route path="/animals/:id" element={<ProtectedRoute element={<AnimalDetailsPage />} />} />
+            <Route path="/search" element={<ProtectedRoute element={<SearchPage />} />} />
+            <Route path="/vaccines" element={<ProtectedRoute element={<Vaccines />} />} />
+            <Route path="/medications" element={<ProtectedRoute element={<Medications />} />} />
+            <Route path="/animals" element={<ProtectedRoute element={<VeterinerDashboard />} />} />
+            <Route path="/treatments" element={<ProtectedRoute element={<VeterinerDashboard />} />} />
+            <Route path="/animal-records" element={<ProtectedRoute element={<Dashboard />} />} />
+            <Route path="/admin" element={<ProtectedRoute element={<AdminPanel />} />} />
+            <Route path="/users" element={<ProtectedRoute element={<UserManagement />} />} />
+            <Route path="/new-patient" element={<ProtectedRoute element={<NewPatient />} />} />
+            <Route path="/farm-animals" element={<ProtectedRoute element={<FarmAnimalsPage />} />} />
 
             {/* Form Routes */}
-            <Route path="/forms" element={<FormsLayout />} />
-            <Route path="/forms/:formType" element={<FormsLayout />} />
+            <Route path="/forms" element={<ProtectedRoute element={<FormsLayout />} />} />
+            <Route path="/forms/:formType" element={<ProtectedRoute element={<FormsLayout />} />} />
 
             {/* Default Routes */}
-            <Route path="/" element={<Navigate to="/login" replace />} />
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="/" element={<ProtectedRoute element={<Navigate to="/dashboard" />} />} />
+            <Route path="*" element={<ProtectedRoute element={<Navigate to="/login" />} />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

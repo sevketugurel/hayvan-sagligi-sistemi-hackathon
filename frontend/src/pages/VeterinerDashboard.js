@@ -27,6 +27,21 @@ const VeterinerDashboard = () => {
     const [selectedRegion, setSelectedRegion] = useState(null);
     const [showAddModal, setShowAddModal] = useState(false);
 
+    // State tanımlamaları
+    const [chipSearchText, setChipSearchText] = useState('');
+    const [showNotFound, setShowNotFound] = useState(false);
+    const [newAnimal, setNewAnimal] = useState({
+        name: '',
+        species: '',
+        breed: '',
+        gender: '',
+        age: '',
+        weight: '',
+        owner: '',
+        ownerPhone: '',
+        chipNumber: ''
+    });
+
     // Handle outbreak selection
     const handleOutbreakClick = (outbreak) => {
         setSelectedOutbreak(outbreak);
@@ -649,9 +664,75 @@ const VeterinerDashboard = () => {
                 'ownerName': 'sahip adına',
                 'animalName': 'hayvan adına'
             };
-            alert(`Girdiğiniz ${searchTypeText[searchType]} sahip kayıt bulunamadı!`);
+            
+            // Arama sonucu bulunamadığında mesajı değiştir
+            if (searchType === 'tcNo') {
+                // Kayıt bulunamadığında kullanıcıya yeni kayıt oluşturma seçeneği sun
+                const confirmResult = window.confirm(`Girdiğiniz ${searchTypeText[searchType]} sahip kayıt bulunamadı! Yeni kayıt oluşturmak ister misiniz?`);
+                
+                if (confirmResult) {
+                    // Kullanıcı "Tamam" derse yeni hasta kaydı modalını aç
+                    setShowNewPatientPopup(true);
+                    // TC numarasını formda önceden doldur
+                    setNewPatientForm(prev => ({
+                        ...prev,
+                        ownerInfo: {
+                            ...prev.ownerInfo,
+                            tcNo: searchQuery
+                        }
+                    }));
+                }
+            } else {
+                alert(`Girdiğiniz ${searchTypeText[searchType]} sahip kayıt bulunamadı!`);
+            }
         }
     };
+
+    // Çip numarası araması fonksiyonunda değişiklik yapacağım
+    // Kayıt bulunamadığında gösterilen mesajı güncelleyeceğim
+
+    // Çip numarası aramak için kullanılan fonksiyon
+    const searchByChip = () => {
+        // Burada normalde API'ye istek yapılacak
+        // Şimdilik basit bir kontrol yapıyoruz
+
+        if (!chipSearchText.trim()) {
+            return;
+        }
+
+        // Gerçek uygulamada burada API'den veri çekilecek
+        // Şimdilik bulunamadı mesajı gösteriyoruz
+        setShowNotFound(true);
+    };
+
+    // Çip bulunamadı bildirimi
+    {
+        showNotFound && (
+            <div className="modal-overlay">
+                <div className="not-found-modal">
+                    <h3>Bilgilendirme</h3>
+                    <p>Girdiğiniz çip numarasına sahip kayıt bulunamadı!</p>
+                    <div className="not-found-actions">
+                        <button className="secondary-button" onClick={() => setShowNotFound(false)}>
+                            Tamam
+                        </button>
+                        <button className="primary-button" onClick={() => {
+                            setShowNotFound(false);
+                            // Yeni kayıt modalını aç
+                            setShowAddModal(true);
+                            // Aranan çip numarasını ön doldur
+                            setNewAnimal(prev => ({
+                                ...prev,
+                                chipNumber: chipSearchText
+                            }));
+                        }}>
+                            Yeni Kayıt Oluştur
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
 
     // İlk renderda arama kısmına odaklan
     const searchInputRef = useRef(null);
@@ -660,6 +741,17 @@ const VeterinerDashboard = () => {
             searchInputRef.current.focus();
         }
     }, []);
+
+    // Çip numarası arama input değişikliğini yönetme
+    const handleChipSearchChange = (e) => {
+        setChipSearchText(e.target.value);
+    };
+
+    // Çip araması için form gönderimi
+    const handleChipSearchSubmit = (e) => {
+        e.preventDefault();
+        searchByChip();
+    };
 
     return (
         <div className="veteriner-dashboard-container">
