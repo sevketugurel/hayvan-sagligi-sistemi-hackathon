@@ -240,3 +240,45 @@
 .primary-button:hover {
   background-color: #2980b9;
 }
+
+/* Doğrudan Satış Sayfası Stilleri */
+.direct-sales-page h1 {
+  color: var(--dark-color);
+  margin-bottom: 1.5rem;
+}
+
+.product-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.cart {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+}
+
+.cart-item {
+  transition: background-color 0.2s;
+}
+
+.cart-item:hover {
+  background-color: #f0f0f0;
+}
+
+.checkout-modal .modal-content {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+  }
+  
+  .cart {
+    position: static;
+    margin-top: 2rem;
+  }
+}

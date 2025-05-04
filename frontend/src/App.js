@@ -16,6 +16,7 @@ import NewPatient from './pages/NewPatient';
 import Medications from './pages/Medications';
 import AnimalDetailsPage from './pages/AnimalDetailsPage';
 import FarmAnimalsPage from './pages/FarmAnimalsPage';
+import DirectSalesPage from './pages/DirectSalesPage';
 
 // Components
 import PrivateRoute from './components/PrivateRoute';
@@ -113,6 +114,7 @@ function App() {
             <Route path="/users" element={<ProtectedRoute element={<UserManagement />} />} />
             <Route path="/new-patient" element={<ProtectedRoute element={<NewPatient />} />} />
             <Route path="/farm-animals" element={<ProtectedRoute element={<FarmAnimalsPage />} />} />
+            <Route path="/direct-sales" element={<ProtectedRoute element={<DirectSalesPage />} />} />
 
             {/* Form Routes */}
             <Route path="/forms" element={<ProtectedRoute element={<FormsLayout />} />} />

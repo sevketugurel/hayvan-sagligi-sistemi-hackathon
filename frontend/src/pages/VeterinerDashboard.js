@@ -664,12 +664,12 @@ const VeterinerDashboard = () => {
                 'ownerName': 'sahip adına',
                 'animalName': 'hayvan adına'
             };
-            
+
             // Arama sonucu bulunamadığında mesajı değiştir
             if (searchType === 'tcNo') {
                 // Kayıt bulunamadığında kullanıcıya yeni kayıt oluşturma seçeneği sun
                 const confirmResult = window.confirm(`Girdiğiniz ${searchTypeText[searchType]} sahip kayıt bulunamadı! Yeni kayıt oluşturmak ister misiniz?`);
-                
+
                 if (confirmResult) {
                     // Kullanıcı "Tamam" derse yeni hasta kaydı modalını aç
                     setShowNewPatientPopup(true);
@@ -766,6 +766,30 @@ const VeterinerDashboard = () => {
                                 {/* Sol Panel - Gelecek Randevular ve diğer bilgiler */}
                                 <div className="panel left-panel">
                                     <div className="panel-section">
+                                        <div className="direct-sales-button-container" style={{ marginBottom: '15px', textAlign: 'center' }}>
+                                            <button
+                                                className="direct-sales-button"
+                                                style={{
+                                                    backgroundColor: '#4CAF50',
+                                                    color: 'white',
+                                                    border: 'none',
+                                                    borderRadius: '4px',
+                                                    padding: '10px 15px',
+                                                    fontSize: '16px',
+                                                    cursor: 'pointer',
+                                                    boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                                                    width: '100%',
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    gap: '8px'
+                                                }}
+                                                onClick={() => navigate('/direct-sales')}
+                                            >
+                                                <i className="fas fa-shopping-cart"></i> Doğrudan Satış
+                                            </button>
+                                        </div>
+
                                         <h2>Klinikte Kalan Hayvanlar</h2>
                                         <div className="scrollable-content">
                                             <div className="animal-item">
