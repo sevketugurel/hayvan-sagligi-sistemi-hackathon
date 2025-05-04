@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, style }) => {
+const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, onAddOutbreak, style }) => {
   // Status colors for different outbreak statuses
   const statusColors = {
     'aktif': '#f44336',
@@ -10,7 +10,7 @@ const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, style }) => {
 
   // Merge the default styles with any provided styles
   const containerStyle = {
-    maxHeight: '300px', 
+    maxHeight: '300px',
     overflowY: 'auto',
     padding: '10px',
     background: '#f8f9fa',
@@ -20,8 +20,34 @@ const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, style }) => {
 
   return (
     <div className="disease-outbreak-list" style={containerStyle}>
-      <h3 style={{ margin: '0 0 15px 0', fontSize: '16px' }}>Aktif Salgın Hastalıklar</h3>
-      
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '15px'
+      }}>
+        <h3 style={{ margin: '0', fontSize: '16px' }}>Aktif Salgın Hastalıklar</h3>
+        {onAddOutbreak && (
+          <button
+            onClick={onAddOutbreak}
+            style={{
+              backgroundColor: '#28a745',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              padding: '6px 12px',
+              cursor: 'pointer',
+              fontSize: '13px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <span style={{ fontSize: '14px' }}>+</span> Yeni Vaka Ekle
+          </button>
+        )}
+      </div>
+
       {outbreaks.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '20px', color: '#666' }}>
           Şu anda aktif salgın hastalık bulunmamaktadır.
@@ -29,7 +55,7 @@ const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, style }) => {
       ) : (
         <div>
           {outbreaks.map(outbreak => (
-            <div 
+            <div
               key={outbreak.id}
               onClick={() => onOutbreakClick(outbreak)}
               style={{
@@ -50,18 +76,18 @@ const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, style }) => {
                   <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{outbreak.diseaseName}</div>
                   <div style={{ fontSize: '13px', color: '#555' }}>
                     <span style={{ marginRight: '10px' }}>{outbreak.animalType}</span>
-                    <span title="Vaka Sayısı" style={{ 
-                      background: '#eee', 
-                      padding: '2px 6px', 
-                      borderRadius: '4px', 
-                      fontSize: '12px' 
+                    <span title="Vaka Sayısı" style={{
+                      background: '#eee',
+                      padding: '2px 6px',
+                      borderRadius: '4px',
+                      fontSize: '12px'
                     }}>
                       {outbreak.count} vaka
                     </span>
                   </div>
                 </div>
                 <div>
-                  <div style={{ 
+                  <div style={{
                     display: 'inline-block',
                     fontSize: '12px',
                     padding: '3px 8px',

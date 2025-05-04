@@ -143,7 +143,7 @@ const VeterinerDashboard = () => {
             reason: ''
         });
         setShowAppointmentPopup(false);
-        
+
         // Başarılı mesajı göster
         alert("Randevu başarıyla oluşturuldu!");
     };
@@ -785,7 +785,7 @@ const VeterinerDashboard = () => {
 
                                     <div className="appointments-header">
                                         <h3>Gelecek Randevular</h3>
-                                        <button 
+                                        <button
                                             className="new-appointment-button"
                                             onClick={() => setShowAppointmentPopup(true)}
                                         >
@@ -1017,15 +1017,15 @@ const VeterinerDashboard = () => {
                         {/* Salgın Hastalık Haritası Bölümü */}
                         <div className="disease-map-section" style={{ marginTop: '30px' }}>
                             <h2 className="section-title">Salgın Hastalık Haritası</h2>
-                            
+
                             <div style={{ display: 'flex', gap: '15px', marginTop: '15px' }}>
                                 {/* Filtreler */}
                                 <div style={{ marginBottom: '15px' }}>
                                     <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: 'bold' }}>
                                         Hastalık Türü:
                                     </label>
-                                    <select 
-                                        value={selectedDiseaseType} 
+                                    <select
+                                        value={selectedDiseaseType}
                                         onChange={(e) => setSelectedDiseaseType(e.target.value)}
                                         style={{
                                             padding: '8px',
@@ -1050,17 +1050,18 @@ const VeterinerDashboard = () => {
                             <div style={{ display: 'flex', gap: '20px' }}>
                                 {/* Harita */}
                                 <div style={{ flex: '2' }}>
-                                    <TurkeyDiseaseMap 
+                                    <TurkeyDiseaseMap
                                         diseaseOutbreaks={filteredOutbreaks}
                                         onRegionClick={handleRegionClick}
                                     />
                                 </div>
-                                
+
                                 {/* Salgın Hastalık Listesi */}
                                 <div style={{ flex: '1' }}>
-                                    <DiseaseOutbreakList 
+                                    <DiseaseOutbreakList
                                         outbreaks={filteredOutbreaks}
                                         onOutbreakClick={handleOutbreakClick}
+                                        onAddOutbreak={() => setShowAddModal(true)}
                                         style={{ height: '400px', maxHeight: 'none', overflowY: 'auto' }}
                                     />
                                 </div>
@@ -1577,7 +1578,7 @@ const VeterinerDashboard = () => {
 
             {/* Hastalık detay modalı */}
             {selectedOutbreak && (
-                <DiseaseOutbreakModal 
+                <DiseaseOutbreakModal
                     outbreak={selectedOutbreak}
                     onClose={closeOutbreakModal}
                 />
