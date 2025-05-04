@@ -12,7 +12,7 @@ const VeterinerDashboard = () => {
     const [searchType, setSearchType] = useState('chipNo'); // chipNo, tcNo, ownerName, animalName
     const [searchResults, setSearchResults] = useState(null);
     const [showNewPatientPopup, setShowNewPatientPopup] = useState(false);
-    
+
     // Yeni hasta formu için state
     const [newPatientForm, setNewPatientForm] = useState({
         ownerInfo: {
@@ -54,7 +54,7 @@ const VeterinerDashboard = () => {
         // Burada API'ye form verileri gönderilecek
         console.log("Yeni hasta bilgileri:", newPatientForm);
         alert("Hasta kaydı başarıyla oluşturuldu!");
-        
+
         // Formu sıfırla ve kapat
         setNewPatientForm({
             ownerInfo: { name: '', tcNo: '', phone: '', email: '', address: '' },
@@ -878,54 +878,64 @@ const VeterinerDashboard = () => {
                                         </div>
                                     ) : (
                                         /* Normal Sohbet Modu */
-                                        <>
-                                            <h2>Veteriner Sohbet</h2>
+                                        <div className="veteriner-sohbet-container">
+                                            <div className="sohbet-header">
+                                                <h2>Veteriner Sohbet</h2>
+                                            </div>
 
                                             {/* Chat mesajları */}
                                             <div className="scrollable-content chat-messages" ref={messageListRef}>
-                                                {messages.map(msg => (
-                                                    <div
-                                                        key={msg.id}
-                                                        className={`chat-message ${msg.isCurrentUser ? 'current-user' : 'other-user'}`}
-                                                    >
-                                                        {/* Sadece diğer kullanıcıların mesajlarında gönderen adını göster */}
-                                                        {!msg.isCurrentUser && <p className="sender">{msg.sender}</p>}
+                                                {messages.length > 0 ? (
+                                                    messages.map(msg => {
+                                                        // Boş mesajları atlayalım
+                                                        if (!msg.text || msg.text.trim() === '') return null;
 
-                                                        {/* Mesaj metni ve zamanı bir container içine alındı */}
-                                                        <div className="message-container">
-                                                            <p className="message-text">{msg.text}</p>
-                                                            <span className="message-time">14:30</span>
-                                                        </div>
+                                                        return (
+                                                            <div
+                                                                key={msg.id}
+                                                                className={`chat-message ${msg.isCurrentUser ? 'current-user' : 'other-user'}`}
+                                                            >
+                                                                {!msg.isCurrentUser && <div className="sender">{msg.sender}</div>}
+                                                                <div className="message-text">{msg.text}</div>
+                                                                <div className="message-time">14:30</div>
+                                                            </div>
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <div className="empty-chat-message">
+                                                        <p>Henüz mesaj yok. Sohbeti başlatmak için bir mesaj gönderin.</p>
                                                     </div>
-                                                ))}
+                                                )}
                                             </div>
 
-                                            {/* Mesaj yazma alanı */}
-                                            <div className="chat-input-container">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Mesajınızı yazın..."
-                                                    className="chat-input"
-                                                    value={newMessage}
-                                                    onChange={(e) => setNewMessage(e.target.value)}
-                                                    onKeyPress={handleKeyPress}
-                                                />
+                                            <div className="sohbet-footer">
+                                                {/* Mesaj yazma alanı */}
+                                                <div className="chat-input-container">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Mesajınızı yazın..."
+                                                        className="chat-input"
+                                                        value={newMessage}
+                                                        onChange={(e) => setNewMessage(e.target.value)}
+                                                        onKeyPress={handleKeyPress}
+                                                    />
+                                                    <button
+                                                        className="send-button"
+                                                        onClick={handleSendMessage}
+                                                    >
+                                                        Gönder
+                                                    </button>
+                                                </div>
+
+                                                {/* Özel sohbet butonu */}
                                                 <button
-                                                    className="send-button"
-                                                    onClick={handleSendMessage}
+                                                    className="private-chat-button"
+                                                    onClick={() => setPrivateMode(true)}
                                                 >
-                                                    Gönder
+                                                    <span style={{ marginRight: '8px', fontSize: '18px' }}>💬</span> Özel Sohbet
                                                 </button>
                                             </div>
-
-                                            {/* Özel sohbet butonu */}
-                                            <button
-                                                className="private-chat-button"
-                                                onClick={() => setPrivateMode(true)}
-                                            >
-                                                Özel Sohbet
-                                            </button>
-                                        </>
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -1087,14 +1097,14 @@ const VeterinerDashboard = () => {
                     </div>
                 )}
             </div>
-            
+
             {/* New Patient Popup */}
             {showNewPatientPopup && (
                 <div className="popup-overlay" onClick={handleOverlayClick}>
                     <div className="new-patient-popup">
                         <div className="popup-header">
                             <h2>Yeni Hasta Kaydı</h2>
-                            <button 
+                            <button
                                 className="close-popup-button"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -1111,48 +1121,48 @@ const VeterinerDashboard = () => {
                                         <h3>Sahip Bilgileri</h3>
                                         <div className="form-group">
                                             <label htmlFor="ownerName">Ad Soyad</label>
-                                            <input 
-                                                type="text" 
-                                                id="ownerName" 
-                                                required 
+                                            <input
+                                                type="text"
+                                                id="ownerName"
+                                                required
                                                 value={newPatientForm.ownerInfo.name}
                                                 onChange={(e) => handleFormChange('ownerInfo', 'name', e.target.value)}
                                             />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="tcNo">T.C. Kimlik No</label>
-                                            <input 
-                                                type="text" 
-                                                id="tcNo" 
-                                                required 
+                                            <input
+                                                type="text"
+                                                id="tcNo"
+                                                required
                                                 value={newPatientForm.ownerInfo.tcNo}
                                                 onChange={(e) => handleFormChange('ownerInfo', 'tcNo', e.target.value)}
                                             />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="phone">Telefon</label>
-                                            <input 
-                                                type="tel" 
-                                                id="phone" 
-                                                required 
+                                            <input
+                                                type="tel"
+                                                id="phone"
+                                                required
                                                 value={newPatientForm.ownerInfo.phone}
                                                 onChange={(e) => handleFormChange('ownerInfo', 'phone', e.target.value)}
                                             />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="email">E-posta</label>
-                                            <input 
-                                                type="email" 
-                                                id="email" 
+                                            <input
+                                                type="email"
+                                                id="email"
                                                 value={newPatientForm.ownerInfo.email}
                                                 onChange={(e) => handleFormChange('ownerInfo', 'email', e.target.value)}
                                             />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="address">Adres</label>
-                                            <textarea 
-                                                id="address" 
-                                                required 
+                                            <textarea
+                                                id="address"
+                                                required
                                                 value={newPatientForm.ownerInfo.address}
                                                 onChange={(e) => handleFormChange('ownerInfo', 'address', e.target.value)}
                                             />
@@ -1163,18 +1173,18 @@ const VeterinerDashboard = () => {
                                         <h3>Hayvan Bilgileri</h3>
                                         <div className="form-group">
                                             <label htmlFor="animalName">Hayvan Adı</label>
-                                            <input 
-                                                type="text" 
-                                                id="animalName" 
-                                                required 
+                                            <input
+                                                type="text"
+                                                id="animalName"
+                                                required
                                                 value={newPatientForm.animalInfo.name}
                                                 onChange={(e) => handleFormChange('animalInfo', 'name', e.target.value)}
                                             />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="animalType">Türü</label>
-                                            <select 
-                                                id="animalType" 
+                                            <select
+                                                id="animalType"
                                                 required
                                                 value={newPatientForm.animalInfo.type}
                                                 onChange={(e) => handleFormChange('animalInfo', 'type', e.target.value)}
@@ -1189,29 +1199,29 @@ const VeterinerDashboard = () => {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="breed">Irk</label>
-                                            <input 
-                                                type="text" 
-                                                id="breed" 
-                                                required 
+                                            <input
+                                                type="text"
+                                                id="breed"
+                                                required
                                                 value={newPatientForm.animalInfo.breed}
                                                 onChange={(e) => handleFormChange('animalInfo', 'breed', e.target.value)}
                                             />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="age">Yaş</label>
-                                            <input 
-                                                type="number" 
-                                                id="age" 
+                                            <input
+                                                type="number"
+                                                id="age"
                                                 min="0"
-                                                required 
+                                                required
                                                 value={newPatientForm.animalInfo.age}
                                                 onChange={(e) => handleFormChange('animalInfo', 'age', e.target.value)}
                                             />
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="gender">Cinsiyet</label>
-                                            <select 
-                                                id="gender" 
+                                            <select
+                                                id="gender"
                                                 required
                                                 value={newPatientForm.animalInfo.gender}
                                                 onChange={(e) => handleFormChange('animalInfo', 'gender', e.target.value)}
@@ -1223,11 +1233,11 @@ const VeterinerDashboard = () => {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="weight">Ağırlık (kg)</label>
-                                            <input 
-                                                type="number" 
+                                            <input
+                                                type="number"
                                                 step="0.1"
                                                 min="0"
-                                                id="weight" 
+                                                id="weight"
                                                 value={newPatientForm.animalInfo.weight}
                                                 onChange={(e) => handleFormChange('animalInfo', 'weight', e.target.value)}
                                                 placeholder="Örn: 5.2"
@@ -1235,11 +1245,11 @@ const VeterinerDashboard = () => {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="height">Boy (cm)</label>
-                                            <input 
-                                                type="number" 
+                                            <input
+                                                type="number"
                                                 step="0.1"
                                                 min="0"
-                                                id="height" 
+                                                id="height"
                                                 value={newPatientForm.animalInfo.height}
                                                 onChange={(e) => handleFormChange('animalInfo', 'height', e.target.value)}
                                                 placeholder="Örn: 35.5"
@@ -1247,8 +1257,8 @@ const VeterinerDashboard = () => {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="sterilized">Kısırlaştırılmış mı?</label>
-                                            <select 
-                                                id="sterilized" 
+                                            <select
+                                                id="sterilized"
                                                 required
                                                 value={newPatientForm.animalInfo.sterilized}
                                                 onChange={(e) => handleFormChange('animalInfo', 'sterilized', e.target.value)}
@@ -1259,8 +1269,8 @@ const VeterinerDashboard = () => {
                                         </div>
                                         <div className="form-group">
                                             <label htmlFor="hospitalized">Hospitalize mi?</label>
-                                            <select 
-                                                id="hospitalized" 
+                                            <select
+                                                id="hospitalized"
                                                 required
                                                 value={newPatientForm.animalInfo.hospitalized}
                                                 onChange={(e) => handleFormChange('animalInfo', 'hospitalized', e.target.value)}
@@ -1272,8 +1282,8 @@ const VeterinerDashboard = () => {
                                         {newPatientForm.animalInfo.hospitalized === 'Evet' && (
                                             <div className="form-group">
                                                 <label htmlFor="hospitalizationReason">Hospitalizasyon Nedeni</label>
-                                                <textarea 
-                                                    id="hospitalizationReason" 
+                                                <textarea
+                                                    id="hospitalizationReason"
                                                     value={newPatientForm.animalInfo.hospitalizationReason}
                                                     onChange={(e) => handleFormChange('animalInfo', 'hospitalizationReason', e.target.value)}
                                                 />
@@ -1281,10 +1291,10 @@ const VeterinerDashboard = () => {
                                         )}
                                         <div className="form-group">
                                             <label htmlFor="chipNo">Çip/Küpe No</label>
-                                            <input 
-                                                type="text" 
-                                                id="chipNo" 
-                                                required 
+                                            <input
+                                                type="text"
+                                                id="chipNo"
+                                                required
                                                 value={newPatientForm.animalInfo.chipNo}
                                                 onChange={(e) => handleFormChange('animalInfo', 'chipNo', e.target.value)}
                                             />
@@ -1293,9 +1303,9 @@ const VeterinerDashboard = () => {
                                 </div>
 
                                 <div className="form-actions">
-                                    <button 
-                                        type="button" 
-                                        className="cancel-button" 
+                                    <button
+                                        type="button"
+                                        className="cancel-button"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setShowNewPatientPopup(false);
@@ -1303,8 +1313,8 @@ const VeterinerDashboard = () => {
                                     >
                                         İptal
                                     </button>
-                                    <button 
-                                        type="submit" 
+                                    <button
+                                        type="submit"
                                         className="save-button"
                                     >
                                         Kaydet
