@@ -1389,6 +1389,13 @@
 /* Disease History */
 .disease-history {
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+}
+
+.disease-history .section-header-with-button {
+  margin-bottom: 20px;
+  order: -1; /* Ensure this is at the top */
 }
 
 .disease-content-wrapper {
@@ -2095,12 +2102,40 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
+  padding: 8px 0;
+}
+
+/* Specific styles for Hastalık Geçmişi section header */
+div[class*="content"] .section-header-with-button {
+  margin-bottom: 30px;
 }
 
 .section-header-with-button h3 {
   margin: 0;
+  font-size: 22px;
+  color: #2c3e50;
 }
 
+.add-new-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s;
+  margin-left: 200px; /* Significantly increase space between heading and button */
+}
+
+.add-new-button:hover {
+  background-color: #2980b9;
+}
+
+/* Maintain original styles for backward compatibility */
 .add-button {
   background-color: #607d8b;
   color: white;
@@ -2200,4 +2235,40 @@
   justify-content: center;
   height: 400px;
   margin: 50px auto;
+}
+
+/* Top-level headings with buttons (standalone) */
+.animal-details-container > .section-header-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.animal-details-container > .section-header-with-button h3 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+
+.animal-details-container > .section-header-with-button .add-new-button {
+  margin-left: 100px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+}
+
+.animal-details-container > .section-header-with-button .add-new-button:hover {
+  background-color: #2980b9;
 } 

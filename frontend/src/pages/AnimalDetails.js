@@ -3522,16 +3522,16 @@ const AnimalDetails = () => {
           <div className="details-sidebar">
             <div className="sidebar-buttons">
               <button 
-                className={`sidebar-btn ${activeSection === 'clinicalExam' ? 'active' : ''}`}
-                onClick={() => handleSectionClick('clinicalExam')}
-              >
-                Klinik İnceleme
-              </button>
-              <button 
                 className={`sidebar-btn ${activeSection === 'diseaseHistory' ? 'active' : ''}`}
                 onClick={() => handleSectionClick('diseaseHistory')}
               >
                 Hastalık Geçmişi
+              </button>
+              <button 
+                className={`sidebar-btn ${activeSection === 'clinicalExam' ? 'active' : ''}`}
+                onClick={() => handleSectionClick('clinicalExam')}
+              >
+                Klinik İnceleme
               </button>
               <button 
                 className={`sidebar-btn ${activeSection === 'appointments' ? 'active' : ''}`}
