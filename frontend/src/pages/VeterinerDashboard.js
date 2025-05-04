@@ -12,6 +12,7 @@ const VeterinerDashboard = () => {
     const [searchType, setSearchType] = useState('chipNo'); // chipNo, tcNo, ownerName, animalName
     const [searchResults, setSearchResults] = useState(null);
     const [showNewPatientPopup, setShowNewPatientPopup] = useState(false);
+    const [showAppointmentPopup, setShowAppointmentPopup] = useState(false);
 
     // Yeni hasta formu için state
     const [newPatientForm, setNewPatientForm] = useState({
@@ -37,6 +38,17 @@ const VeterinerDashboard = () => {
         }
     });
 
+    // Randevu formu için state
+    const [newAppointmentForm, setNewAppointmentForm] = useState({
+        date: '',
+        time: '',
+        ownerName: '',
+        petName: '',
+        petType: '',
+        chipNumber: '',
+        reason: ''
+    });
+
     // Form değişikliği handler'ı
     const handleFormChange = (section, field, value) => {
         setNewPatientForm(prev => ({
@@ -45,6 +57,14 @@ const VeterinerDashboard = () => {
                 ...prev[section],
                 [field]: value
             }
+        }));
+    };
+
+    // Randevu formu değişikliği handler'ı
+    const handleAppointmentFormChange = (field, value) => {
+        setNewAppointmentForm(prev => ({
+            ...prev,
+            [field]: value
         }));
     };
 
@@ -63,10 +83,39 @@ const VeterinerDashboard = () => {
         setShowNewPatientPopup(false);
     };
 
+    // Randevu formu gönderme handler'ı
+    const handleAppointmentFormSubmit = (e) => {
+        e.preventDefault();
+        // Yeni randevu için unique ID oluştur
+        const newAppointment = {
+            ...newAppointmentForm,
+            id: Date.now() // Benzersiz ID oluşturmak için timestamp kullanıyoruz
+        };
+
+        // Randevuları güncelle
+        setUpcomingAppointments(prev => [...prev, newAppointment]);
+
+        // Formu sıfırla ve kapat
+        setNewAppointmentForm({
+            date: '',
+            time: '',
+            ownerName: '',
+            petName: '',
+            petType: '',
+            chipNumber: '',
+            reason: ''
+        });
+        setShowAppointmentPopup(false);
+        
+        // Başarılı mesajı göster
+        alert("Randevu başarıyla oluşturuldu!");
+    };
+
     // Popup dışına tıklanınca kapatma
     const handleOverlayClick = (e) => {
         if (e.target.className === 'popup-overlay') {
             setShowNewPatientPopup(false);
+            setShowAppointmentPopup(false);
         }
     };
 
@@ -698,7 +747,15 @@ const VeterinerDashboard = () => {
                                         </form>
                                     </div>
 
-                                    <h3>Gelecek Randevular</h3>
+                                    <div className="appointments-header">
+                                        <h3>Gelecek Randevular</h3>
+                                        <button 
+                                            className="new-appointment-button"
+                                            onClick={() => setShowAppointmentPopup(true)}
+                                        >
+                                            Yeni Randevu Ekle
+                                        </button>
+                                    </div>
                                     <div className="appointments-list">
                                         {upcomingAppointments.map(appointment => (
                                             <div key={appointment.id} className="appointment-item">
@@ -1289,6 +1346,129 @@ const VeterinerDashboard = () => {
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setShowNewPatientPopup(false);
+                                        }}
+                                    >
+                                        İptal
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="save-button"
+                                    >
+                                        Kaydet
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* New Appointment Popup */}
+            {showAppointmentPopup && (
+                <div className="popup-overlay" onClick={handleOverlayClick}>
+                    <div className="new-appointment-popup" onClick={e => e.stopPropagation()}>
+                        <div className="popup-header">
+                            <h2>Yeni Randevu Ekle</h2>
+                            <button
+                                className="close-popup-button"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setShowAppointmentPopup(false);
+                                }}
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <div className="popup-content">
+                            <form onSubmit={handleAppointmentFormSubmit}>
+                                <div className="form-sections-container">
+                                    <div className="form-section">
+                                        <h3>Randevu Bilgileri</h3>
+                                        <div className="form-group">
+                                            <label htmlFor="date">Tarih</label>
+                                            <input
+                                                type="date"
+                                                id="date"
+                                                required
+                                                value={newAppointmentForm.date}
+                                                onChange={(e) => handleAppointmentFormChange('date', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="time">Saat</label>
+                                            <input
+                                                type="time"
+                                                id="time"
+                                                required
+                                                value={newAppointmentForm.time}
+                                                onChange={(e) => handleAppointmentFormChange('time', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="ownerName">Sahip Adı</label>
+                                            <input
+                                                type="text"
+                                                id="ownerName"
+                                                required
+                                                value={newAppointmentForm.ownerName}
+                                                onChange={(e) => handleAppointmentFormChange('ownerName', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="petName">Hayvan Adı</label>
+                                            <input
+                                                type="text"
+                                                id="petName"
+                                                required
+                                                value={newAppointmentForm.petName}
+                                                onChange={(e) => handleAppointmentFormChange('petName', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="petType">Hayvan Türü</label>
+                                            <select
+                                                id="petType"
+                                                required
+                                                value={newAppointmentForm.petType}
+                                                onChange={(e) => handleAppointmentFormChange('petType', e.target.value)}
+                                            >
+                                                <option value="">Seçiniz</option>
+                                                <option value="Kedi">Kedi</option>
+                                                <option value="Köpek">Köpek</option>
+                                                <option value="Kuş">Kuş</option>
+                                                <option value="Kemirgen">Kemirgen</option>
+                                                <option value="Diğer">Diğer</option>
+                                            </select>
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="chipNumber">Çip/Küpe No</label>
+                                            <input
+                                                type="text"
+                                                id="chipNumber"
+                                                required
+                                                value={newAppointmentForm.chipNumber}
+                                                onChange={(e) => handleAppointmentFormChange('chipNumber', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="reason">Randevu Nedeni</label>
+                                            <textarea
+                                                id="reason"
+                                                required
+                                                value={newAppointmentForm.reason}
+                                                onChange={(e) => handleAppointmentFormChange('reason', e.target.value)}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="form-actions">
+                                    <button
+                                        type="button"
+                                        className="cancel-button"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            setShowAppointmentPopup(false);
                                         }}
                                     >
                                         İptal

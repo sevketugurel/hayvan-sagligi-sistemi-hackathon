@@ -9,6 +9,8 @@ import AddConditionModal from '../components/AddConditionModal';
 import AddClinicalExamModal from '../components/AddClinicalExamModal';
 import AddDiseaseHistoryModal from '../components/AddDiseaseHistoryModal';
 import AddNoteModal from '../components/AddNoteModal';
+import MedicationWarningModal from '../components/MedicationWarningModal';
+import { checkMedicationRisksForBreed } from '../utils/medicationRisks';
 
 // Import a default profile image
 import defaultAnimalImage from '../assets/images/default-animal.png';
@@ -35,6 +37,9 @@ const AnimalDetails = () => {
   const [showNewClinicalExamModal, setShowNewClinicalExamModal] = useState(false);
   const [showNewDiseaseHistoryModal, setShowNewDiseaseHistoryModal] = useState(false);
   const [showAddNoteModal, setShowAddNoteModal] = useState(false);
+  const [showMedicationWarningModal, setShowMedicationWarningModal] = useState(false);
+  const [medicationRisks, setMedicationRisks] = useState([]);
+  const [pendingPrescription, setPendingPrescription] = useState(null);
   const [newPrescription, setNewPrescription] = useState({
     medications: [""],
     duration: "",
@@ -87,7 +92,7 @@ const AnimalDetails = () => {
             name: 'Ahmet Yılmaz',
             phone: '05551234567'
           },
-          profileImage: null, // In real app, this would be a URL
+          profileImage: '/assets/profile-photos/max.jpeg', // Updated to point to our uploaded image
           alerts: [
             { id: 1, type: 'allergy', severity: 'high', message: 'Tavuk proteinine karşı alerjisi bulunmaktadır!' },
             { id: 2, type: 'vaccine', severity: 'medium', message: 'Kuduz aşısı 15 gün içinde yapılmalıdır.' },
@@ -2943,7 +2948,7 @@ const AnimalDetails = () => {
     }
   };
 
-  // Handle adding a new prescription
+  // Handle adding a new prescription with risk check
   const handleAddPrescription = () => {
     // Validate form inputs
     if (newPrescription.medications.some(med => !med) || !newPrescription.duration || !newPrescription.prescribedBy) {
@@ -2953,7 +2958,39 @@ const AnimalDetails = () => {
 
     // Filter out any empty medication entries (shouldn't happen due to validation but just in case)
     const filteredMedications = newPrescription.medications.filter(med => med.trim() !== "");
+
+    // Check for medication risks based on the animal breed
+    if (animal && animal.breed) {
+      const risks = checkMedicationRisksForBreed(filteredMedications, animal.breed);
+      
+      // If risks found, show warning modal
+      if (risks.length > 0) {
+        setMedicationRisks(risks);
+        
+        // Create pending prescription and show warning
+        const today = new Date();
+        const formattedDate = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth() + 1).toString().padStart(2, '0')}.${today.getFullYear()}`;
+        
+        setPendingPrescription({
+          id: Date.now(),
+          date: formattedDate,
+          medications: filteredMedications,
+          duration: newPrescription.duration,
+          prescribedBy: newPrescription.prescribedBy,
+          veterinaryClinic: newPrescription.veterinaryClinic
+        });
+        
+        setShowMedicationWarningModal(true);
+        return;
+      }
+    }
     
+    // If no risks, proceed with creating prescription
+    savePrescription(filteredMedications);
+  };
+
+  // Function to actually save the prescription after risk assessment
+  const savePrescription = (medications) => {
     // Get current date in DD.MM.YYYY format
     const today = new Date();
     const formattedDate = `${today.getDate().toString().padStart(2, '0')}.${(today.getMonth() + 1).toString().padStart(2, '0')}.${today.getFullYear()}`;
@@ -2962,7 +2999,7 @@ const AnimalDetails = () => {
     const newPrescriptionObj = {
       id: Date.now(), // Generate a unique ID using timestamp
       date: formattedDate,
-      medications: filteredMedications,
+      medications: medications,
       duration: newPrescription.duration,
       prescribedBy: newPrescription.prescribedBy,
       veterinaryClinic: newPrescription.veterinaryClinic
@@ -2979,6 +3016,36 @@ const AnimalDetails = () => {
       veterinaryClinic: "Hayat Veteriner Kliniği"
     });
     setShowNewPrescriptionModal(false);
+  };
+
+  // Handle continuing with a risky prescription
+  const handleContinueWithRiskyPrescription = () => {
+    if (pendingPrescription) {
+      // Add the prescription despite warnings
+      setSectionData([pendingPrescription, ...sectionData]);
+      
+      // Reset states
+      setPendingPrescription(null);
+      setMedicationRisks([]);
+      setShowMedicationWarningModal(false);
+      
+      // Reset form and close modal
+      setNewPrescription({
+        medications: [""],
+        duration: "",
+        prescribedBy: "",
+        veterinaryClinic: "Hayat Veteriner Kliniği"
+      });
+      setShowNewPrescriptionModal(false);
+    }
+  };
+
+  // Handle canceling a risky prescription
+  const handleCancelRiskyPrescription = () => {
+    // Close warning modal but keep prescription modal open for editing
+    setShowMedicationWarningModal(false);
+    setPendingPrescription(null);
+    setMedicationRisks([]);
   };
 
   // Handle adding a new vaccine
@@ -3261,6 +3328,16 @@ const AnimalDetails = () => {
         <AddDiseaseHistoryModal
           onClose={() => setShowNewDiseaseHistoryModal(false)}
           onSave={handleAddDiseaseHistory}
+        />
+      )}
+      
+      {/* Medication Warning Modal */}
+      {showMedicationWarningModal && (
+        <MedicationWarningModal
+          risks={medicationRisks}
+          onClose={() => setShowMedicationWarningModal(false)}
+          onContinue={handleContinueWithRiskyPrescription}
+          onCancel={handleCancelRiskyPrescription}
         />
       )}
     </>

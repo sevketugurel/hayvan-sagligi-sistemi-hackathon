@@ -37,7 +37,8 @@ const OwnerAnimals = () => {
             age: 3,
             gender: 'Erkek',
             chipNo: '123456789012345',
-            lastVisit: '12.05.2023'
+            lastVisit: '12.05.2023',
+            profileImage: '/assets/profile-photos/max.jpeg'
           },
           {
             id: 102,

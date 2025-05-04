@@ -1,0 +1,101 @@
+/* Medication Warning Modal Styles */
+.warning-modal {
+  max-width: 600px;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.warning-header {
+  background-color: #ff4d4f;
+  color: white;
+}
+
+.warning-icon {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.warning-message {
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.warning-message p {
+  margin: 0;
+}
+
+.risks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.risk-item {
+  background-color: #fff2f0;
+  border: 1px solid #ffccc7;
+  border-radius: 6px;
+  padding: 12px;
+}
+
+.risk-header {
+  margin-bottom: 6px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.medication-name {
+  color: #cf1322;
+  font-weight: 600;
+}
+
+.risk-breed {
+  color: #595959;
+}
+
+.risk-warning {
+  color: #434343;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.warning-detail-icon {
+  color: #fa8c16;
+  font-size: 1rem;
+  margin-top: 2px;
+}
+
+.warning-note {
+  background-color: #f6ffed;
+  border: 1px solid #b7eb8f;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 10px;
+}
+
+.warning-note p {
+  margin: 0;
+  color: #389e0d;
+  font-size: 0.95rem;
+}
+
+.continue-btn {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.continue-btn:hover {
+  background-color: #cf1322;
+} 

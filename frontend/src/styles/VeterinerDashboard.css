@@ -2032,3 +2032,148 @@ html {
     display: block;
     clear: both;
 }
+
+/* Appointments Header - Added for New Appointment Button */
+.appointments-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.appointments-header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.new-appointment-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.new-appointment-button:hover {
+    background-color: #45a049;
+}
+
+/* New Appointment Popup Styles */
+.new-appointment-popup {
+    background-color: #fff;
+    width: 90%;
+    max-width: 700px;
+    border-radius: 8px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    position: relative;
+}
+
+.new-appointment-popup .popup-header {
+    background-color: #f5f5f5;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.new-appointment-popup .popup-header h2 {
+    margin: 0;
+    font-size: 18px;
+    color: #333;
+}
+
+.new-appointment-popup .popup-content {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.new-appointment-popup form {
+    display: flex;
+    flex-direction: column;
+}
+
+.new-appointment-popup .form-sections-container {
+    display: flex;
+    gap: 20px;
+}
+
+.new-appointment-popup .form-section {
+    flex: 1;
+}
+
+.new-appointment-popup .form-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #333;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.new-appointment-popup .form-group {
+    margin-bottom: 15px;
+}
+
+.new-appointment-popup .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #555;
+}
+
+.new-appointment-popup .form-group input,
+.new-appointment-popup .form-group select,
+.new-appointment-popup .form-group textarea {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.new-appointment-popup .form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.new-appointment-popup .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.new-appointment-popup .cancel-button {
+    background-color: #e7e7e7;
+    color: #333;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.new-appointment-popup .save-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.new-appointment-popup .close-popup-button {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #777;
+}
