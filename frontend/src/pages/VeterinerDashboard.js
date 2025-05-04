@@ -1061,6 +1061,7 @@ const VeterinerDashboard = () => {
                                     <DiseaseOutbreakList 
                                         outbreaks={filteredOutbreaks}
                                         onOutbreakClick={handleOutbreakClick}
+                                        style={{ height: '400px', maxHeight: 'none', overflowY: 'auto' }}
                                     />
                                 </div>
                             </div>

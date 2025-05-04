@@ -1,6 +1,6 @@
 import React from 'react';
 
-const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick }) => {
+const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick, style }) => {
   // Status colors for different outbreak statuses
   const statusColors = {
     'aktif': '#f44336',
@@ -8,14 +8,18 @@ const DiseaseOutbreakList = ({ outbreaks, onOutbreakClick }) => {
     'azalıyor': '#4caf50'
   };
 
+  // Merge the default styles with any provided styles
+  const containerStyle = {
+    maxHeight: '300px', 
+    overflowY: 'auto',
+    padding: '10px',
+    background: '#f8f9fa',
+    borderRadius: '8px',
+    ...style  // This will override any matching properties from above
+  };
+
   return (
-    <div className="disease-outbreak-list" style={{ 
-      maxHeight: '300px', 
-      overflowY: 'auto',
-      padding: '10px',
-      background: '#f8f9fa',
-      borderRadius: '8px'
-    }}>
+    <div className="disease-outbreak-list" style={containerStyle}>
       <h3 style={{ margin: '0 0 15px 0', fontSize: '16px' }}>Aktif Salgın Hastalıklar</h3>
       
       {outbreaks.length === 0 ? (
