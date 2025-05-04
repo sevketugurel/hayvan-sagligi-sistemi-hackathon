@@ -78,4 +78,29 @@ public class Hayvan {
     
     @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Asi> asilar = new HashSet<>();
+    
+    // New relationships with the new entities
+    @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<KlinikInceleme> klinikIncelemeler = new HashSet<>();
+    
+    @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<RadyolojikGoruntuleme> radyolojikGoruntulemeler = new HashSet<>();
+    
+    @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<LabTestleri> labTestleri = new HashSet<>();
+    
+    @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Recete> receteler = new HashSet<>();
+    
+    @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AlerjiKronik> alerjiKronikler = new HashSet<>();
+    
+    @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PatolojikBulgular> patolojikBulgular = new HashSet<>();
+    
+    @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<NekropsiBulgular> nekropsiBulgular = new HashSet<>();
+    
+    @OneToMany(mappedBy = "hayvan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Notlar> notlar = new HashSet<>();
 } 
