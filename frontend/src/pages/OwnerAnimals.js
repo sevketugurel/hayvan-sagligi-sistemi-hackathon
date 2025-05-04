@@ -30,7 +30,7 @@ const OwnerAnimals = () => {
 
         const mockAnimals = [
           {
-            id: 101,
+            id: 1,
             name: 'Max',
             species: 'Köpek',
             breed: 'Golden Retriever',
@@ -41,7 +41,7 @@ const OwnerAnimals = () => {
             profileImage: '/assets/profile-photos/max.jpeg'
           },
           {
-            id: 102,
+            id: 2,
             name: 'Luna',
             species: 'Kedi',
             breed: 'British Shorthair',
@@ -49,6 +49,36 @@ const OwnerAnimals = () => {
             gender: 'Dişi',
             chipNo: '987654321098765',
             lastVisit: '25.06.2023'
+          },
+          {
+            id: 3,
+            name: 'Pamuk',
+            species: 'Kedi',
+            breed: 'Scottish Fold',
+            age: 5,
+            gender: 'Erkek',
+            chipNo: '567891234567890',
+            lastVisit: '05.10.2023'
+          },
+          {
+            id: 4,
+            name: 'Karamel',
+            species: 'Köpek',
+            breed: 'Labrador',
+            age: 2,
+            gender: 'Erkek',
+            chipNo: '567890123456789',
+            lastVisit: '22.09.2023'
+          },
+          {
+            id: 5,
+            name: 'Rocky',
+            species: 'Köpek',
+            breed: 'Alman Çoban Köpeği',
+            age: 4,
+            gender: 'Erkek',
+            chipNo: '789012345678901',
+            lastVisit: '18.10.2023'
           }
         ];
 

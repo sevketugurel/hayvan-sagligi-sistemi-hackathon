@@ -60,6 +60,8 @@ const AdvancedSearch = () => {
   };
 
   const handleAnimalSelect = (animalId) => {
+    console.log("Navigating to animal with ID:", animalId);
+    
     navigate(`/animal-details/${animalId}`);
   };
 
@@ -160,13 +162,13 @@ const AdvancedSearch = () => {
         species: 'Kedi',
         breed: 'British Shorthair',
         owner: 'Ayşe Demir',
-        age: 5,
+        age: 2,
         gender: 'Dişi',
         status: 'Taburcu',
         lastVisit: '15.08.2023'
       },
       {
-        id: 3,
+        id: 4,
         name: 'Karamel',
         chipId: '567890123456789',
         species: 'Köpek',
@@ -178,7 +180,7 @@ const AdvancedSearch = () => {
         lastVisit: '22.09.2023'
       },
       {
-        id: 4,
+        id: 3,
         name: 'Pamuk',
         chipId: '345678901234567',
         species: 'Kedi',

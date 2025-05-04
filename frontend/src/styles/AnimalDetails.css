@@ -2143,4 +2143,61 @@
 
 .allergy-card .prescription-header {
   background-color: #ef5350;
+}
+
+/* Error container */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 50px auto;
+  max-width: 600px;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.error-container h2 {
+  color: #e74c3c;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.error-container p {
+  color: #555;
+  margin-bottom: 25px;
+  font-size: 16px;
+}
+
+.error-container .back-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 12px 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.error-container .back-button:hover {
+  background-color: #2980b9;
+}
+
+/* Loading container */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  margin: 50px auto;
 } 

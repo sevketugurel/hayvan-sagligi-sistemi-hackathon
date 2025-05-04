@@ -73,7 +73,7 @@ const SearchModal = ({ onClose, onSearchResult }) => {
       // Mock response data
       const mockAnimalResults = [
         {
-          id: 101,
+          id: 1,
           type: 'animal',
           name: 'Max',
           chipNo: '123456789012345',
@@ -84,8 +84,69 @@ const SearchModal = ({ onClose, onSearchResult }) => {
             id: 1,
             name: 'Ahmet Yılmaz'
           }
+        },
+        {
+          id: 2,
+          type: 'animal',
+          name: 'Luna',
+          chipNo: '987654321098765',
+          species: 'Kedi',
+          breed: 'British Shorthair',
+          age: 2,
+          owner: {
+            id: 2,
+            name: 'Ayşe Demir'
+          }
+        },
+        {
+          id: 3,
+          type: 'animal',
+          name: 'Pamuk',
+          chipNo: '567891234567890',
+          species: 'Kedi',
+          breed: 'Scottish Fold',
+          age: 5,
+          owner: {
+            id: 3,
+            name: 'Mehmet Kaya'
+          }
+        },
+        {
+          id: 4,
+          type: 'animal',
+          name: 'Karamel',
+          chipNo: '567890123456789',
+          species: 'Köpek',
+          breed: 'Labrador',
+          age: 2,
+          owner: {
+            id: 4,
+            name: 'Mehmet Can'
+          }
+        },
+        {
+          id: 5,
+          type: 'animal',
+          name: 'Rocky',
+          chipNo: '789012345678901',
+          species: 'Köpek',
+          breed: 'Alman Çoban Köpeği',
+          age: 4,
+          owner: {
+            id: 5,
+            name: 'Ali Kaya'
+          }
         }
-      ];
+      ].filter(animal => {
+        // Filter based on user input (case insensitive)
+        if (animalName && !animal.name.toLowerCase().includes(animalName.toLowerCase())) {
+          return false;
+        }
+        if (animalChipNo && !animal.chipNo.includes(animalChipNo)) {
+          return false;
+        }
+        return true;
+      });
 
       setSearchResults(mockAnimalResults);
       setIsLoading(false);
