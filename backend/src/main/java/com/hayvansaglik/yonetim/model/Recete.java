@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "receteler")
+@Table(name = "recete")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,21 +28,29 @@ public class Recete {
     @Column(name = "tarih", nullable = false)
     private LocalDate tarih;
     
-    @Column(name = "sure", length = 50)
+    @Column(name = "sure", length = 100)
     private String sure;
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "veteriner_id", nullable = false)
     private Personel veteriner;
     
-    @Column(name = "veteriner_klinigi", nullable = false, length = 255)
+    @Column(name = "veteriner_klinigi", length = 255)
     private String veterinerKlinigi;
+    
+    @Column(name = "ilac", length = 255)
+    private String ilac;
+    
+    @Column(name = "doz", length = 255)
+    private String doz;
+    
+    @Column(name = "talimatlar", columnDefinition = "NVARCHAR(MAX)")
+    private String talimatlar;
     
     @OneToMany(mappedBy = "recete", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<ReceteIlaclari> receteIlaclari = new HashSet<>();
     
-    // Optional: Keep the existing relationship with KlinikInceleme if needed
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "inceleme_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "klinik_inceleme_id", nullable = true)
     private KlinikInceleme klinikInceleme;
 } 

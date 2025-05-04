@@ -28,4 +28,12 @@ public interface ReceteRepository extends JpaRepository<Recete, Integer> {
     List<Recete> findByKlinikInceleme(KlinikInceleme klinikInceleme);
     
     List<Recete> findByKlinikIncelemeId(Integer incelemeId);
+    
+    List<Recete> findByHayvanIdAndTarihBetween(Integer hayvanId, LocalDate startDate, LocalDate endDate);
+    
+    List<Recete> findByIlacContainingIgnoreCase(String ilac);
+    
+    List<Recete> findByDozContainingIgnoreCase(String doz);
+    
+    List<Recete> findByTalimatlarContainingIgnoreCase(String talimatlar);
 } 

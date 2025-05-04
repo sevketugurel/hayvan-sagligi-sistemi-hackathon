@@ -12,7 +12,7 @@ public interface RadyolojikGoruntulemeRepository extends JpaRepository<Radyoloji
     
     List<RadyolojikGoruntuleme> findByHayvanId(Integer hayvanId);
     
-    List<RadyolojikGoruntuleme> findByHayvanIdAndTipiBetween(Integer hayvanId, String tipi, LocalDate baslangic, LocalDate bitis);
+    List<RadyolojikGoruntuleme> findByHayvanIdAndTipiAndTarihBetween(Integer hayvanId, String tipi, LocalDate baslangic, LocalDate bitis);
     
     List<RadyolojikGoruntuleme> findByTipi(String tipi);
 } 

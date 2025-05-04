@@ -50,11 +50,17 @@ public class KlinikInceleme {
     @Column(name = "yapilan_islemler", columnDefinition = "NVARCHAR(MAX)")
     private String yapilanIslemler;
     
+    @Column(name = "islemler", columnDefinition = "NVARCHAR(MAX)")
+    private String islemler;
+    
+    @Column(name = "notlar", columnDefinition = "NVARCHAR(MAX)")
+    private String notlar;
+    
     // Option: Keep the existing relationship with Randevu if needed
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "randevu_id")
     private Randevu randevu;
     
-    @OneToMany(mappedBy = "klinikInceleme", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "klinikInceleme", cascade = CascadeType.ALL, orphanRemoval = false)
     private Set<Recete> receteler = new HashSet<>();
 } 
