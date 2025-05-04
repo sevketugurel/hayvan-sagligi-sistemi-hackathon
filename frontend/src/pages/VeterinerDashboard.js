@@ -3,6 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/VeterinerDashboard.css';
 import NavBar from '../components/NavBar';
+import TurkeyDiseaseMap from '../components/TurkeyDiseaseMap';
+import DiseaseOutbreakList from '../components/DiseaseOutbreakList';
+import DiseaseOutbreakModal from '../components/DiseaseOutbreakModal';
+import diseaseOutbreaks from '../data/diseaseOutbreaks';
 
 const VeterinerDashboard = () => {
     // Auth context'ten logout fonksiyonunu alıyoruz
@@ -13,6 +17,39 @@ const VeterinerDashboard = () => {
     const [searchResults, setSearchResults] = useState(null);
     const [showNewPatientPopup, setShowNewPatientPopup] = useState(false);
     const [showAppointmentPopup, setShowAppointmentPopup] = useState(false);
+
+    // Disease map states
+    const [selectedOutbreak, setSelectedOutbreak] = useState(null);
+    const [filteredOutbreaks, setFilteredOutbreaks] = useState(diseaseOutbreaks);
+    const [selectedDiseaseType, setSelectedDiseaseType] = useState('all');
+    const [selectedRegion, setSelectedRegion] = useState(null);
+
+    // Handle outbreak selection
+    const handleOutbreakClick = (outbreak) => {
+        setSelectedOutbreak(outbreak);
+    };
+
+    // Close outbreak modal
+    const closeOutbreakModal = () => {
+        setSelectedOutbreak(null);
+    };
+
+    // Handle region click on map
+    const handleRegionClick = (region) => {
+        setSelectedRegion(region);
+        // You could filter outbreaks by region here
+    };
+
+    // Filter outbreaks by disease type
+    useEffect(() => {
+        if (selectedDiseaseType === 'all') {
+            setFilteredOutbreaks(diseaseOutbreaks);
+        } else {
+            setFilteredOutbreaks(
+                diseaseOutbreaks.filter(outbreak => outbreak.diseaseName === selectedDiseaseType)
+            );
+        }
+    }, [selectedDiseaseType]);
 
     // Yeni hasta formu için state
     const [newPatientForm, setNewPatientForm] = useState({
@@ -157,7 +194,6 @@ const VeterinerDashboard = () => {
     });
 
     // Özel sohbet için state'ler
-    const [selectedRegion, setSelectedRegion] = useState('Tüm İller');
     const [activeChat, setActiveChat] = useState(null);
     const [activeChatMessages, setActiveChatMessages] = useState([]);
     const [privateChatNewMessage, setPrivateChatNewMessage] = useState("");
@@ -977,6 +1013,58 @@ const VeterinerDashboard = () => {
                                 </div>
                             </div>
                         </div>
+
+                        {/* Salgın Hastalık Haritası Bölümü */}
+                        <div className="disease-map-section" style={{ marginTop: '30px' }}>
+                            <h2 className="section-title">Salgın Hastalık Haritası</h2>
+                            
+                            <div style={{ display: 'flex', gap: '15px', marginTop: '15px' }}>
+                                {/* Filtreler */}
+                                <div style={{ marginBottom: '15px' }}>
+                                    <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px', fontWeight: 'bold' }}>
+                                        Hastalık Türü:
+                                    </label>
+                                    <select 
+                                        value={selectedDiseaseType} 
+                                        onChange={(e) => setSelectedDiseaseType(e.target.value)}
+                                        style={{
+                                            padding: '8px',
+                                            borderRadius: '4px',
+                                            border: '1px solid #ddd',
+                                            width: '200px'
+                                        }}
+                                    >
+                                        <option value="all">Tüm Hastalıklar</option>
+                                        <option value="Şap Hastalığı">Şap Hastalığı</option>
+                                        <option value="Kuş Gribi">Kuş Gribi</option>
+                                        <option value="Kuduz">Kuduz</option>
+                                        <option value="Brucellosis">Brucellosis</option>
+                                        <option value="Mavi Dil">Mavi Dil</option>
+                                        <option value="Tüberküloz">Tüberküloz</option>
+                                        <option value="Newcastle">Newcastle</option>
+                                        <option value="Anaplazmozis">Anaplazmozis</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '20px' }}>
+                                {/* Harita */}
+                                <div style={{ flex: '2' }}>
+                                    <TurkeyDiseaseMap 
+                                        diseaseOutbreaks={filteredOutbreaks}
+                                        onRegionClick={handleRegionClick}
+                                    />
+                                </div>
+                                
+                                {/* Salgın Hastalık Listesi */}
+                                <div style={{ flex: '1' }}>
+                                    <DiseaseOutbreakList 
+                                        outbreaks={filteredOutbreaks}
+                                        onOutbreakClick={handleOutbreakClick}
+                                    />
+                                </div>
+                            </div>
+                        </div>
                     </>
                 ) : animalResults ? (
                     // Hayvan bilgileri görünümü
@@ -1484,6 +1572,14 @@ const VeterinerDashboard = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Hastalık detay modalı */}
+            {selectedOutbreak && (
+                <DiseaseOutbreakModal 
+                    outbreak={selectedOutbreak}
+                    onClose={closeOutbreakModal}
+                />
             )}
         </div>
     );

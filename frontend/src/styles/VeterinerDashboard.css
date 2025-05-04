@@ -2026,7 +2026,7 @@ html {
 /* Sender name styling */
 .chat-message .sender {
     font-size: 11px;
-    font-weight: 600;
+    color: #777;
     margin-bottom: 3px;
     color: #4a5568;
     display: block;
@@ -2176,4 +2176,74 @@ html {
     font-size: 22px;
     cursor: pointer;
     color: #777;
+}
+
+/* Salgın Hastalık Haritası Bölümü Stilleri */
+.disease-map-section {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.disease-map-section .section-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.disease-outbreak-list {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    height: 100%;
+}
+
+.disease-outbreak-list h3 {
+    margin: 0 0 15px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* Popup stilleri */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+    .disease-map-section {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .disease-map-section > div {
+        width: 100% !important;
+    }
+
+    .disease-map-section > div > div {
+        border-radius: 5px;
+    }
 }

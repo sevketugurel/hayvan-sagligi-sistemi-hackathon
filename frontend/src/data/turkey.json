@@ -1,0 +1,209 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Türkiye",
+        "id": "TR"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [26.0433, 41.0261], 
+            [26.1181, 41.9857], 
+            [27.2377, 42.1142], 
+            [28.2286, 41.4842], 
+            [29.6355, 41.2197], 
+            [31.9166, 41.8728], 
+            [34.8155, 41.9949], 
+            [36.5498, 42.0233], 
+            [38.2883, 40.8742], 
+            [39.4317, 41.6024], 
+            [41.5343, 41.5856], 
+            [42.6195, 41.0856], 
+            [43.5826, 40.8711], 
+            [43.9721, 41.1727], 
+            [44.5341, 41.1044], 
+            [44.2994, 40.6273], 
+            [43.4282, 40.0053], 
+            [42.3089, 40.0219], 
+            [41.5327, 39.7135], 
+            [42.1009, 39.2191], 
+            [41.3833, 37.1546], 
+            [42.4119, 37.0636], 
+            [42.3485, 36.6058], 
+            [41.8348, 36.7806], 
+            [41.3893, 36.5526], 
+            [41.2897, 35.6677], 
+            [41.0068, 34.5609], 
+            [38.7582, 35.8617], 
+            [36.8402, 36.2313], 
+            [36.0443, 35.9517], 
+            [35.7853, 35.9664], 
+            [36.1584, 35.7816], 
+            [35.9179, 36.6619], 
+            [36.1188, 36.8474], 
+            [35.5539, 36.5672], 
+            [34.7147, 36.7955], 
+            [32.5076, 36.0791], 
+            [30.6211, 36.5786], 
+            [30.3911, 36.7786], 
+            [29.6977, 36.1444], 
+            [29.1683, 36.2753], 
+            [28.9343, 36.8664], 
+            [27.8061, 37.0442], 
+            [27.0203, 38.4825], 
+            [26.2335, 38.2836], 
+            [26.0356, 39.3515], 
+            [26.0433, 41.0261]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "İstanbul",
+        "id": "TR-34"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [29.0097, 41.1053]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Ankara",
+        "id": "TR-06"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [32.8597, 39.9334]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "İzmir",
+        "id": "TR-35"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [27.1428, 38.4237]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Antalya",
+        "id": "TR-07"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [30.7133, 36.8969]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Bursa",
+        "id": "TR-16"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [29.0609, 40.1885]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Adana",
+        "id": "TR-01"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [35.3308, 37.0000]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Konya",
+        "id": "TR-42"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [32.4932, 37.8719]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gaziantep",
+        "id": "TR-27"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [37.3826, 37.0662]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Şanlıurfa",
+        "id": "TR-63"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [38.7955, 37.1591]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Kayseri",
+        "id": "TR-38"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [35.4887, 38.7312]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Trabzon",
+        "id": "TR-61"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [39.7266, 41.0053]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Erzurum",
+        "id": "TR-25"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [41.2658, 39.9085]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Van",
+        "id": "TR-65"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [43.3823, 38.5012]
+      }
+    }
+  ]
+} 
