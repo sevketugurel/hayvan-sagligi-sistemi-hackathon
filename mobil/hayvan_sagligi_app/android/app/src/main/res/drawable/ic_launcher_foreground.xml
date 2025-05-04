@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.6"
+        android:scaleY="0.6"
+        android:translateX="22"
+        android:translateY="22">
+        <!-- Pet icon -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M27.5,6C25.79,6 24.25,7.24 23.75,9L21.25,9C20.76,7.24 19.21,6 17.5,6C15.29,6 13.5,7.79 13.5,10C13.5,12.21 15.29,14 17.5,14C19.21,14 20.76,12.76 21.25,11L23.75,11C24.25,12.76 25.79,14 27.5,14C29.71,14 31.5,12.21 31.5,10C31.5,7.79 29.71,6 27.5,6zM47.5,17C49,17 50,18 50,19.5C50,21 49,22 47.5,22C46,22 45,21 45,19.5C45,18 46,17 47.5,17zM39.5,8C41,8 42,9 42,10.5C42,12 41,13 39.5,13C38,13 37,12 37,10.5C37,9 38,8 39.5,8zM16.5,17C18,17 19,18 19,19.5C19,21 18,22 16.5,22C15,22 14,21 14,19.5C14,18 15,17 16.5,17zM22,40L54,40L54,41C54,42.1 53.1,43 52,43L24,43C22.9,43 22,42.1 22,41L22,40zM22,36L54,36L54,38L22,38L22,36zM40,24.31C40,25.8 38.79,27 37.3,27L20.7,27C19.21,27 18,25.8 18,24.31L18,24.28C18,16.42 20.5,12.5 30,12.5L54,12.5L54,22.5L40,22.5L40,24.31z"/>
+        <!-- Heartbeat line -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M30,50 L40,40 L45,45 L55,35 L65,50"/>
+    </group>
+</vector> 
